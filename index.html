@@ -812,17 +812,6 @@
                     errEl.textContent = '⚠️ Erro de conexão. Tente novamente.'; 
                     errEl.classList.remove('hidden'); 
                 }
-//                  try{
-//                    const res=await fetch(`${API_BASE}/api/inscricao`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,bloco,apartamento:apt,telefone:tel,observacao:obs})});
-//                    const data=await res.json();
-//                    if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Erro ao realizar inscrição.'); errEl.classList.remove('hidden'); return; }
-//                    abrirModalPix(data.pix);
-//                    toast('🎉 Inscrição realizada!');
-//                    ['f-nome','f-bloco','f-apt','f-tel','f-obs'].forEach(id=>document.getElementById(id).value='');
-//                    carregarDados();
-//                  } catch{ errEl.textContent='⚠️ Erro de conexão. Tente novamente.'; errEl.classList.remove('hidden'); }
-//                  finally{ btn.disabled=false; btn.innerHTML='👥 Fazer Inscrição'; }
-//                  console.log("Botão de inscrição clicado!");
               });
          } else {
               console.warn("Aviso: Elemento 'btn-inscrever' não encontrado nesta página.");
