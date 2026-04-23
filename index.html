@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -190,220 +191,24 @@ body {
 
 <!-- ════════ OVERLAY DE DIAGNÓSTICO ════════ -->
 
-<div id="diag-overlay" style="
-  position:fixed;inset:0;z-index:9999;
-  background:#F5EFE0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:24px;font-family:'Nunito',sans-serif;
-">
-  <div style="width:100%;max-width:420px;">
-    <div style="text-align:center;margin-bottom:24px;">
-      <div style="font-size:2.5rem;">🔍</div>
-      <h2 id="diag-h2" style="font-size:1.2rem;font-weight:900;color:#1C1917;margin-top:6px;">Verificando conexão…</h2>
-      <p id="diag-p" style="font-size:0.82rem;color:#A8A29E;margin-top:4px;">Aguarde, testando os serviços</p>
-    </div>
+<div id="diag-overlay" style="position:fixed;inset:0;z-index:9999;background:#F5EFE0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:Nunito,sans-serif;">
+  <div style="width:100%;max-width:400px;">
 
 ```
-<!-- Itens de checagem -->
-<div id="diag-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;"></div>
+<div style="text-align:center;margin-bottom:28px;">
+  <div style="font-size:2.2rem;margin-bottom:8px;">🔍</div>
+  <h2 id="diag-h2" style="font-size:1.15rem;font-weight:900;color:#1C1917;">Verificando conexão…</h2>
+  <p  id="diag-p"  style="font-size:0.82rem;color:#A8A29E;margin-top:4px;">Aguarde, testando os serviços</p>
+  <div id="diag-timer" style="font-size:0.75rem;color:#D4C5B0;margin-top:4px;"></div>
+</div>
 
-<!-- Mensagem de erro detalhada -->
-<div id="diag-detail" style="
-  display:none;background:#FEE2E2;border:1px solid #FECACA;
-  border-radius:12px;padding:14px;margin-bottom:18px;
-  font-size:0.8rem;color:#991B1B;line-height:1.6;word-break:break-all;
-"></div>
+<div id="diag-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;"></div>
 
-<!-- Botões -->
+<div id="diag-detail" style="display:none;background:#FEE2E2;border:1px solid #FECACA;border-radius:12px;padding:14px;margin-bottom:16px;font-size:0.78rem;color:#991B1B;line-height:1.65;word-break:break-word;"></div>
+
 <div id="diag-actions" style="display:none;flex-direction:column;gap:10px;">
-  <button id="diag-retry" onclick="runDiagnostic()" style="
-    background:#E8651A;color:#fff;border:none;border-radius:100px;
-    padding:14px;font-family:'Nunito',sans-serif;font-weight:800;
-    font-size:0.95rem;cursor:pointer;width:100%;
-  ">↻ Tentar novamente</button>
-  <button id="diag-proceed" onclick="fecharDiagnostico()" style="
-    display:none;background:transparent;border:1.5px solid #E7DDD0;
-    border-radius:100px;padding:12px;font-family:'Nunito',sans-serif;
-    font-weight:700;font-size:0.88rem;color:#57534E;cursor:pointer;width:100%;
-  ">Continuar mesmo assim</button>
-</div>
-```
-
-  </div>
-</div>
-
-<!-- ── PÁGINA PRINCIPAL ── -->
-
-<div id="page-main" class="page active">
-
-  <div class="bunting">
-    <div class="bunting-rope"></div>
-    <div class="bunting-flags" id="flags"></div>
-  </div>
-
-  <!-- Hero com gradiente -->
-
-  <div style="background:linear-gradient(180deg,#8B5E2C 0%,#C4883A 28%,#E8A84A 55%,#F5EFE0 100%);padding:28px 16px 32px;text-align:center;">
-    <div style="font-size:3rem;margin-bottom:8px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">🌽</div>
-    <h1 style="font-size:2rem;font-weight:900;line-height:1.15;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);">Balaio Junino</h1>
-    <p style="font-size:1.1rem;font-weight:800;color:#FFE68A;margin-top:2px;text-shadow:0 1px 4px rgba(0,0,0,0.2);">Alamedas 2026</p>
-    <p style="font-size:0.85rem;color:#3D1A00;font-weight:700;margin-top:10px;line-height:1.55;max-width:340px;margin-left:auto;margin-right:auto;" id="hdr-desc">Participe da nossa festa junina! Inscreva-se e ajude a fazer deste evento um sucesso.</p>
-  </div>
-
-  <div style="padding:20px 16px 40px; max-width:480px; margin:0 auto;">
-
-```
-<!-- Card: Sorteio -->
-<div class="card" style="margin-bottom:14px;">
-  <div class="card-body">
-    <div class="sec-header">
-      <div class="sec-icon">🧺</div>
-      <div>
-        <div class="sec-title">Balaios para Sorteio</div>
-        <div class="sec-sub" id="sorteio-sub">Nenhum balaio completo ainda. Continue arrecadando!</div>
-      </div>
-    </div>
-    <div style="display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid var(--bg);">
-      <span style="font-size:0.85rem; color:var(--text3); font-weight:600;">Total arrecadado</span>
-      <span style="font-weight:900; font-size:1rem; color:var(--orange);" id="sorteio-total">R$ 0,00</span>
-    </div>
-  </div>
-</div>
-
-<!-- Card: Termômetro -->
-<div class="card" style="margin-bottom:14px;">
-  <div class="card-body">
-    <div class="sec-header">
-      <div class="sec-icon">🔥</div>
-      <div>
-        <div class="sec-title">Próximo Balaio</div>
-        <div class="sec-sub">Acompanhe a arrecadação</div>
-      </div>
-    </div>
-
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-      <span style="font-size:0.82rem; color:var(--text3); font-weight:600;">Saldo acumulado</span>
-      <span style="font-weight:800; color:var(--orange);" id="thermo-val">R$ 0,00</span>
-    </div>
-
-    <div class="progress-wrap" style="margin-bottom:8px;">
-      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-      <div class="progress-label" id="progress-label">0,0%</div>
-    </div>
-
-    <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text3); font-weight:600; margin-bottom:14px;">
-      <span>R$ 0</span>
-      <span>⊙ Meta: <strong style="color:var(--text2);" id="thermo-meta">R$ —</strong></span>
-    </div>
-
-    <div style="background:var(--bg); border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:14px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;">
-      <span style="font-size:0.82rem; color:var(--text3); font-weight:600;" id="faltam-lbl">R$ 0,00 acumulados</span>
-      <span style="font-size:0.82rem; font-weight:800; color:var(--text2);">Faltam <span id="faltam-val" style="color:var(--orange);">R$ —</span></span>
-    </div>
-
-    <p style="font-size:0.78rem; color:var(--text3); text-align:center;">
-      Cada balaio custa <strong style="color:var(--text2);" id="custo-balaio">R$ —</strong> (soma dos itens da lista)
-    </p>
-  </div>
-</div>
-
-<!-- Stats -->
-<div class="stat-grid" style="margin-bottom:14px;">
-  <div class="stat-card">
-    <div class="stat-icon">👥</div>
-    <div class="stat-num" id="stat-inscritos">0</div>
-    <div class="stat-lbl">Inscritos</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-icon">✅</div>
-    <div class="stat-num" style="color:var(--green);" id="stat-confirmados">0</div>
-    <div class="stat-lbl">Confirmados</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-icon">⏳</div>
-    <div class="stat-num" style="color:var(--amber);" id="stat-pendentes">0</div>
-    <div class="stat-lbl">Pendentes</div>
-  </div>
-</div>
-
-<!-- Card: Inscrição -->
-<div class="card" style="margin-bottom:14px;">
-  <div class="card-body">
-    <div class="sec-header">
-      <div class="sec-icon">✍️</div>
-      <div>
-        <div class="sec-title">Inscrição</div>
-        <div class="sec-sub">Preencha seus dados para participar</div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Nome Completo <span class="req">*</span></label>
-      <input id="f-nome" class="inp" type="text" placeholder="Seu nome completo" autocomplete="name">
-    </div>
-
-    <div class="form-row form-group">
-      <div>
-        <label class="form-label">Bloco <span class="req">*</span></label>
-        <input id="f-bloco" class="inp" type="text" placeholder="Ex: A">
-      </div>
-      <div>
-        <label class="form-label">Apto <span class="req">*</span></label>
-        <input id="f-apt" class="inp" type="text" placeholder="Ex: 101">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Telefone</label>
-      <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" inputmode="tel">
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Observação</label>
-      <input id="f-obs" class="inp" type="text" placeholder="Alguma observação? (opcional)">
-    </div>
-
-    <button class="btn-primary" id="btn-inscrever">
-      👥 Fazer Inscrição
-    </button>
-
-    <p style="text-align:center; margin-top:10px; font-size:0.82rem; color:var(--text3);">
-      Valor da cota: <strong style="color:var(--orange);" id="form-valor">R$ —</strong>
-    </p>
-    <p id="form-error" class="err-msg hidden"></p>
-  </div>
-</div>
-
-<!-- Card: Transparência -->
-<div class="card" style="margin-bottom:24px;">
-  <div class="card-body" style="padding-bottom:0;">
-    <div class="sec-header">
-      <div class="sec-icon">📋</div>
-      <div>
-        <div class="sec-title">Transparência</div>
-        <div class="sec-sub">Veja o que será comprado com a arrecadação</div>
-      </div>
-    </div>
-  </div>
-  <div style="border-top:1px solid var(--bg);">
-    <div style="display:flex; justify-content:space-between; padding:8px 18px 4px; font-size:0.75rem; font-weight:700; color:var(--text3); letter-spacing:0.04em;">
-      <span>ITEM</span><span>VALOR EST.</span>
-    </div>
-    <div id="itens-list">
-      <div class="empty"><div class="empty-text">Carregando…</div></div>
-    </div>
-  </div>
-  <div class="item-total-row">
-    <span class="lbl">Total do Balaio</span>
-    <span class="val" id="total-balaio">R$ —</span>
-  </div>
-</div>
-
-<button class="footer-link" onclick="abrirAdmin()">⚙️ Painel Administrativo</button>
-
-<div style="text-align:center; margin-top:20px;">
-  <p style="font-size:0.78rem; color:var(--text3); font-weight:700;">🌽 Balaio Alamedas 2026</p>
-  <p style="font-size:0.72rem; color:var(--text3); margin-top:2px;">Desenvolvido por Alex Passos</p>
+  <button onclick="runDiagnostic()" style="background:#E8651A;color:#fff;border:none;border-radius:100px;padding:14px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;width:100%;">↻ Tentar novamente</button>
+  <button id="diag-proceed" onclick="fecharDiagnostico()" style="display:none;background:transparent;border:1.5px solid #E7DDD0;border-radius:100px;padding:12px;font-family:Nunito,sans-serif;font-weight:700;font-size:0.85rem;color:#57534E;cursor:pointer;width:100%;">Continuar mesmo assim</button>
 </div>
 ```
 
@@ -965,155 +770,252 @@ setInterval(carregarDados, 60_000);
 
 // ─── DIAGNÓSTICO DE CONEXÃO ──────────────────────────────────────────────────
 
-const DIAG_CHECKS = [
-  { id: 'chk-worker', label: 'Worker Cloudflare acessível', icon: '🌐' },
-  { id: 'chk-db',     label: 'Banco de dados (Neon) online', icon: '🗄️' },
-  { id: 'chk-itens',  label: 'Lista de itens carregando',    icon: '📋' },
-  { id: 'chk-admin',  label: 'Endpoint de login disponível', icon: '🔐' },
+var diagTimerInterval = null;
+var diagAutoTimer     = null;
+
+var CHECKS = [
+  { id:'chk-worker', label:'Worker Cloudflare acessivel', sym:'[W]' },
+  { id:'chk-db',     label:'Banco de dados (Neon) online', sym:'[B]' },
+  { id:'chk-itens',  label:'Lista de itens carregando',    sym:'[I]' },
+  { id:'chk-admin',  label:'Endpoint de login disponivel', sym:'[A]' },
 ];
 
-function diagItem(id, label, icon) {
-  return '<div id="'+id+'" style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:13px 16px;box-shadow:0 2px 8px rgba(0,0,0,0.07);border-left:4px solid #E7DDD0;transition:border-color 0.3s;">'
-    + '<span style="font-size:1.3rem;">'+icon+'</span>'
-    + '<span style="flex:1;font-size:0.88rem;font-weight:700;color:#1C1917;">'+label+'</span>'
-    + '<span id="'+id+'-status" style="font-size:1.1rem;">⏳</span>'
-    + '</div>';
+function buildDiagList() {
+  var html = '';
+  for (var i = 0; i < CHECKS.length; i++) {
+    var ch = CHECKS[i];
+    html += '<div id="' + ch.id + '" style="'
+      + 'display:flex;align-items:center;gap:12px;'
+      + 'background:#fff;border-radius:12px;padding:12px 14px;'
+      + 'box-shadow:0 2px 8px rgba(0,0,0,0.06);'
+      + 'border-left:4px solid #E7DDD0;transition:border-color 0.3s;">'
+      + '<span id="' + ch.id + '-status" style="font-size:0.9rem;font-weight:900;color:#A8A29E;flex-shrink:0;width:28px;text-align:center;">...</span>'
+      + '<span style="flex:1;font-size:0.85rem;font-weight:700;color:#1C1917;">' + ch.label + '</span>'
+      + '</div>';
+  }
+  document.getElementById('diag-list').innerHTML = html;
 }
 
 function setDiagStatus(id, state, detail) {
-  const el    = document.getElementById(id);
-  const badge = document.getElementById(id+'-status');
+  var el    = document.getElementById(id);
+  var badge = document.getElementById(id + '-status');
   if (!el || !badge) return;
-  const map = { ok:{icon:'✅',border:'#22C55E'}, fail:{icon:'❌',border:'#EF4444'}, warn:{icon:'⚠️',border:'#F59E0B'}, loading:{icon:'⏳',border:'#E7DDD0'} };
-  const s = map[state] || map.loading;
-  badge.textContent = s.icon;
-  el.style.borderLeftColor = s.border;
+  var states = {
+    ok:      { txt: 'OK',  color: '#22C55E', border: '#22C55E' },
+    fail:    { txt: 'ERR', color: '#EF4444', border: '#EF4444' },
+    warn:    { txt: 'AVS', color: '#F59E0B', border: '#F59E0B' },
+    loading: { txt: '...', color: '#A8A29E', border: '#E7DDD0' },
+  };
+  var s = states[state] || states.loading;
+  badge.textContent         = s.txt;
+  badge.style.color         = s.color;
+  el.style.borderLeftColor  = s.border;
   if (detail && (state === 'fail' || state === 'warn')) {
-    const box = document.getElementById('diag-detail');
-    const label = el.querySelector('span:nth-child(2)').textContent;
+    var box = document.getElementById('diag-detail');
     box.style.display = 'block';
-    box.innerHTML += '<p style="margin:4px 0;"><strong>'+label+':</strong> '+detail+'</p>';
+    box.innerHTML += '<p style="margin:5px 0;"><b>' + document.getElementById(id).querySelector('span:last-child').textContent + ':</b> ' + detail + '</p>';
   }
 }
 
+function mostrarFalha(msg) {
+  document.getElementById('diag-h2').textContent = 'Falha na conexao';
+  document.getElementById('diag-p').textContent  = 'Veja o detalhe abaixo.';
+  var box = document.getElementById('diag-detail');
+  box.style.display = 'block';
+  box.innerHTML += '<p style="margin:5px 0;">' + msg + '</p>';
+  var acts = document.getElementById('diag-actions');
+  acts.style.display = 'flex';
+  document.getElementById('diag-proceed').style.display = 'block';
+  document.getElementById('diag-timer').textContent = '';
+  if (diagTimerInterval) clearInterval(diagTimerInterval);
+  if (diagAutoTimer)     clearTimeout(diagAutoTimer);
+}
+
+function fecharDiagnostico() {
+  if (diagTimerInterval) clearInterval(diagTimerInterval);
+  if (diagAutoTimer)     clearTimeout(diagAutoTimer);
+  document.getElementById('diag-overlay').style.display = 'none';
+  carregarDados();
+}
+
+function iniciarContagem(segundos, aoFinalizar) {
+  var restante = segundos;
+  document.getElementById('diag-timer').textContent = 'Timeout em ' + restante + 's...';
+  if (diagTimerInterval) clearInterval(diagTimerInterval);
+  diagTimerInterval = setInterval(function() {
+    restante--;
+    if (restante <= 0) {
+      clearInterval(diagTimerInterval);
+      document.getElementById('diag-timer').textContent = '';
+      aoFinalizar();
+    } else {
+      document.getElementById('diag-timer').textContent = 'Timeout em ' + restante + 's...';
+    }
+  }, 1000);
+}
+
+async function fetchComTimeout(url, opcoes, ms) {
+  return new Promise(function(resolve, reject) {
+    var tid = setTimeout(function() {
+      reject(new Error('Timeout de ' + Math.round(ms/1000) + 's — sem resposta do servidor'));
+    }, ms);
+    fetch(url, opcoes || {}).then(function(r) {
+      clearTimeout(tid); resolve(r);
+    }).catch(function(e) {
+      clearTimeout(tid); reject(e);
+    });
+  });
+}
+
 async function runDiagnostic() {
+  // Limpar estado
+  if (diagTimerInterval) clearInterval(diagTimerInterval);
+  if (diagAutoTimer)     clearTimeout(diagAutoTimer);
+  document.getElementById('diag-h2').textContent      = 'Verificando conexao...';
+  document.getElementById('diag-p').textContent       = 'Aguarde, testando os servicos';
+  document.getElementById('diag-timer').textContent   = '';
   document.getElementById('diag-detail').style.display = 'none';
-  document.getElementById('diag-detail').innerHTML = '';
+  document.getElementById('diag-detail').innerHTML     = '';
   document.getElementById('diag-actions').style.display = 'none';
   document.getElementById('diag-proceed').style.display = 'none';
-  document.getElementById('diag-h2').textContent = 'Verificando conexão…';
-  document.getElementById('diag-p').textContent  = 'Aguarde, testando os serviços';
+  buildDiagList();
 
-  const list = document.getElementById('diag-list');
-  list.innerHTML = DIAG_CHECKS.map(ch => diagItem(ch.id, ch.label, ch.icon)).join('');
+  // Fallback: se ficar mais de 15s sem resposta, permite continuar
+  diagAutoTimer = setTimeout(function() {
+    if (document.getElementById('diag-overlay').style.display !== 'none') {
+      document.getElementById('diag-h2').textContent = 'Demorou demais';
+      document.getElementById('diag-p').textContent  = 'O servidor nao respondeu a tempo.';
+      document.getElementById('diag-timer').textContent = '';
+      document.getElementById('diag-actions').style.display = 'flex';
+      document.getElementById('diag-proceed').style.display = 'block';
+      document.getElementById('diag-detail').style.display = 'block';
+      document.getElementById('diag-detail').innerHTML =
+        '<p><b>O Worker nao respondeu em 15 segundos.</b></p>' +
+        '<p>Verifique:<br>' +
+        '1. A URL em <code>API_BASE</code> esta correta?<br>' +
+        '2. O Worker foi publicado com <code>npm run deploy</code>?<br>' +
+        '3. O secret <code>DATABASE_URL</code> foi configurado?</p>';
+    }
+  }, 15000);
 
   // Check 0: API_BASE configurada?
-  if (API_BASE.includes('SEU_USUARIO')) {
-    setDiagStatus('chk-worker', 'fail', 'API_BASE ainda tem o valor padrão "SEU_USUARIO". Edite o index.html com a URL real do seu Worker.');
-    ['chk-db','chk-itens','chk-admin'].forEach(id => setDiagStatus(id, 'warn', 'Não testado — Worker não configurado.'));
-    mostrarFalha('⚙️ <strong>API_BASE não configurada.</strong><br>Abra o <code>index.html</code>, encontre a linha:<br><code>const API_BASE = "https://...SEU_USUARIO..."</code><br>e substitua pela URL do seu Worker após <code>npm run deploy</code>.');
+  if (API_BASE.indexOf('SEU_USUARIO') !== -1) {
+    ['chk-worker','chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
+    mostrarFalha('<b>API_BASE nao foi configurada.</b><br>'
+      + 'Edite o <code>index.html</code> e troque:<br>'
+      + '<code>const API_BASE = "https://...SEU_USUARIO..."</code><br>'
+      + 'pela URL real do seu Worker (aparece apos <code>npm run deploy</code>).');
     return;
   }
 
-  // Check 1: Worker acessível e banco respondendo
+  // Check 1: Worker + Banco
   setDiagStatus('chk-worker', 'loading');
-  let dadosResp = null;
+  iniciarContagem(12, function() {
+    setDiagStatus('chk-worker','fail','Timeout de 12s sem resposta');
+    ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
+    mostrarFalha('<b>O Worker nao respondeu.</b><br>Possiveis causas:<br>'
+      + '- URL errada em <code>API_BASE</code><br>'
+      + '- Worker nao publicado (<code>npm run deploy</code>)<br>'
+      + '- Problema de CORS no Worker');
+  });
+
+  var dadosResp = null;
   try {
-    const ctrl = new AbortController();
-    const tid  = setTimeout(() => ctrl.abort(), 8000);
-    const res  = await fetch(API_BASE+'/api/dados', { signal: ctrl.signal });
-    clearTimeout(tid);
+    var res = await fetchComTimeout(API_BASE + '/api/dados', {}, 12000);
+    if (diagTimerInterval) clearInterval(diagTimerInterval);
+    document.getElementById('diag-timer').textContent = '';
+
     if (res.ok) {
       dadosResp = await res.json();
+      if (dadosResp.error) {
+        setDiagStatus('chk-worker', 'ok');
+        setDiagStatus('chk-db', 'fail', dadosResp.error);
+        ['chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
+        mostrarFalha('<b>Erro no banco de dados:</b> ' + dadosResp.error + '<br><br>'
+          + 'Verifique se o secret foi configurado:<br>'
+          + '<code>wrangler secret put DATABASE_URL</code><br><br>'
+          + 'E se o schema.sql foi executado no Neon SQL Editor.');
+        return;
+      }
       setDiagStatus('chk-worker', 'ok');
+      setDiagStatus('chk-db', 'ok');
     } else {
-      const txt = await res.text().catch(()=>'');
-      setDiagStatus('chk-worker', 'fail', 'HTTP '+res.status+' — '+res.statusText+(txt?' | '+txt.substring(0,120):''));
-      ['chk-db','chk-itens','chk-admin'].forEach(id => setDiagStatus(id, 'warn', 'Não testado.'));
-      mostrarFalha('O Worker respondeu com erro <strong>HTTP '+res.status+'</strong>.<br>Verifique se o deploy foi concluído (<code>npm run deploy</code>) e se a URL em <code>API_BASE</code> está correta.');
+      var txt = '';
+      try { var j = await res.json(); txt = j.error || ''; } catch(e) {}
+      setDiagStatus('chk-worker', 'fail', 'HTTP ' + res.status + (txt ? ' — ' + txt : ''));
+      ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
+      mostrarFalha('<b>O Worker retornou HTTP ' + res.status + '.</b><br>'
+        + (txt ? 'Detalhe: ' + txt + '<br>' : '')
+        + 'Verifique se o deploy foi concluido corretamente.');
       return;
     }
-  } catch(err) {
-    const msg = err.name==='AbortError' ? 'Timeout: sem resposta em 8 segundos.' : 'Falha de rede: '+err.message;
-    setDiagStatus('chk-worker', 'fail', msg);
-    ['chk-db','chk-itens','chk-admin'].forEach(id => setDiagStatus(id, 'warn', 'Não testado.'));
-    mostrarFalha('Não foi possível alcançar o Worker.<br><br><strong>Possíveis causas:</strong><br>• URL incorreta em <code>API_BASE</code><br>• Worker ainda não publicado (<code>npm run deploy</code>)<br>• Problema de CORS<br><br><strong>Erro:</strong> '+msg);
+  } catch (err) {
+    if (diagTimerInterval) clearInterval(diagTimerInterval);
+    document.getElementById('diag-timer').textContent = '';
+    setDiagStatus('chk-worker', 'fail', err.message);
+    ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
+    mostrarFalha('<b>Nao foi possivel alcancar o Worker.</b><br><br>'
+      + 'Erro: ' + err.message + '<br><br>'
+      + 'Verifique a URL em <code>API_BASE</code> no index.html<br>'
+      + 'e se o Worker foi publicado com <code>npm run deploy</code>.');
     return;
   }
-
-  // Check 2: Banco OK?
-  if (dadosResp.error) {
-    setDiagStatus('chk-db', 'fail', dadosResp.error);
-    ['chk-itens','chk-admin'].forEach(id => setDiagStatus(id, 'warn', 'Não testado.'));
-    mostrarFalha('Erro no banco de dados: <strong>'+dadosResp.error+'</strong><br>Verifique se o secret <code>DATABASE_URL</code> está configurado:<br><code>wrangler secret put DATABASE_URL</code>');
-    return;
-  }
-  setDiagStatus('chk-db', 'ok');
 
   // Check 3: Itens
-  const itens = dadosResp.itens;
+  var itens = dadosResp && dadosResp.itens;
   if (!itens || itens.length === 0) {
-    setDiagStatus('chk-itens', 'warn', 'Nenhum item encontrado. Execute o schema.sql no Neon SQL Editor para popular os dados iniciais.');
+    setDiagStatus('chk-itens', 'warn', 'Nenhum item. Execute o schema.sql no Neon SQL Editor.');
   } else {
     setDiagStatus('chk-itens', 'ok');
   }
 
   // Check 4: Login endpoint
   try {
-    const res2 = await fetch(API_BASE+'/api/admin/login', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({senha:'__DIAG_TEST__'}),
-    });
+    var res2 = await fetchComTimeout(API_BASE + '/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ senha: '__DIAG__' }),
+    }, 5000);
     if (res2.status === 401) {
-      setDiagStatus('chk-admin', 'ok'); // Endpoint funciona, senha errada era esperado
+      setDiagStatus('chk-admin', 'ok');
     } else if (res2.status === 500) {
-      const d = await res2.json().catch(()=>({}));
-      setDiagStatus('chk-admin', 'warn', (d.error||'ADMIN_PASSWORD não configurada.')+' Use: wrangler secret put ADMIN_PASSWORD');
+      var d2 = await res2.json().catch(function(){ return {}; });
+      setDiagStatus('chk-admin', 'warn', (d2.error || 'ADMIN_PASSWORD nao configurada') + ' — use: wrangler secret put ADMIN_PASSWORD');
     } else {
       setDiagStatus('chk-admin', 'ok');
     }
-  } catch(err) {
-    setDiagStatus('chk-admin', 'fail', err.message);
+  } catch(e) {
+    setDiagStatus('chk-admin', 'warn', 'Nao testado: ' + e.message);
   }
 
-  // Resultado final
-  const allBadges = [...document.querySelectorAll('[id$="-status"]')];
-  const falhas = allBadges.filter(el => el.textContent.includes('❌')).length;
-  const avisos = allBadges.filter(el => el.textContent.includes('⚠️')).length;
+  // Resultado
+  var badges  = document.querySelectorAll('[id$="-status"]');
+  var nFalhas = 0, nAvisos = 0;
+  badges.forEach(function(b) {
+    if (b.textContent === 'ERR') nFalhas++;
+    if (b.textContent === 'AVS') nAvisos++;
+  });
 
-  if (falhas === 0 && avisos === 0) {
-    document.getElementById('diag-h2').textContent = '✅ Tudo funcionando!';
-    document.getElementById('diag-p').textContent  = 'Abrindo o site…';
-    setTimeout(fecharDiagnostico, 900);
-  } else if (falhas === 0) {
-    document.getElementById('diag-h2').textContent = '⚠️ Quase lá!';
-    document.getElementById('diag-p').textContent  = 'Há avisos, mas o site pode funcionar.';
+  if (diagAutoTimer) clearTimeout(diagAutoTimer);
+
+  if (nFalhas === 0 && nAvisos === 0) {
+    document.getElementById('diag-h2').textContent = 'Tudo funcionando!';
+    document.getElementById('diag-p').textContent  = 'Abrindo o site...';
+    setTimeout(fecharDiagnostico, 800);
+  } else if (nFalhas === 0) {
+    document.getElementById('diag-h2').textContent = 'Quase la!';
+    document.getElementById('diag-p').textContent  = 'Ha avisos, mas o site pode funcionar.';
     document.getElementById('diag-actions').style.display = 'flex';
     document.getElementById('diag-proceed').style.display = 'block';
   } else {
-    document.getElementById('diag-h2').textContent = '❌ Falha na conexão';
-    document.getElementById('diag-p').textContent  = 'Resolva os itens abaixo e tente novamente.';
+    document.getElementById('diag-h2').textContent = 'Falha na conexao';
+    document.getElementById('diag-p').textContent  = 'Resolva os itens abaixo.';
     document.getElementById('diag-actions').style.display = 'flex';
     document.getElementById('diag-proceed').style.display = 'block';
   }
 }
 
-function mostrarFalha(msg) {
-  document.getElementById('diag-h2').textContent = '❌ Falha na conexão';
-  document.getElementById('diag-p').textContent  = 'Veja o detalhe abaixo.';
-  const box = document.getElementById('diag-detail');
-  box.style.display = 'block';
-  box.innerHTML += '<p style="margin:4px 0;">'+msg+'</p>';
-  document.getElementById('diag-actions').style.display = 'flex';
-  document.getElementById('diag-proceed').style.display = 'block';
-}
-
-function fecharDiagnostico() {
-  document.getElementById('diag-overlay').style.display = 'none';
-  carregarDados();
-}
-
-// Iniciar diagnóstico automaticamente
+// Iniciar automaticamente
 runDiagnostic();
 
 </script>
