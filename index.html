@@ -191,12 +191,11 @@
 
 <body>
 
-    <!-- ════════ OVERLAY DE DIAGNÓSTICO ════════ -->
+    <!-- ════════ OVERLAY DE DIAGNÓSTICO | SALVO PARA NECESSIDADES════════ 
 
     <div id="diag-overlay" style="position:fixed;inset:0;z-index:9999;background:#F5EFE0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:Nunito,sans-serif;">
         <div style="width:100%;max-width:400px;">
 
-            ```
             <div style="text-align:center;margin-bottom:28px;">
                 <div style="font-size:2.2rem;margin-bottom:8px;">🔍</div>
                 <h2 id="diag-h2" style="font-size:1.15rem;font-weight:900;color:#1C1917;">Verificando conexão…</h2>
@@ -210,10 +209,9 @@
                 <button onclick="runDiagnostic()" style="background:#E8651A;color:#fff;border:none;border-radius:100px;padding:14px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;width:100%;">↻ Tentar novamente</button>
                 <button id="diag-proceed" onclick="fecharDiagnostico()" style="display:none;background:transparent;border:1.5px solid #E7DDD0;border-radius:100px;padding:12px;font-family:Nunito,sans-serif;font-weight:700;font-size:0.85rem;color:#57534E;cursor:pointer;width:100%;">Continuar mesmo assim</button>
             </div>
-            ```
-
         </div>
     </div>
+    -->
 <!-- PAGINA PRINCIPAL -->
 <div id="page-main" class="page active">
  
@@ -984,244 +982,244 @@
           { id:'chk-itens',  label:'Lista de itens carregando',    sym:'[I]' },
           { id:'chk-admin',  label:'Endpoint de login disponivel', sym:'[A]' },
         ];
+        // FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
+        // function buildDiagList() {
+        //   var html = '';
+        //   for (var i = 0; i < CHECKS.length; i++) {
+        //     var ch = CHECKS[i];
+        //     html += '<div id="' + ch.id + '" style="'
+        //       + 'display:flex;align-items:center;gap:12px;'
+        //       + 'background:#fff;border-radius:12px;padding:12px 14px;'
+        //       + 'box-shadow:0 2px 8px rgba(0,0,0,0.06);'
+        //       + 'border-left:4px solid #E7DDD0;transition:border-color 0.3s;">'
+        //       + '<span id="' + ch.id + '-status" style="font-size:0.9rem;font-weight:900;color:#A8A29E;flex-shrink:0;width:28px;text-align:center;">...</span>'
+        //       + '<span style="flex:1;font-size:0.85rem;font-weight:700;color:#1C1917;">' + ch.label + '</span>'
+        //       + '</div>';
+        //   }
+        //   document.getElementById('diag-list').innerHTML = html;
+        // }
+        // FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
+        // function setDiagStatus(id, state, detail) {
+        //   var el    = document.getElementById(id);
+        //   var badge = document.getElementById(id + '-status');
+        //   if (!el || !badge) return;
+        //   var states = {
+        //     ok:      { txt: 'OK',  color: '#22C55E', border: '#22C55E' },
+        //     fail:    { txt: 'ERR', color: '#EF4444', border: '#EF4444' },
+        //     warn:    { txt: 'AVS', color: '#F59E0B', border: '#F59E0B' },
+        //     loading: { txt: '...', color: '#A8A29E', border: '#E7DDD0' },
+        //   };
+        //   var s = states[state] || states.loading;
+        //   badge.textContent         = s.txt;
+        //   badge.style.color         = s.color;
+        //   el.style.borderLeftColor  = s.border;
+        //   if (detail && (state === 'fail' || state === 'warn')) {
+        //     var box = document.getElementById('diag-detail');
+        //     box.style.display = 'block';
+        //     box.innerHTML += '<p style="margin:5px 0;"><b>' + document.getElementById(id).querySelector('span:last-child').textContent + ':</b> ' + detail + '</p>';
+        //   }
+        // }
+        // FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
+        // function mostrarFalha(msg) {
+        //   document.getElementById('diag-h2').textContent = 'Falha na conexao';
+        //   document.getElementById('diag-p').textContent  = 'Veja o detalhe abaixo.';
+        //   var box = document.getElementById('diag-detail');
+        //   box.style.display = 'block';
+        //   box.innerHTML += '<p style="margin:5px 0;">' + msg + '</p>';
+        //   var acts = document.getElementById('diag-actions');
+        //   acts.style.display = 'flex';
+        //   document.getElementById('diag-proceed').style.display = 'block';
+        //   document.getElementById('diag-timer').textContent = '';
+        //   if (diagTimerInterval) clearInterval(diagTimerInterval);
+        //   if (diagAutoTimer)     clearTimeout(diagAutoTimer);
+        // }
+// FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
+       // function fecharDiagnostico() {
+       //   if (diagTimerInterval) clearInterval(diagTimerInterval);
+       //   if (diagAutoTimer)     clearTimeout(diagAutoTimer);
+       //   document.getElementById('diag-overlay').style.display = 'none';
+       //   carregarDados();
+       // }
+        // FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
+        // function iniciarContagem(segundos, aoFinalizar) {
+        //   var restante = segundos;
+        //   document.getElementById('diag-timer').textContent = 'Timeout em ' + restante + 's...';
+        //   if (diagTimerInterval) clearInterval(diagTimerInterval);
+        //   diagTimerInterval = setInterval(function() {
+        //     restante--;
+        //     if (restante <= 0) {
+        //       clearInterval(diagTimerInterval);
+        //       document.getElementById('diag-timer').textContent = '';
+        //       aoFinalizar();
+        //     } else {
+        //       document.getElementById('diag-timer').textContent = 'Timeout em ' + restante + 's...';
+        //     }
+        //   }, 1000);
+        // }
+// FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
+        // async function fetchComTimeout(url, opcoes, ms) {
+        //   return new Promise(function(resolve, reject) {
+        //     var tid = setTimeout(function() {
+        //       reject(new Error('Timeout de ' + Math.round(ms/1000) + 's — sem resposta do servidor'));
+        //     }, ms);
+        //     fetch(url, opcoes || {}).then(function(r) {
+        //       clearTimeout(tid); resolve(r);
+        //     }).catch(function(e) {
+        //       clearTimeout(tid); reject(e);
+        //     });
+        //   });
+        // }
+// FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
+//        async function runDiagnostic() {
+//          // Limpar estado
+//          if (diagTimerInterval) clearInterval(diagTimerInterval);
+//          if (diagAutoTimer)     clearTimeout(diagAutoTimer);
+//          document.getElementById('diag-h2').textContent      = 'Verificando conexao...';
+//          document.getElementById('diag-p').textContent       = 'Aguarde, testando os servicos';
+//          document.getElementById('diag-timer').textContent   = '';
+//          document.getElementById('diag-detail').style.display = 'none';
+//          document.getElementById('diag-detail').innerHTML     = '';
+//          document.getElementById('diag-actions').style.display = 'none';
+//          document.getElementById('diag-proceed').style.display = 'none';
+//          buildDiagList();
         
-        function buildDiagList() {
-          var html = '';
-          for (var i = 0; i < CHECKS.length; i++) {
-            var ch = CHECKS[i];
-            html += '<div id="' + ch.id + '" style="'
-              + 'display:flex;align-items:center;gap:12px;'
-              + 'background:#fff;border-radius:12px;padding:12px 14px;'
-              + 'box-shadow:0 2px 8px rgba(0,0,0,0.06);'
-              + 'border-left:4px solid #E7DDD0;transition:border-color 0.3s;">'
-              + '<span id="' + ch.id + '-status" style="font-size:0.9rem;font-weight:900;color:#A8A29E;flex-shrink:0;width:28px;text-align:center;">...</span>'
-              + '<span style="flex:1;font-size:0.85rem;font-weight:700;color:#1C1917;">' + ch.label + '</span>'
-              + '</div>';
-          }
-          document.getElementById('diag-list').innerHTML = html;
-        }
+// Fallback: se ficar mais de 15s sem resposta, permite continuar
+//          diagAutoTimer = setTimeout(function() {
+//            if (document.getElementById('diag-overlay').style.display !== 'none') {
+//              document.getElementById('diag-h2').textContent = 'Demorou demais';
+//              document.getElementById('diag-p').textContent  = 'O servidor nao respondeu a tempo.';
+//              document.getElementById('diag-timer').textContent = '';
+//              document.getElementById('diag-actions').style.display = 'flex';
+//              document.getElementById('diag-proceed').style.display = 'block';
+//              document.getElementById('diag-detail').style.display = 'block';
+//              document.getElementById('diag-detail').innerHTML =
+//                '<p><b>O Worker nao respondeu em 15 segundos.</b></p>' +
+//                '<p>Verifique:<br>' +
+//                '1. A URL em <code>API_BASE</code> esta correta?<br>' +
+//                '2. O Worker foi publicado com <code>npm run deploy</code>?<br>' +
+//                '3. O secret <code>DATABASE_URL</code> foi configurado?</p>';
+//            }
+//          }, 15000);
         
-        function setDiagStatus(id, state, detail) {
-          var el    = document.getElementById(id);
-          var badge = document.getElementById(id + '-status');
-          if (!el || !badge) return;
-          var states = {
-            ok:      { txt: 'OK',  color: '#22C55E', border: '#22C55E' },
-            fail:    { txt: 'ERR', color: '#EF4444', border: '#EF4444' },
-            warn:    { txt: 'AVS', color: '#F59E0B', border: '#F59E0B' },
-            loading: { txt: '...', color: '#A8A29E', border: '#E7DDD0' },
-          };
-          var s = states[state] || states.loading;
-          badge.textContent         = s.txt;
-          badge.style.color         = s.color;
-          el.style.borderLeftColor  = s.border;
-          if (detail && (state === 'fail' || state === 'warn')) {
-            var box = document.getElementById('diag-detail');
-            box.style.display = 'block';
-            box.innerHTML += '<p style="margin:5px 0;"><b>' + document.getElementById(id).querySelector('span:last-child').textContent + ':</b> ' + detail + '</p>';
-          }
-        }
+// Check 0: API_BASE configurada?
+//          if (API_BASE.indexOf('SEU_USUARIO') !== -1) {
+//            ['chk-worker','chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
+//            mostrarFalha('<b>API_BASE nao foi configurada.</b><br>'
+//              + 'Edite o <code>index.html</code> e troque:<br>'
+//              + '<code>const API_BASE = "https://...SEU_USUARIO..."</code><br>'
+//              + 'pela URL real do seu Worker (aparece apos <code>npm run deploy</code>).');
+//            return;
+//          }
         
-        function mostrarFalha(msg) {
-          document.getElementById('diag-h2').textContent = 'Falha na conexao';
-          document.getElementById('diag-p').textContent  = 'Veja o detalhe abaixo.';
-          var box = document.getElementById('diag-detail');
-          box.style.display = 'block';
-          box.innerHTML += '<p style="margin:5px 0;">' + msg + '</p>';
-          var acts = document.getElementById('diag-actions');
-          acts.style.display = 'flex';
-          document.getElementById('diag-proceed').style.display = 'block';
-          document.getElementById('diag-timer').textContent = '';
-          if (diagTimerInterval) clearInterval(diagTimerInterval);
-          if (diagAutoTimer)     clearTimeout(diagAutoTimer);
-        }
+// Check 1: Worker + Banco
+//          setDiagStatus('chk-worker', 'loading');
+//          iniciarContagem(12, function() {
+//            setDiagStatus('chk-worker','fail','Timeout de 12s sem resposta');
+//            ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
+//            mostrarFalha('<b>O Worker nao respondeu.</b><br>Possiveis causas:<br>'
+//              + '- URL errada em <code>API_BASE</code><br>'
+//              + '- Worker nao publicado (<code>npm run deploy</code>)<br>'
+//              + '- Problema de CORS no Worker');
+//          });
         
-        function fecharDiagnostico() {
-          if (diagTimerInterval) clearInterval(diagTimerInterval);
-          if (diagAutoTimer)     clearTimeout(diagAutoTimer);
-          document.getElementById('diag-overlay').style.display = 'none';
-          carregarDados();
-        }
+//          var dadosResp = null;
+//          try {
+//            var res = await fetchComTimeout(API_BASE + '/api/dados', {}, 12000);
+//            if (diagTimerInterval) clearInterval(diagTimerInterval);
+//            document.getElementById('diag-timer').textContent = '';
         
-        function iniciarContagem(segundos, aoFinalizar) {
-          var restante = segundos;
-          document.getElementById('diag-timer').textContent = 'Timeout em ' + restante + 's...';
-          if (diagTimerInterval) clearInterval(diagTimerInterval);
-          diagTimerInterval = setInterval(function() {
-            restante--;
-            if (restante <= 0) {
-              clearInterval(diagTimerInterval);
-              document.getElementById('diag-timer').textContent = '';
-              aoFinalizar();
-            } else {
-              document.getElementById('diag-timer').textContent = 'Timeout em ' + restante + 's...';
-            }
-          }, 1000);
-        }
+//            if (res.ok) {
+//              dadosResp = await res.json();
+//              if (dadosResp.error) {
+//                setDiagStatus('chk-worker', 'ok');
+//                setDiagStatus('chk-db', 'fail', dadosResp.error);
+//                ['chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
+//                mostrarFalha('<b>Erro no banco de dados:</b> ' + dadosResp.error + '<br><br>'
+//                  + 'Verifique se o secret foi configurado:<br>'
+//                  + '<code>wrangler secret put DATABASE_URL</code><br><br>'
+//                  + 'E se o schema.sql foi executado no Neon SQL Editor.');
+//                return;
+//              }
+//              setDiagStatus('chk-worker', 'ok');
+//              setDiagStatus('chk-db', 'ok');
+//            } else {
+//              var txt = '';
+//              try { var j = await res.json(); txt = j.error || ''; } catch(e) {}
+//              setDiagStatus('chk-worker', 'fail', 'HTTP ' + res.status + (txt ? ' — ' + txt : ''));
+//              ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
+//              mostrarFalha('<b>O Worker retornou HTTP ' + res.status + '.</b><br>'
+//                + (txt ? 'Detalhe: ' + txt + '<br>' : '')
+//                + 'Verifique se o deploy foi concluido corretamente.');
+//              return;
+//            }
+//          } catch (err) {
+//            if (diagTimerInterval) clearInterval(diagTimerInterval);
+//            document.getElementById('diag-timer').textContent = '';
+//            setDiagStatus('chk-worker', 'fail', err.message);
+//            ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
+//            mostrarFalha('<b>Nao foi possivel alcancar o Worker.</b><br><br>'
+//              + 'Erro: ' + err.message + '<br><br>'
+//              + 'Verifique a URL em <code>API_BASE</code> no index.html<br>'
+//              + 'e se o Worker foi publicado com <code>npm run deploy</code>.');
+//            return;
+//          }
         
-        async function fetchComTimeout(url, opcoes, ms) {
-          return new Promise(function(resolve, reject) {
-            var tid = setTimeout(function() {
-              reject(new Error('Timeout de ' + Math.round(ms/1000) + 's — sem resposta do servidor'));
-            }, ms);
-            fetch(url, opcoes || {}).then(function(r) {
-              clearTimeout(tid); resolve(r);
-            }).catch(function(e) {
-              clearTimeout(tid); reject(e);
-            });
-          });
-        }
-        
-        async function runDiagnostic() {
-          // Limpar estado
-          if (diagTimerInterval) clearInterval(diagTimerInterval);
-          if (diagAutoTimer)     clearTimeout(diagAutoTimer);
-          document.getElementById('diag-h2').textContent      = 'Verificando conexao...';
-          document.getElementById('diag-p').textContent       = 'Aguarde, testando os servicos';
-          document.getElementById('diag-timer').textContent   = '';
-          document.getElementById('diag-detail').style.display = 'none';
-          document.getElementById('diag-detail').innerHTML     = '';
-          document.getElementById('diag-actions').style.display = 'none';
-          document.getElementById('diag-proceed').style.display = 'none';
-          buildDiagList();
-        
-          // Fallback: se ficar mais de 15s sem resposta, permite continuar
-          diagAutoTimer = setTimeout(function() {
-            if (document.getElementById('diag-overlay').style.display !== 'none') {
-              document.getElementById('diag-h2').textContent = 'Demorou demais';
-              document.getElementById('diag-p').textContent  = 'O servidor nao respondeu a tempo.';
-              document.getElementById('diag-timer').textContent = '';
-              document.getElementById('diag-actions').style.display = 'flex';
-              document.getElementById('diag-proceed').style.display = 'block';
-              document.getElementById('diag-detail').style.display = 'block';
-              document.getElementById('diag-detail').innerHTML =
-                '<p><b>O Worker nao respondeu em 15 segundos.</b></p>' +
-                '<p>Verifique:<br>' +
-                '1. A URL em <code>API_BASE</code> esta correta?<br>' +
-                '2. O Worker foi publicado com <code>npm run deploy</code>?<br>' +
-                '3. O secret <code>DATABASE_URL</code> foi configurado?</p>';
-            }
-          }, 15000);
-        
-          // Check 0: API_BASE configurada?
-          if (API_BASE.indexOf('SEU_USUARIO') !== -1) {
-            ['chk-worker','chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
-            mostrarFalha('<b>API_BASE nao foi configurada.</b><br>'
-              + 'Edite o <code>index.html</code> e troque:<br>'
-              + '<code>const API_BASE = "https://...SEU_USUARIO..."</code><br>'
-              + 'pela URL real do seu Worker (aparece apos <code>npm run deploy</code>).');
-            return;
-          }
-        
-          // Check 1: Worker + Banco
-          setDiagStatus('chk-worker', 'loading');
-          iniciarContagem(12, function() {
-            setDiagStatus('chk-worker','fail','Timeout de 12s sem resposta');
-            ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
-            mostrarFalha('<b>O Worker nao respondeu.</b><br>Possiveis causas:<br>'
-              + '- URL errada em <code>API_BASE</code><br>'
-              + '- Worker nao publicado (<code>npm run deploy</code>)<br>'
-              + '- Problema de CORS no Worker');
-          });
-        
-          var dadosResp = null;
-          try {
-            var res = await fetchComTimeout(API_BASE + '/api/dados', {}, 12000);
-            if (diagTimerInterval) clearInterval(diagTimerInterval);
-            document.getElementById('diag-timer').textContent = '';
-        
-            if (res.ok) {
-              dadosResp = await res.json();
-              if (dadosResp.error) {
-                setDiagStatus('chk-worker', 'ok');
-                setDiagStatus('chk-db', 'fail', dadosResp.error);
-                ['chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
-                mostrarFalha('<b>Erro no banco de dados:</b> ' + dadosResp.error + '<br><br>'
-                  + 'Verifique se o secret foi configurado:<br>'
-                  + '<code>wrangler secret put DATABASE_URL</code><br><br>'
-                  + 'E se o schema.sql foi executado no Neon SQL Editor.');
-                return;
-              }
-              setDiagStatus('chk-worker', 'ok');
-              setDiagStatus('chk-db', 'ok');
-            } else {
-              var txt = '';
-              try { var j = await res.json(); txt = j.error || ''; } catch(e) {}
-              setDiagStatus('chk-worker', 'fail', 'HTTP ' + res.status + (txt ? ' — ' + txt : ''));
-              ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
-              mostrarFalha('<b>O Worker retornou HTTP ' + res.status + '.</b><br>'
-                + (txt ? 'Detalhe: ' + txt + '<br>' : '')
-                + 'Verifique se o deploy foi concluido corretamente.');
-              return;
-            }
-          } catch (err) {
-            if (diagTimerInterval) clearInterval(diagTimerInterval);
-            document.getElementById('diag-timer').textContent = '';
-            setDiagStatus('chk-worker', 'fail', err.message);
-            ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
-            mostrarFalha('<b>Nao foi possivel alcancar o Worker.</b><br><br>'
-              + 'Erro: ' + err.message + '<br><br>'
-              + 'Verifique a URL em <code>API_BASE</code> no index.html<br>'
-              + 'e se o Worker foi publicado com <code>npm run deploy</code>.');
-            return;
-          }
-        
-          // Check 3: Itens
-          var itens = dadosResp && dadosResp.itens;
-          if (!itens || itens.length === 0) {
-            setDiagStatus('chk-itens', 'warn', 'Nenhum item. Execute o schema.sql no Neon SQL Editor.');
-          } else {
-            setDiagStatus('chk-itens', 'ok');
-          }
-        
-          // Check 4: Login endpoint
-          try {
-            var res2 = await fetchComTimeout(API_BASE + '/api/admin/login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ senha: '__DIAG__' }),
-            }, 5000);
-            if (res2.status === 401) {
-              setDiagStatus('chk-admin', 'ok');
-            } else if (res2.status === 500) {
-              var d2 = await res2.json().catch(function(){ return {}; });
-              setDiagStatus('chk-admin', 'warn', (d2.error || 'ADMIN_PASSWORD nao configurada') + ' — use: wrangler secret put ADMIN_PASSWORD');
-            } else {
-              setDiagStatus('chk-admin', 'ok');
-            }
-          } catch(e) {
-            setDiagStatus('chk-admin', 'warn', 'Nao testado: ' + e.message);
-          }
+// Check 3: Itens
+//          var itens = dadosResp && dadosResp.itens;
+//          if (!itens || itens.length === 0) {
+//            setDiagStatus('chk-itens', 'warn', 'Nenhum item. Execute o schema.sql no Neon SQL Editor.');
+//          } else {
+//            setDiagStatus('chk-itens', 'ok');
+//          }
+
+// Check 4: Login endpoint
+//          try {
+//            var res2 = await fetchComTimeout(API_BASE + '/api/admin/login', {
+//              method: 'POST',
+//              headers: { 'Content-Type': 'application/json' },
+//              body: JSON.stringify({ senha: '__DIAG__' }),
+//            }, 5000);
+//            if (res2.status === 401) {
+//              setDiagStatus('chk-admin', 'ok');
+//            } else if (res2.status === 500) {
+//              var d2 = await res2.json().catch(function(){ return {}; });
+//              setDiagStatus('chk-admin', 'warn', (d2.error || 'ADMIN_PASSWORD nao configurada') + ' — use: wrangler secret put ADMIN_PASSWORD');
+//            } else {
+//              setDiagStatus('chk-admin', 'ok');
+//            }
+//          } catch(e) {
+//            setDiagStatus('chk-admin', 'warn', 'Nao testado: ' + e.message);
+//          }
         
           // Resultado
-          var badges  = document.querySelectorAll('[id$="-status"]');
-          var nFalhas = 0, nAvisos = 0;
-          badges.forEach(function(b) {
-            if (b.textContent === 'ERR') nFalhas++;
-            if (b.textContent === 'AVS') nAvisos++;
-          });
+//          var badges  = document.querySelectorAll('[id$="-status"]');
+//          var nFalhas = 0, nAvisos = 0;
+//         badges.forEach(function(b) {
+//            if (b.textContent === 'ERR') nFalhas++;
+//            if (b.textContent === 'AVS') nAvisos++;
+//          });
         
-          if (diagAutoTimer) clearTimeout(diagAutoTimer);
+//          if (diagAutoTimer) clearTimeout(diagAutoTimer);
         
-          if (nFalhas === 0 && nAvisos === 0) {
-            document.getElementById('diag-h2').textContent = 'Tudo funcionando!';
-            document.getElementById('diag-p').textContent  = 'Abrindo o site...';
-            setTimeout(fecharDiagnostico, 800);
-          } else if (nFalhas === 0) {
-            document.getElementById('diag-h2').textContent = 'Quase la!';
-            document.getElementById('diag-p').textContent  = 'Ha avisos, mas o site pode funcionar.';
-            document.getElementById('diag-actions').style.display = 'flex';
-            document.getElementById('diag-proceed').style.display = 'block';
-          } else {
-            document.getElementById('diag-h2').textContent = 'Falha na conexao';
-            document.getElementById('diag-p').textContent  = 'Resolva os itens abaixo.';
-            document.getElementById('diag-actions').style.display = 'flex';
-            document.getElementById('diag-proceed').style.display = 'block';
-          }
-        }
-        
-        // Iniciar automaticamente
-        runDiagnostic();
+//          if (nFalhas === 0 && nAvisos === 0) {
+//            document.getElementById('diag-h2').textContent = 'Tudo funcionando!';
+//            document.getElementById('diag-p').textContent  = 'Abrindo o site...';
+//            setTimeout(fecharDiagnostico, 800);
+//          } else if (nFalhas === 0) {
+//            document.getElementById('diag-h2').textContent = 'Quase la!';
+//            document.getElementById('diag-p').textContent  = 'Ha avisos, mas o site pode funcionar.';
+//            document.getElementById('diag-actions').style.display = 'flex';
+//            document.getElementById('diag-proceed').style.display = 'block';
+//          } else {
+//            document.getElementById('diag-h2').textContent = 'Falha na conexao';
+//            document.getElementById('diag-p').textContent  = 'Resolva os itens abaixo.';
+//            document.getElementById('diag-actions').style.display = 'flex';
+//            document.getElementById('diag-proceed').style.display = 'block';
+//          }
+//        }
+//        
+//        // Iniciar automaticamente
+//        runDiagnostic();
     </script>
 
 </body>
