@@ -184,10 +184,56 @@ body {
 @keyframes spin { to{transform:rotate(360deg)} }
 .spin { display:inline-block; animation:spin 1s linear infinite; }
 </style>
+
 </head>
 <body>
 
+<!-- ════════ OVERLAY DE DIAGNÓSTICO ════════ -->
+
+<div id="diag-overlay" style="
+  position:fixed;inset:0;z-index:9999;
+  background:#F5EFE0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;font-family:'Nunito',sans-serif;
+">
+  <div style="width:100%;max-width:420px;">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:2.5rem;">🔍</div>
+      <h2 id="diag-h2" style="font-size:1.2rem;font-weight:900;color:#1C1917;margin-top:6px;">Verificando conexão…</h2>
+      <p id="diag-p" style="font-size:0.82rem;color:#A8A29E;margin-top:4px;">Aguarde, testando os serviços</p>
+    </div>
+
+```
+<!-- Itens de checagem -->
+<div id="diag-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;"></div>
+
+<!-- Mensagem de erro detalhada -->
+<div id="diag-detail" style="
+  display:none;background:#FEE2E2;border:1px solid #FECACA;
+  border-radius:12px;padding:14px;margin-bottom:18px;
+  font-size:0.8rem;color:#991B1B;line-height:1.6;word-break:break-all;
+"></div>
+
+<!-- Botões -->
+<div id="diag-actions" style="display:none;flex-direction:column;gap:10px;">
+  <button id="diag-retry" onclick="runDiagnostic()" style="
+    background:#E8651A;color:#fff;border:none;border-radius:100px;
+    padding:14px;font-family:'Nunito',sans-serif;font-weight:800;
+    font-size:0.95rem;cursor:pointer;width:100%;
+  ">↻ Tentar novamente</button>
+  <button id="diag-proceed" onclick="fecharDiagnostico()" style="
+    display:none;background:transparent;border:1.5px solid #E7DDD0;
+    border-radius:100px;padding:12px;font-family:'Nunito',sans-serif;
+    font-weight:700;font-size:0.88rem;color:#57534E;cursor:pointer;width:100%;
+  ">Continuar mesmo assim</button>
+</div>
+```
+
+  </div>
+</div>
+
 <!-- ── PÁGINA PRINCIPAL ── -->
+
 <div id="page-main" class="page active">
 
   <div class="bunting">
@@ -196,6 +242,7 @@ body {
   </div>
 
   <!-- Hero com gradiente -->
+
   <div style="background:linear-gradient(180deg,#8B5E2C 0%,#C4883A 28%,#E8A84A 55%,#F5EFE0 100%);padding:28px 16px 32px;text-align:center;">
     <div style="font-size:3rem;margin-bottom:8px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">🌽</div>
     <h1 style="font-size:2rem;font-weight:900;line-height:1.15;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);">Balaio Junino</h1>
@@ -205,163 +252,166 @@ body {
 
   <div style="padding:20px 16px 40px; max-width:480px; margin:0 auto;">
 
-    <!-- Card: Sorteio -->
-    <div class="card" style="margin-bottom:14px;">
-      <div class="card-body">
-        <div class="sec-header">
-          <div class="sec-icon">🧺</div>
-          <div>
-            <div class="sec-title">Balaios para Sorteio</div>
-            <div class="sec-sub" id="sorteio-sub">Nenhum balaio completo ainda. Continue arrecadando!</div>
-          </div>
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid var(--bg);">
-          <span style="font-size:0.85rem; color:var(--text3); font-weight:600;">Total arrecadado</span>
-          <span style="font-weight:900; font-size:1rem; color:var(--orange);" id="sorteio-total">R$ 0,00</span>
-        </div>
+```
+<!-- Card: Sorteio -->
+<div class="card" style="margin-bottom:14px;">
+  <div class="card-body">
+    <div class="sec-header">
+      <div class="sec-icon">🧺</div>
+      <div>
+        <div class="sec-title">Balaios para Sorteio</div>
+        <div class="sec-sub" id="sorteio-sub">Nenhum balaio completo ainda. Continue arrecadando!</div>
+      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid var(--bg);">
+      <span style="font-size:0.85rem; color:var(--text3); font-weight:600;">Total arrecadado</span>
+      <span style="font-weight:900; font-size:1rem; color:var(--orange);" id="sorteio-total">R$ 0,00</span>
+    </div>
+  </div>
+</div>
+
+<!-- Card: Termômetro -->
+<div class="card" style="margin-bottom:14px;">
+  <div class="card-body">
+    <div class="sec-header">
+      <div class="sec-icon">🔥</div>
+      <div>
+        <div class="sec-title">Próximo Balaio</div>
+        <div class="sec-sub">Acompanhe a arrecadação</div>
       </div>
     </div>
 
-    <!-- Card: Termômetro -->
-    <div class="card" style="margin-bottom:14px;">
-      <div class="card-body">
-        <div class="sec-header">
-          <div class="sec-icon">🔥</div>
-          <div>
-            <div class="sec-title">Próximo Balaio</div>
-            <div class="sec-sub">Acompanhe a arrecadação</div>
-          </div>
-        </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+      <span style="font-size:0.82rem; color:var(--text3); font-weight:600;">Saldo acumulado</span>
+      <span style="font-weight:800; color:var(--orange);" id="thermo-val">R$ 0,00</span>
+    </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <span style="font-size:0.82rem; color:var(--text3); font-weight:600;">Saldo acumulado</span>
-          <span style="font-weight:800; color:var(--orange);" id="thermo-val">R$ 0,00</span>
-        </div>
+    <div class="progress-wrap" style="margin-bottom:8px;">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      <div class="progress-label" id="progress-label">0,0%</div>
+    </div>
 
-        <div class="progress-wrap" style="margin-bottom:8px;">
-          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-          <div class="progress-label" id="progress-label">0,0%</div>
-        </div>
+    <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text3); font-weight:600; margin-bottom:14px;">
+      <span>R$ 0</span>
+      <span>⊙ Meta: <strong style="color:var(--text2);" id="thermo-meta">R$ —</strong></span>
+    </div>
 
-        <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text3); font-weight:600; margin-bottom:14px;">
-          <span>R$ 0</span>
-          <span>⊙ Meta: <strong style="color:var(--text2);" id="thermo-meta">R$ —</strong></span>
-        </div>
+    <div style="background:var(--bg); border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:14px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;">
+      <span style="font-size:0.82rem; color:var(--text3); font-weight:600;" id="faltam-lbl">R$ 0,00 acumulados</span>
+      <span style="font-size:0.82rem; font-weight:800; color:var(--text2);">Faltam <span id="faltam-val" style="color:var(--orange);">R$ —</span></span>
+    </div>
 
-        <div style="background:var(--bg); border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:14px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;">
-          <span style="font-size:0.82rem; color:var(--text3); font-weight:600;" id="faltam-lbl">R$ 0,00 acumulados</span>
-          <span style="font-size:0.82rem; font-weight:800; color:var(--text2);">Faltam <span id="faltam-val" style="color:var(--orange);">R$ —</span></span>
-        </div>
+    <p style="font-size:0.78rem; color:var(--text3); text-align:center;">
+      Cada balaio custa <strong style="color:var(--text2);" id="custo-balaio">R$ —</strong> (soma dos itens da lista)
+    </p>
+  </div>
+</div>
 
-        <p style="font-size:0.78rem; color:var(--text3); text-align:center;">
-          Cada balaio custa <strong style="color:var(--text2);" id="custo-balaio">R$ —</strong> (soma dos itens da lista)
-        </p>
+<!-- Stats -->
+<div class="stat-grid" style="margin-bottom:14px;">
+  <div class="stat-card">
+    <div class="stat-icon">👥</div>
+    <div class="stat-num" id="stat-inscritos">0</div>
+    <div class="stat-lbl">Inscritos</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">✅</div>
+    <div class="stat-num" style="color:var(--green);" id="stat-confirmados">0</div>
+    <div class="stat-lbl">Confirmados</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">⏳</div>
+    <div class="stat-num" style="color:var(--amber);" id="stat-pendentes">0</div>
+    <div class="stat-lbl">Pendentes</div>
+  </div>
+</div>
+
+<!-- Card: Inscrição -->
+<div class="card" style="margin-bottom:14px;">
+  <div class="card-body">
+    <div class="sec-header">
+      <div class="sec-icon">✍️</div>
+      <div>
+        <div class="sec-title">Inscrição</div>
+        <div class="sec-sub">Preencha seus dados para participar</div>
       </div>
     </div>
 
-    <!-- Stats -->
-    <div class="stat-grid" style="margin-bottom:14px;">
-      <div class="stat-card">
-        <div class="stat-icon">👥</div>
-        <div class="stat-num" id="stat-inscritos">0</div>
-        <div class="stat-lbl">Inscritos</div>
+    <div class="form-group">
+      <label class="form-label">Nome Completo <span class="req">*</span></label>
+      <input id="f-nome" class="inp" type="text" placeholder="Seu nome completo" autocomplete="name">
+    </div>
+
+    <div class="form-row form-group">
+      <div>
+        <label class="form-label">Bloco <span class="req">*</span></label>
+        <input id="f-bloco" class="inp" type="text" placeholder="Ex: A">
       </div>
-      <div class="stat-card">
-        <div class="stat-icon">✅</div>
-        <div class="stat-num" style="color:var(--green);" id="stat-confirmados">0</div>
-        <div class="stat-lbl">Confirmados</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">⏳</div>
-        <div class="stat-num" style="color:var(--amber);" id="stat-pendentes">0</div>
-        <div class="stat-lbl">Pendentes</div>
+      <div>
+        <label class="form-label">Apto <span class="req">*</span></label>
+        <input id="f-apt" class="inp" type="text" placeholder="Ex: 101">
       </div>
     </div>
 
-    <!-- Card: Inscrição -->
-    <div class="card" style="margin-bottom:14px;">
-      <div class="card-body">
-        <div class="sec-header">
-          <div class="sec-icon">✍️</div>
-          <div>
-            <div class="sec-title">Inscrição</div>
-            <div class="sec-sub">Preencha seus dados para participar</div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Nome Completo <span class="req">*</span></label>
-          <input id="f-nome" class="inp" type="text" placeholder="Seu nome completo" autocomplete="name">
-        </div>
-
-        <div class="form-row form-group">
-          <div>
-            <label class="form-label">Bloco <span class="req">*</span></label>
-            <input id="f-bloco" class="inp" type="text" placeholder="Ex: A">
-          </div>
-          <div>
-            <label class="form-label">Apto <span class="req">*</span></label>
-            <input id="f-apt" class="inp" type="text" placeholder="Ex: 101">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Telefone</label>
-          <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" inputmode="tel">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Observação</label>
-          <input id="f-obs" class="inp" type="text" placeholder="Alguma observação? (opcional)">
-        </div>
-
-        <button class="btn-primary" id="btn-inscrever">
-          👥 Fazer Inscrição
-        </button>
-
-        <p style="text-align:center; margin-top:10px; font-size:0.82rem; color:var(--text3);">
-          Valor da cota: <strong style="color:var(--orange);" id="form-valor">R$ —</strong>
-        </p>
-        <p id="form-error" class="err-msg hidden"></p>
-      </div>
+    <div class="form-group">
+      <label class="form-label">Telefone</label>
+      <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" inputmode="tel">
     </div>
 
-    <!-- Card: Transparência -->
-    <div class="card" style="margin-bottom:24px;">
-      <div class="card-body" style="padding-bottom:0;">
-        <div class="sec-header">
-          <div class="sec-icon">📋</div>
-          <div>
-            <div class="sec-title">Transparência</div>
-            <div class="sec-sub">Veja o que será comprado com a arrecadação</div>
-          </div>
-        </div>
-      </div>
-      <div style="border-top:1px solid var(--bg);">
-        <div style="display:flex; justify-content:space-between; padding:8px 18px 4px; font-size:0.75rem; font-weight:700; color:var(--text3); letter-spacing:0.04em;">
-          <span>ITEM</span><span>VALOR EST.</span>
-        </div>
-        <div id="itens-list">
-          <div class="empty"><div class="empty-text">Carregando…</div></div>
-        </div>
-      </div>
-      <div class="item-total-row">
-        <span class="lbl">Total do Balaio</span>
-        <span class="val" id="total-balaio">R$ —</span>
-      </div>
+    <div class="form-group">
+      <label class="form-label">Observação</label>
+      <input id="f-obs" class="inp" type="text" placeholder="Alguma observação? (opcional)">
     </div>
 
-    <button class="footer-link" onclick="abrirAdmin()">⚙️ Painel Administrativo</button>
+    <button class="btn-primary" id="btn-inscrever">
+      👥 Fazer Inscrição
+    </button>
 
-    <div style="text-align:center; margin-top:20px;">
-      <p style="font-size:0.78rem; color:var(--text3); font-weight:700;">🌽 Balaio Alamedas 2026</p>
-      <p style="font-size:0.72rem; color:var(--text3); margin-top:2px;">Desenvolvido por Alex Passos</p>
+    <p style="text-align:center; margin-top:10px; font-size:0.82rem; color:var(--text3);">
+      Valor da cota: <strong style="color:var(--orange);" id="form-valor">R$ —</strong>
+    </p>
+    <p id="form-error" class="err-msg hidden"></p>
+  </div>
+</div>
+
+<!-- Card: Transparência -->
+<div class="card" style="margin-bottom:24px;">
+  <div class="card-body" style="padding-bottom:0;">
+    <div class="sec-header">
+      <div class="sec-icon">📋</div>
+      <div>
+        <div class="sec-title">Transparência</div>
+        <div class="sec-sub">Veja o que será comprado com a arrecadação</div>
+      </div>
     </div>
+  </div>
+  <div style="border-top:1px solid var(--bg);">
+    <div style="display:flex; justify-content:space-between; padding:8px 18px 4px; font-size:0.75rem; font-weight:700; color:var(--text3); letter-spacing:0.04em;">
+      <span>ITEM</span><span>VALOR EST.</span>
+    </div>
+    <div id="itens-list">
+      <div class="empty"><div class="empty-text">Carregando…</div></div>
+    </div>
+  </div>
+  <div class="item-total-row">
+    <span class="lbl">Total do Balaio</span>
+    <span class="val" id="total-balaio">R$ —</span>
+  </div>
+</div>
+
+<button class="footer-link" onclick="abrirAdmin()">⚙️ Painel Administrativo</button>
+
+<div style="text-align:center; margin-top:20px;">
+  <p style="font-size:0.78rem; color:var(--text3); font-weight:700;">🌽 Balaio Alamedas 2026</p>
+  <p style="font-size:0.72rem; color:var(--text3); margin-top:2px;">Desenvolvido por Alex Passos</p>
+</div>
+```
 
   </div>
 </div>
 
 <!-- ── PÁGINA ADMIN ── -->
+
 <div id="page-admin" class="page">
 
   <div class="bunting" id="bunting-admin">
@@ -381,102 +431,104 @@ body {
 
   <div style="padding:16px; max-width:480px; margin:0 auto; padding-bottom:40px;">
 
-    <!-- Termômetro admin -->
-    <div style="text-align:center; margin-bottom:14px;">
-      <p style="font-size:1rem; font-weight:900; margin-bottom:2px;">🔥 Termômetro da Fogueira</p>
-      <p style="font-size:0.78rem; color:var(--text3); margin-bottom:12px;">Acompanhe o progresso da arrecadação</p>
-      <p style="font-size:2rem; font-weight:900; color:var(--orange); margin-bottom:12px;" id="adm-arrecadado">R$ 0,00</p>
+```
+<!-- Termômetro admin -->
+<div style="text-align:center; margin-bottom:14px;">
+  <p style="font-size:1rem; font-weight:900; margin-bottom:2px;">🔥 Termômetro da Fogueira</p>
+  <p style="font-size:0.78rem; color:var(--text3); margin-bottom:12px;">Acompanhe o progresso da arrecadação</p>
+  <p style="font-size:2rem; font-weight:900; color:var(--orange); margin-bottom:12px;" id="adm-arrecadado">R$ 0,00</p>
 
-      <div class="progress-wrap" style="margin-bottom:8px;">
-        <div class="progress-fill" id="adm-progress" style="width:0%"></div>
-        <div class="progress-label" id="adm-pct">0,0%</div>
-      </div>
-      <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text3); font-weight:600;">
-        <span>R$ 0</span>
-        <span>⊙ Meta: <strong style="color:var(--text2);" id="adm-meta">R$ —</strong></span>
-      </div>
+  <div class="progress-wrap" style="margin-bottom:8px;">
+    <div class="progress-fill" id="adm-progress" style="width:0%"></div>
+    <div class="progress-label" id="adm-pct">0,0%</div>
+  </div>
+  <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text3); font-weight:600;">
+    <span>R$ 0</span>
+    <span>⊙ Meta: <strong style="color:var(--text2);" id="adm-meta">R$ —</strong></span>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stat-grid" style="margin-bottom:14px;">
+  <div class="stat-card">
+    <div class="stat-icon">👥</div>
+    <div class="stat-num" id="adm-inscritos">0</div>
+    <div class="stat-lbl">Inscritos</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">✅</div>
+    <div class="stat-num" style="color:var(--green);" id="adm-confirmados">0</div>
+    <div class="stat-lbl">Confirmados</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">⏳</div>
+    <div class="stat-num" style="color:var(--amber);" id="adm-pendentes">0</div>
+    <div class="stat-lbl">Pendentes</div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tab-bar" style="margin-bottom:14px;">
+  <button class="tab-btn active" id="tab-participantes" onclick="mudarTab('participantes')">👥</button>
+  <button class="tab-btn"        id="tab-itens"         onclick="mudarTab('itens')">🧺</button>
+  <button class="tab-btn"        id="tab-config"        onclick="mudarTab('config')">⚙️</button>
+</div>
+
+<!-- Tab: Participantes -->
+<div id="tab-content-participantes">
+  <div class="search-wrap" style="margin-bottom:12px;">
+    <input class="search-inp" id="search-input" type="text" placeholder="🔍 Buscar por nome, bloco ou apto…" oninput="filtrarParticipantes()">
+    <select class="filter-sel" id="filter-status" onchange="filtrarParticipantes()">
+      <option value="">Todos</option>
+      <option value="pago">Pagos</option>
+      <option value="pendente">Pendentes</option>
+      <option value="cancelado">Cancelados</option>
+    </select>
+  </div>
+  <div id="lista-participantes">
+    <div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Nenhum participante encontrado.</div></div>
+  </div>
+</div>
+
+<!-- Tab: Itens -->
+<div id="tab-content-itens" class="hidden">
+  <div class="card">
+    <div id="adm-itens-list">
+      <div class="empty"><div class="empty-text">Carregando…</div></div>
     </div>
-
-    <!-- Stats -->
-    <div class="stat-grid" style="margin-bottom:14px;">
-      <div class="stat-card">
-        <div class="stat-icon">👥</div>
-        <div class="stat-num" id="adm-inscritos">0</div>
-        <div class="stat-lbl">Inscritos</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">✅</div>
-        <div class="stat-num" style="color:var(--green);" id="adm-confirmados">0</div>
-        <div class="stat-lbl">Confirmados</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">⏳</div>
-        <div class="stat-num" style="color:var(--amber);" id="adm-pendentes">0</div>
-        <div class="stat-lbl">Pendentes</div>
-      </div>
+    <div class="item-total-row">
+      <span class="lbl">Total</span>
+      <span class="val" id="adm-total-balaio">R$ —</span>
     </div>
+  </div>
+</div>
 
-    <!-- Tabs -->
-    <div class="tab-bar" style="margin-bottom:14px;">
-      <button class="tab-btn active" id="tab-participantes" onclick="mudarTab('participantes')">👥</button>
-      <button class="tab-btn"        id="tab-itens"         onclick="mudarTab('itens')">🧺</button>
-      <button class="tab-btn"        id="tab-config"        onclick="mudarTab('config')">⚙️</button>
+<!-- Tab: Config -->
+<div id="tab-content-config" class="hidden">
+  <div class="card" style="margin-bottom:12px;">
+    <div class="card-body">
+      <p style="font-weight:800; font-size:0.95rem; margin-bottom:14px;">⚙️ Configurações</p>
+      <div class="form-group">
+        <label class="form-label">Meta do Balaio (R$)</label>
+        <input id="cfg-meta" class="inp" type="number" step="0.01" placeholder="Ex: 500.00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Valor da Cota (R$)</label>
+        <input id="cfg-quota" class="inp" type="number" step="0.01" placeholder="Ex: 10.00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Data do Evento</label>
+        <input id="cfg-data" class="inp" type="text" placeholder="Ex: 27 de Junho de 2026">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Local</label>
+        <input id="cfg-local" class="inp" type="text" placeholder="Ex: Área de Lazer – Bloco Central">
+      </div>
+      <button class="btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
+      <p id="cfg-msg" class="err-msg hidden"></p>
     </div>
-
-    <!-- Tab: Participantes -->
-    <div id="tab-content-participantes">
-      <div class="search-wrap" style="margin-bottom:12px;">
-        <input class="search-inp" id="search-input" type="text" placeholder="🔍 Buscar por nome, bloco ou apto…" oninput="filtrarParticipantes()">
-        <select class="filter-sel" id="filter-status" onchange="filtrarParticipantes()">
-          <option value="">Todos</option>
-          <option value="pago">Pagos</option>
-          <option value="pendente">Pendentes</option>
-          <option value="cancelado">Cancelados</option>
-        </select>
-      </div>
-      <div id="lista-participantes">
-        <div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Nenhum participante encontrado.</div></div>
-      </div>
-    </div>
-
-    <!-- Tab: Itens -->
-    <div id="tab-content-itens" class="hidden">
-      <div class="card">
-        <div id="adm-itens-list">
-          <div class="empty"><div class="empty-text">Carregando…</div></div>
-        </div>
-        <div class="item-total-row">
-          <span class="lbl">Total</span>
-          <span class="val" id="adm-total-balaio">R$ —</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tab: Config -->
-    <div id="tab-content-config" class="hidden">
-      <div class="card" style="margin-bottom:12px;">
-        <div class="card-body">
-          <p style="font-weight:800; font-size:0.95rem; margin-bottom:14px;">⚙️ Configurações</p>
-          <div class="form-group">
-            <label class="form-label">Meta do Balaio (R$)</label>
-            <input id="cfg-meta" class="inp" type="number" step="0.01" placeholder="Ex: 500.00">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Valor da Cota (R$)</label>
-            <input id="cfg-quota" class="inp" type="number" step="0.01" placeholder="Ex: 10.00">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Data do Evento</label>
-            <input id="cfg-data" class="inp" type="text" placeholder="Ex: 27 de Junho de 2026">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Local</label>
-            <input id="cfg-local" class="inp" type="text" placeholder="Ex: Área de Lazer – Bloco Central">
-          </div>
-          <button class="btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
-          <p id="cfg-msg" class="err-msg hidden"></p>
-        </div>
-      </div>
+  </div>
+```
 
 <div style="background:var(--orange-l);border:1px solid rgba(232,101,26,0.2);border-radius:var(--radius-sm);padding:14px;font-size:0.82rem;color:var(--text2);">🔑 <strong style="color:var(--orange);">Senha do administrador</strong> é configurada via variável de ambiente <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:0.8rem;">ADMIN_PASSWORD</code> no painel do Cloudflare Workers. Para alterar, acesse o dashboard da Cloudflare e atualize o secret.</div>
     </div>
@@ -485,6 +537,7 @@ body {
 </div>
 
 <!-- ── MODAL PIX ── -->
+
 <div id="modal-pix" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-pix')">
   <div class="modal-box">
     <div class="modal-handle"></div>
@@ -513,6 +566,7 @@ body {
 </div>
 
 <!-- ── MODAL LOGIN ── -->
+
 <div id="modal-login" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-login')">
   <div class="modal-box">
     <div class="modal-handle"></div>
@@ -524,7 +578,6 @@ body {
     <button class="btn-primary" id="btn-login">🔓 Entrar</button>
     <p id="login-error" class="err-msg hidden"></p>
 
-
   </div>
 </div>
 
@@ -533,7 +586,7 @@ body {
 <script>
 // ─── Configuração ─────────────────────────────────────────────────
 // ⚠️ Altere para a URL do seu Worker após o deploy:
-const API_BASE = 'alamedas-balaio.alexdesouzapassos.workers.dev';
+const API_BASE = 'https://balaio-alamedas-worker.SEU_USUARIO.workers.dev';
 
 let adminToken = localStorage.getItem('ba_token') || null;
 let todosParticipantes = [];
@@ -908,8 +961,162 @@ async function salvarConfig(){
 
 
 // ─── Init ─────────────────────────────────────────────────────────
-carregarDados();
 setInterval(carregarDados, 60_000);
+
+// ─── DIAGNÓSTICO DE CONEXÃO ──────────────────────────────────────────────────
+
+const DIAG_CHECKS = [
+  { id: 'chk-worker', label: 'Worker Cloudflare acessível', icon: '🌐' },
+  { id: 'chk-db',     label: 'Banco de dados (Neon) online', icon: '🗄️' },
+  { id: 'chk-itens',  label: 'Lista de itens carregando',    icon: '📋' },
+  { id: 'chk-admin',  label: 'Endpoint de login disponível', icon: '🔐' },
+];
+
+function diagItem(id, label, icon) {
+  return '<div id="'+id+'" style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:13px 16px;box-shadow:0 2px 8px rgba(0,0,0,0.07);border-left:4px solid #E7DDD0;transition:border-color 0.3s;">'
+    + '<span style="font-size:1.3rem;">'+icon+'</span>'
+    + '<span style="flex:1;font-size:0.88rem;font-weight:700;color:#1C1917;">'+label+'</span>'
+    + '<span id="'+id+'-status" style="font-size:1.1rem;">⏳</span>'
+    + '</div>';
+}
+
+function setDiagStatus(id, state, detail) {
+  const el    = document.getElementById(id);
+  const badge = document.getElementById(id+'-status');
+  if (!el || !badge) return;
+  const map = { ok:{icon:'✅',border:'#22C55E'}, fail:{icon:'❌',border:'#EF4444'}, warn:{icon:'⚠️',border:'#F59E0B'}, loading:{icon:'⏳',border:'#E7DDD0'} };
+  const s = map[state] || map.loading;
+  badge.textContent = s.icon;
+  el.style.borderLeftColor = s.border;
+  if (detail && (state === 'fail' || state === 'warn')) {
+    const box = document.getElementById('diag-detail');
+    const label = el.querySelector('span:nth-child(2)').textContent;
+    box.style.display = 'block';
+    box.innerHTML += '<p style="margin:4px 0;"><strong>'+label+':</strong> '+detail+'</p>';
+  }
+}
+
+async function runDiagnostic() {
+  document.getElementById('diag-detail').style.display = 'none';
+  document.getElementById('diag-detail').innerHTML = '';
+  document.getElementById('diag-actions').style.display = 'none';
+  document.getElementById('diag-proceed').style.display = 'none';
+  document.getElementById('diag-h2').textContent = 'Verificando conexão…';
+  document.getElementById('diag-p').textContent  = 'Aguarde, testando os serviços';
+
+  const list = document.getElementById('diag-list');
+  list.innerHTML = DIAG_CHECKS.map(ch => diagItem(ch.id, ch.label, ch.icon)).join('');
+
+  // Check 0: API_BASE configurada?
+  if (API_BASE.includes('SEU_USUARIO')) {
+    setDiagStatus('chk-worker', 'fail', 'API_BASE ainda tem o valor padrão "SEU_USUARIO". Edite o index.html com a URL real do seu Worker.');
+    ['chk-db','chk-itens','chk-admin'].forEach(id => setDiagStatus(id, 'warn', 'Não testado — Worker não configurado.'));
+    mostrarFalha('⚙️ <strong>API_BASE não configurada.</strong><br>Abra o <code>index.html</code>, encontre a linha:<br><code>const API_BASE = "https://...SEU_USUARIO..."</code><br>e substitua pela URL do seu Worker após <code>npm run deploy</code>.');
+    return;
+  }
+
+  // Check 1: Worker acessível e banco respondendo
+  setDiagStatus('chk-worker', 'loading');
+  let dadosResp = null;
+  try {
+    const ctrl = new AbortController();
+    const tid  = setTimeout(() => ctrl.abort(), 8000);
+    const res  = await fetch(API_BASE+'/api/dados', { signal: ctrl.signal });
+    clearTimeout(tid);
+    if (res.ok) {
+      dadosResp = await res.json();
+      setDiagStatus('chk-worker', 'ok');
+    } else {
+      const txt = await res.text().catch(()=>'');
+      setDiagStatus('chk-worker', 'fail', 'HTTP '+res.status+' — '+res.statusText+(txt?' | '+txt.substring(0,120):''));
+      ['chk-db','chk-itens','chk-admin'].forEach(id => setDiagStatus(id, 'warn', 'Não testado.'));
+      mostrarFalha('O Worker respondeu com erro <strong>HTTP '+res.status+'</strong>.<br>Verifique se o deploy foi concluído (<code>npm run deploy</code>) e se a URL em <code>API_BASE</code> está correta.');
+      return;
+    }
+  } catch(err) {
+    const msg = err.name==='AbortError' ? 'Timeout: sem resposta em 8 segundos.' : 'Falha de rede: '+err.message;
+    setDiagStatus('chk-worker', 'fail', msg);
+    ['chk-db','chk-itens','chk-admin'].forEach(id => setDiagStatus(id, 'warn', 'Não testado.'));
+    mostrarFalha('Não foi possível alcançar o Worker.<br><br><strong>Possíveis causas:</strong><br>• URL incorreta em <code>API_BASE</code><br>• Worker ainda não publicado (<code>npm run deploy</code>)<br>• Problema de CORS<br><br><strong>Erro:</strong> '+msg);
+    return;
+  }
+
+  // Check 2: Banco OK?
+  if (dadosResp.error) {
+    setDiagStatus('chk-db', 'fail', dadosResp.error);
+    ['chk-itens','chk-admin'].forEach(id => setDiagStatus(id, 'warn', 'Não testado.'));
+    mostrarFalha('Erro no banco de dados: <strong>'+dadosResp.error+'</strong><br>Verifique se o secret <code>DATABASE_URL</code> está configurado:<br><code>wrangler secret put DATABASE_URL</code>');
+    return;
+  }
+  setDiagStatus('chk-db', 'ok');
+
+  // Check 3: Itens
+  const itens = dadosResp.itens;
+  if (!itens || itens.length === 0) {
+    setDiagStatus('chk-itens', 'warn', 'Nenhum item encontrado. Execute o schema.sql no Neon SQL Editor para popular os dados iniciais.');
+  } else {
+    setDiagStatus('chk-itens', 'ok');
+  }
+
+  // Check 4: Login endpoint
+  try {
+    const res2 = await fetch(API_BASE+'/api/admin/login', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({senha:'__DIAG_TEST__'}),
+    });
+    if (res2.status === 401) {
+      setDiagStatus('chk-admin', 'ok'); // Endpoint funciona, senha errada era esperado
+    } else if (res2.status === 500) {
+      const d = await res2.json().catch(()=>({}));
+      setDiagStatus('chk-admin', 'warn', (d.error||'ADMIN_PASSWORD não configurada.')+' Use: wrangler secret put ADMIN_PASSWORD');
+    } else {
+      setDiagStatus('chk-admin', 'ok');
+    }
+  } catch(err) {
+    setDiagStatus('chk-admin', 'fail', err.message);
+  }
+
+  // Resultado final
+  const allBadges = [...document.querySelectorAll('[id$="-status"]')];
+  const falhas = allBadges.filter(el => el.textContent.includes('❌')).length;
+  const avisos = allBadges.filter(el => el.textContent.includes('⚠️')).length;
+
+  if (falhas === 0 && avisos === 0) {
+    document.getElementById('diag-h2').textContent = '✅ Tudo funcionando!';
+    document.getElementById('diag-p').textContent  = 'Abrindo o site…';
+    setTimeout(fecharDiagnostico, 900);
+  } else if (falhas === 0) {
+    document.getElementById('diag-h2').textContent = '⚠️ Quase lá!';
+    document.getElementById('diag-p').textContent  = 'Há avisos, mas o site pode funcionar.';
+    document.getElementById('diag-actions').style.display = 'flex';
+    document.getElementById('diag-proceed').style.display = 'block';
+  } else {
+    document.getElementById('diag-h2').textContent = '❌ Falha na conexão';
+    document.getElementById('diag-p').textContent  = 'Resolva os itens abaixo e tente novamente.';
+    document.getElementById('diag-actions').style.display = 'flex';
+    document.getElementById('diag-proceed').style.display = 'block';
+  }
+}
+
+function mostrarFalha(msg) {
+  document.getElementById('diag-h2').textContent = '❌ Falha na conexão';
+  document.getElementById('diag-p').textContent  = 'Veja o detalhe abaixo.';
+  const box = document.getElementById('diag-detail');
+  box.style.display = 'block';
+  box.innerHTML += '<p style="margin:4px 0;">'+msg+'</p>';
+  document.getElementById('diag-actions').style.display = 'flex';
+  document.getElementById('diag-proceed').style.display = 'block';
+}
+
+function fecharDiagnostico() {
+  document.getElementById('diag-overlay').style.display = 'none';
+  carregarDados();
+}
+
+// Iniciar diagnóstico automaticamente
+runDiagnostic();
+
 </script>
+
 </body>
 </html>
