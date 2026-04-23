@@ -216,7 +216,162 @@
 
         </div>
     </div>
+<!-- PAGINA PRINCIPAL -->
+<div id="page-main" class="page active">
+ 
+  <div class="bunting">
+    <div class="bunting-rope"></div>
+    <div class="bunting-flags" id="flags"></div>
+  </div>
 
+  <!-- Hero com gradiente -->
+  <div style="background:linear-gradient(180deg,#8B5E2C 0%,#C4883A 28%,#E8A84A 55%,#F5EFE0 100%);padding:28px 16px 32px;text-align:center;">
+    <div style="font-size:3rem;margin-bottom:8px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">&#127805;</div>
+    <h1 style="font-size:2rem;font-weight:900;line-height:1.15;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);">Balaio Junino</h1>
+    <p style="font-size:1.1rem;font-weight:800;color:#FFE68A;margin-top:2px;text-shadow:0 1px 4px rgba(0,0,0,0.2);">Alamedas 2026</p>
+    <p style="font-size:0.85rem;color:#3D1A00;font-weight:700;margin-top:10px;line-height:1.55;max-width:340px;margin-left:auto;margin-right:auto;" id="hdr-desc">Participe da nossa festa junina! Inscreva-se e ajude a fazer deste evento um sucesso.</p>
+  </div>
+ 
+  <div style="padding:20px 16px 40px; max-width:480px; margin:0 auto;">
+ 
+    <!-- Card: Sorteio -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-body">
+        <div class="sec-header">
+          <div class="sec-icon">&#129530;</div>
+          <div>
+            <div class="sec-title">Balaios para Sorteio</div>
+            <div class="sec-sub" id="sorteio-sub">Nenhum balaio completo ainda. Continue arrecadando!</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--bg);">
+          <span style="font-size:0.85rem;color:var(--text3);font-weight:600;">Total arrecadado</span>
+          <span style="font-weight:900;font-size:1rem;color:var(--orange);" id="sorteio-total">R$ 0,00</span>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- Card: Termometro -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-body">
+        <div class="sec-header">
+          <div class="sec-icon">&#128293;</div>
+          <div>
+            <div class="sec-title">Proximo Balaio</div>
+            <div class="sec-sub">Acompanhe a arrecadacao</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:0.82rem;color:var(--text3);font-weight:600;">Saldo acumulado</span>
+          <span style="font-weight:800;color:var(--orange);" id="thermo-val">R$ 0,00</span>
+        </div>
+        <div class="progress-wrap" style="margin-bottom:8px;">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+          <div class="progress-label" id="progress-label">0%</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text3);font-weight:600;margin-bottom:14px;">
+          <span>R$ 0</span>
+          <span>Meta: <strong style="color:var(--text2);" id="thermo-meta">R$ --</strong></span>
+        </div>
+        <div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+          <span style="font-size:0.82rem;color:var(--text3);font-weight:600;" id="faltam-lbl">R$ 0,00 acumulados</span>
+          <span style="font-size:0.82rem;font-weight:800;color:var(--text2);">Faltam <span id="faltam-val" style="color:var(--orange);">R$ --</span></span>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text3);text-align:center;">Cada balaio custa <strong style="color:var(--text2);" id="custo-balaio">R$ --</strong></p>
+      </div>
+    </div>
+ 
+    <!-- Stats -->
+    <div class="stat-grid" style="margin-bottom:14px;">
+      <div class="stat-card">
+        <div class="stat-icon">&#128101;</div>
+        <div class="stat-num" id="stat-inscritos">0</div>
+        <div class="stat-lbl">Inscritos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">&#9989;</div>
+        <div class="stat-num" style="color:var(--green);" id="stat-confirmados">0</div>
+        <div class="stat-lbl">Confirmados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">&#8987;</div>
+        <div class="stat-num" style="color:var(--amber);" id="stat-pendentes">0</div>
+        <div class="stat-lbl">Pendentes</div>
+      </div>
+    </div>
+ 
+    <!-- Card: Inscricao -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-body">
+        <div class="sec-header">
+          <div class="sec-icon">&#9997;</div>
+          <div>
+            <div class="sec-title">Inscricao</div>
+            <div class="sec-sub">Preencha seus dados para participar</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nome Completo <span class="req">*</span></label>
+          <input id="f-nome" class="inp" type="text" placeholder="Seu nome completo" autocomplete="name">
+        </div>
+        <div class="form-row form-group">
+          <div>
+            <label class="form-label">Bloco <span class="req">*</span></label>
+            <input id="f-bloco" class="inp" type="text" placeholder="Ex: A">
+          </div>
+          <div>
+            <label class="form-label">Apto <span class="req">*</span></label>
+            <input id="f-apt" class="inp" type="text" placeholder="Ex: 101">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefone</label>
+          <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" inputmode="tel">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Observacao</label>
+          <input id="f-obs" class="inp" type="text" placeholder="Alguma observacao? (opcional)">
+        </div>
+        <button class="btn-primary" id="btn-inscrever">Fazer Inscricao</button>
+        <p style="text-align:center;margin-top:10px;font-size:0.82rem;color:var(--text3);">Valor da cota: <strong style="color:var(--orange);" id="form-valor">R$ --</strong></p>
+        <p id="form-error" class="err-msg hidden"></p>
+      </div>
+    </div>
+ 
+    <!-- Card: Transparencia -->
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-body" style="padding-bottom:0;">
+        <div class="sec-header">
+          <div class="sec-icon">&#128203;</div>
+          <div>
+            <div class="sec-title">Transparencia</div>
+            <div class="sec-sub">Veja o que sera comprado com a arrecadacao</div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--bg);">
+        <div style="display:flex;justify-content:space-between;padding:8px 18px 4px;font-size:0.75rem;font-weight:700;color:var(--text3);letter-spacing:0.04em;">
+          <span>ITEM</span><span>VALOR EST.</span>
+        </div>
+        <div id="itens-list">
+          <div class="empty"><div class="empty-text">Carregando...</div></div>
+        </div>
+      </div>
+      <div class="item-total-row">
+        <span class="lbl">Total do Balaio</span>
+        <span class="val" id="total-balaio">R$ --</span>
+      </div>
+    </div>
+ 
+    <button class="footer-link" onclick="abrirAdmin()">Painel Administrativo</button>
+ 
+    <div style="text-align:center;margin-top:20px;">
+      <p style="font-size:0.78rem;color:var(--text3);font-weight:700;">Balaio Alamedas 2026</p>
+      <p style="font-size:0.72rem;color:var(--text3);margin-top:2px;">Desenvolvido por Alex Passos</p>
+    </div>
+ 
+  </div>
+</div>
     <!-- ── PÁGINA ADMIN ── -->
 
     <div id="page-admin" class="page">
@@ -444,7 +599,7 @@
         
         // ─── Dados públicos ──────────────────────────────────────────────
         let custoBalaioGlobal = 0;
-        
+
         async function carregarDados(){
           try{
             const res  = await fetch(`${API_BASE}/api/dados`);
@@ -452,11 +607,19 @@
             if(!res.ok) throw new Error(data.error);
         
             const {config, itens, stats} = data;
+
+        // USE ESTE PADRÃO PARA CADA LINHA QUE DÁ ERRO:
+            const elDesc = document.getElementById('hdr-desc');
+            if (elDesc && config.descricao) elDesc.textContent = config.descricao;
         
-            if(config.descricao) document.getElementById('hdr-desc').textContent = config.descricao;
-            document.getElementById('form-valor').textContent = brl(config.valor_quota||10);
+            const elValor = document.getElementById('form-valor');
+            if (elValor) elValor.textContent = brl(config.valor_quota || 10);
+        
+            const elInscritos = document.getElementById('stat-inscritos');
+            if (elInscritos) elInscritos.textContent = stats.total_inscritos;
         
             const totalI = +stats.total_inscritos, pagos = +stats.total_pagos;
+              
             document.getElementById('stat-inscritos').textContent    = totalI;
             document.getElementById('stat-confirmados').textContent  = pagos;
             document.getElementById('stat-pendentes').textContent    = Math.max(0, totalI - pagos);
