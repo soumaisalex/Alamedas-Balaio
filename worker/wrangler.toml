@@ -1,0 +1,9 @@
+# Balaio Alamedas 2026 — Cloudflare Worker Config
+name            = "balaio-alamedas"
+main            = "worker.js"
+compatibility_date = "2024-09-23"
+
+# Variáveis públicas (não sensíveis)
+[vars]
+PIX_NOME   = "Alex de Souza Passos"
+PIX_CIDADE = "Aracaju"
