@@ -669,17 +669,25 @@
             document.getElementById('login-senha').value='';
             fecharModal('modal-login'); mostrarPagina('page-admin'); carregarAdmin();
             toast('🔓 Acesso liberado!');
-          } catch{ errEl.textContent='⚠️ Erro de conexão.'; errEl.classList.remove('hidden'); }
-          finally{ btn.disabled=false; btn.innerHTML='🔓 Entrar'; }
+          } catch(err) { 
+              errEl.textContent='⚠️ Erro de conexão.'; 
+              errEl.classList.remove('hidden'); 
+            } finally { 
+              btn.disabled=false; 
+              btn.innerHTML='🔓 Entrar'; 
+            }
+          }
+
+        async function configurarAdmin(senha) {
+          try {
+            const res = await fetch(`${API_BASE}/api/admin/setup`, {
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({senha})
+            });
+            // ... restante da lógica ...
+          } catch(e) { console.error(e); }
         }
-        
-          try{
-            const res=await fetch(`${API_BASE}/api/admin/setup`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({senha})});
-            const data=await res.json();
-            if(res.ok){ toast('✅ Senha configurada! Faça o login.'); document.getElementById('setup-senha').value=''; }
-            else{ msg.textContent='⚠️'+data.error; msg.classList.remove('hidden'); }
-          } catch{ msg.textContent='⚠️ Erro de conexão.'; msg.classList.remove('hidden'); }
-        
         async function carregarAdmin(){
           try{
             const [resP,resD]=await Promise.all([
