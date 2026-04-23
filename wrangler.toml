@@ -1,5 +1,5 @@
 # Balaio Alamedas 2026 — Cloudflare Worker Config
-name            = "balaio-alamedas"
+name = "alamedas-balaio"
 main            = "worker.js"
 compatibility_date = "2024-09-23"
 
