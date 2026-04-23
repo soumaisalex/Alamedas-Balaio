@@ -193,7 +193,7 @@
 
     <!-- ════════ OVERLAY DE DIAGNÓSTICO ════════ -->
 
-    <!--<div id="diag-overlay" style="position:fixed;inset:0;z-index:9999;background:#F5EFE0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:Nunito,sans-serif;">
+    <div id="diag-overlay" style="position:fixed;inset:0;z-index:9999;background:#F5EFE0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:Nunito,sans-serif;">
         <div style="width:100%;max-width:400px;">
 
             ```
@@ -205,9 +205,7 @@
             </div>
 
             <div id="diag-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;"></div>
-
             <div id="diag-detail" style="display:none;background:#FEE2E2;border:1px solid #FECACA;border-radius:12px;padding:14px;margin-bottom:16px;font-size:0.78rem;color:#991B1B;line-height:1.65;word-break:break-word;"></div>
-
             <div id="diag-actions" style="display:none;flex-direction:column;gap:10px;">
                 <button onclick="runDiagnostic()" style="background:#E8651A;color:#fff;border:none;border-radius:100px;padding:14px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;width:100%;">↻ Tentar novamente</button>
                 <button id="diag-proceed" onclick="fecharDiagnostico()" style="display:none;background:transparent;border:1.5px solid #E7DDD0;border-radius:100px;padding:12px;font-family:Nunito,sans-serif;font-weight:700;font-size:0.85rem;color:#57534E;cursor:pointer;width:100%;">Continuar mesmo assim</button>
@@ -215,7 +213,7 @@
             ```
 
         </div>
-    </div>-->
+    </div>
 <!-- PAGINA PRINCIPAL -->
 <div id="page-main" class="page active">
  
@@ -781,54 +779,22 @@
                   if(!nome||!bloco||!apt){ errEl.textContent='⚠️ Preencha nome, bloco e apartamento.'; errEl.classList.remove('hidden'); return; }
                 
                   btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span> Aguarde…';
-                  // NOVO BOTAO DE TESTE
-try {
-    const res = await fetch(`${API_BASE}/api/inscricao`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, bloco, apartamento: apt, telefone: tel, observacao: obs })
-    });
-    
-    const data = await res.json();
-    console.log("Resposta do Worker:", data); // ADICIONE ISSO PARA DEBUGAR
 
-    if (!res.ok) { 
-        errEl.textContent = '⚠️ ' + (data.error || 'Erro ao realizar inscrição.'); 
-        errEl.classList.remove('hidden'); 
-        return; 
-    }
-
-    // Se chegou aqui, o participante foi salvo. Vamos tentar abrir o PIX:
-    if (data.pix) {
-        abrirModalPix(data.pix);
-        toast('🎉 Inscrição realizada!');
-        // Limpa os campos...
-    } else {
-        console.error("Worker não devolveu os dados do PIX:", data);
-        toast('⚠️ Inscrição salva, mas falha ao gerar PIX.');
-    }
-    
-    carregarDados();
-} catch (err) {
-    console.error("Erro detalhado:", err); // ADICIONE ISSO
-    errEl.textContent = '⚠️ Erro de conexão. Tente novamente.'; 
-    errEl.classList.remove('hidden'); 
-}
-                //  try{
-                //    const res=await fetch(`${API_BASE}/api/inscricao`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,bloco,apartamento:apt,telefone:tel,observacao:obs})});
-                 //   const data=await res.json();
-                  //  if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Erro ao realizar inscrição.'); errEl.classList.remove('hidden'); return; }
-              //      abrirModalPix(data.pix);
-               //     toast('🎉 Inscrição realizada!');
-                //    ['f-nome','f-bloco','f-apt','f-tel','f-obs'].forEach(id=>document.getElementById(id).value='');
-                 //   carregarDados();
-              //    } catch{ errEl.textContent='⚠️ Erro de conexão. Tente novamente.'; errEl.classList.remove('hidden'); }
-          //        finally{ btn.disabled=false; btn.innerHTML='👥 Fazer Inscrição'; }
-            //      console.log("Botão de inscrição clicado!");
-//              });
-         //} else {
-           //   console.warn("Aviso: Elemento 'btn-inscrever' não encontrado nesta página.");
-        //  }
+                  try{
+                    const res=await fetch(`${API_BASE}/api/inscricao`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,bloco,apartamento:apt,telefone:tel,observacao:obs})});
+                    const data=await res.json();
+                    if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Erro ao realizar inscrição.'); errEl.classList.remove('hidden'); return; }
+                    abrirModalPix(data.pix);
+                    toast('🎉 Inscrição realizada!');
+                    ['f-nome','f-bloco','f-apt','f-tel','f-obs'].forEach(id=>document.getElementById(id).value='');
+                    carregarDados();
+                  } catch{ errEl.textContent='⚠️ Erro de conexão. Tente novamente.'; errEl.classList.remove('hidden'); }
+                  finally{ btn.disabled=false; btn.innerHTML='👥 Fazer Inscrição'; }
+                  console.log("Botão de inscrição clicado!");
+              });
+         } else {
+              console.warn("Aviso: Elemento 'btn-inscrever' não encontrado nesta página.");
+          }
            
         // ─── PIX ──────────────────────────────────────────────────────────
         function abrirModalPix({payload,valor,txid}){
