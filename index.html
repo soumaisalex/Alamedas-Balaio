@@ -679,7 +679,6 @@
             if(res.ok){ toast('✅ Senha configurada! Faça o login.'); document.getElementById('setup-senha').value=''; }
             else{ msg.textContent='⚠️'+data.error; msg.classList.remove('hidden'); }
           } catch{ msg.textContent='⚠️ Erro de conexão.'; msg.classList.remove('hidden'); }
-        }
         
         async function carregarAdmin(){
           try{
