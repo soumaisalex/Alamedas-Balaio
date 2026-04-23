@@ -602,31 +602,38 @@
         }
         
         // ─── Inscrição ────────────────────────────────────────────────────
-        document.getElementById('btn-inscrever').addEventListener('click', async()=>{
-          const nome=document.getElementById('f-nome').value.trim();
-          const bloco=document.getElementById('f-bloco').value.trim();
-          const apt=document.getElementById('f-apt').value.trim();
-          const tel=document.getElementById('f-tel').value.trim();
-          const obs=document.getElementById('f-obs').value.trim();
-          const errEl=document.getElementById('form-error');
-          const btn=document.getElementById('btn-inscrever');
-        
-          errEl.classList.add('hidden');
-          if(!nome||!bloco||!apt){ errEl.textContent='⚠️ Preencha nome, bloco e apartamento.'; errEl.classList.remove('hidden'); return; }
-        
-          btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span> Aguarde…';
-          try{
-            const res=await fetch(`${API_BASE}/api/inscricao`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,bloco,apartamento:apt,telefone:tel,observacao:obs})});
-            const data=await res.json();
-            if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Erro ao realizar inscrição.'); errEl.classList.remove('hidden'); return; }
-            abrirModalPix(data.pix);
-            toast('🎉 Inscrição realizada!');
-            ['f-nome','f-bloco','f-apt','f-tel','f-obs'].forEach(id=>document.getElementById(id).value='');
-            carregarDados();
-          } catch{ errEl.textContent='⚠️ Erro de conexão. Tente novamente.'; errEl.classList.remove('hidden'); }
-          finally{ btn.disabled=false; btn.innerHTML='👥 Fazer Inscrição'; }
-        });
-        
+        // Localiza o botão
+        const btnInscrever = document.getElementById('btn-inscrever');
+          if (btnInscrever) {
+              btnInscrever.addEventListener('click', async () => {
+                  const nome=document.getElementById('f-nome').value.trim();
+                  const bloco=document.getElementById('f-bloco').value.trim();
+                  const apt=document.getElementById('f-apt').value.trim();
+                  const tel=document.getElementById('f-tel').value.trim();
+                  const obs=document.getElementById('f-obs').value.trim();
+                  const errEl=document.getElementById('form-error');
+                  const btn=document.getElementById('btn-inscrever');
+                
+                  errEl.classList.add('hidden');
+                  if(!nome||!bloco||!apt){ errEl.textContent='⚠️ Preencha nome, bloco e apartamento.'; errEl.classList.remove('hidden'); return; }
+                
+                  btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span> Aguarde…';
+                  try{
+                    const res=await fetch(`${API_BASE}/api/inscricao`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,bloco,apartamento:apt,telefone:tel,observacao:obs})});
+                    const data=await res.json();
+                    if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Erro ao realizar inscrição.'); errEl.classList.remove('hidden'); return; }
+                    abrirModalPix(data.pix);
+                    toast('🎉 Inscrição realizada!');
+                    ['f-nome','f-bloco','f-apt','f-tel','f-obs'].forEach(id=>document.getElementById(id).value='');
+                    carregarDados();
+                  } catch{ errEl.textContent='⚠️ Erro de conexão. Tente novamente.'; errEl.classList.remove('hidden'); }
+                  finally{ btn.disabled=false; btn.innerHTML='👥 Fazer Inscrição'; }
+                  console.log("Botão de inscrição clicado!");
+              });
+          } else {
+              console.warn("Aviso: Elemento 'btn-inscrever' não encontrado nesta página.");
+          }
+           
         // ─── PIX ──────────────────────────────────────────────────────────
         function abrirModalPix({payload,valor,txid}){
           document.getElementById('pix-valor').textContent=brl(+valor);
