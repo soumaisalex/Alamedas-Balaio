@@ -109,23 +109,22 @@ export default {
 
       // POST /api/inscricao - publico
       if (pathname === '/api/inscricao' && request.method === 'POST') {
-        const { nome, bloco, apartamento, telefone, observacao } =
-          await request.json().catch(() => ({}));
-        if (!nome?.trim() || !bloco?.trim() || !apartamento?.trim())
-          return fail('Preencha nome, bloco e apartamento.');
 
-        const dup = await sql`SELECT id FROM participantes
-          WHERE UPPER(bloco) = UPPER(${bloco.trim()})
-            AND UPPER(apartamento) = UPPER(${apartamento.trim()})`;
-        if (dup.length > 0) return fail('Este apartamento ja esta inscrito.');
-
+        const { nome, bloco, apartamento, telefone, observacao, quantidade } = await request.json().catch(() => ({}));
+        const qtd = Math.max(1, parseInt(quantidade) || 1); // Garante no mínimo 1
+        
         const [ins] = await sql`
-          INSERT INTO participantes (nome, bloco, apartamento, telefone, observacao)
-          VALUES (${nome.trim()}, ${bloco.trim().toUpperCase()},
-                  ${apartamento.trim().toUpperCase()},
-                  ${telefone?.trim() || null}, ${observacao?.trim() || null})
+          INSERT INTO participantes (nome, bloco, apartamento, telefone, observacao, quantidade)
+          VALUES (${nome.trim()}, ${bloco.trim().toUpperCase()}, 
+                  ${apartamento.trim().toUpperCase()}, 
+                  ${telefone?.trim() || null}, ${observacao?.trim() || null}, ${qtd})
           RETURNING id`;
-
+        
+        const cfgR = await sql`SELECT valor FROM configuracoes WHERE chave = 'valor_quota'`;
+        const valorUnitario = parseFloat(cfgR[0]?.valor ?? '10.00');
+        const valorTotal = (valorUnitario * qtd).toFixed(2);
+        
+        // No gerarPix, use 'valor: valorTotal'
         const cfgR = await sql`SELECT valor FROM configuracoes WHERE chave = 'valor_quota'`;
         const valor = cfgR[0]?.valor ?? '10.00';
         const txid  = `BAL${String(ins.id).padStart(8, '0')}`;
@@ -135,8 +134,8 @@ export default {
             aviso: 'PIX_KEY nao configurada no Worker.' });
 
         const pixPayload = gerarPix({
-          chave: env.PIX_KEY, nome: env.PIX_NOME ?? 'CONDOMINIO ALAMEDAS',
-          cidade: env.PIX_CIDADE ?? 'SALVADOR', valor, txid,
+          chave: env.PIX_KEY, nome: env.PIX_NOME ?? 'Alex de Souza Passos',
+          cidade: env.PIX_CIDADE ?? 'Aracaju', valor: valorTotal, txid,
         });
         return respond({ sucesso: true, participante_id: ins.id,
           pix: { payload: pixPayload, valor, txid } });
@@ -162,6 +161,14 @@ export default {
         return respond({ participantes });
       }
 
+      // DELETE /api/admin/participante/:id - restrito
+      if (pathname.startsWith('/api/admin/participante/') && request.method === 'DELETE') {
+        if (!(await isAdmin(request, env))) return fail('Nao autorizado.', 401);
+        const id = pathname.split('/').pop();
+        await sql`DELETE FROM participantes WHERE id = ${id}`;
+        return respond({ sucesso: true });
+      }
+      
       // POST /api/admin/confirmar - restrito
       if (pathname === '/api/admin/confirmar' && request.method === 'POST') {
         if (!(await isAdmin(request, env))) return fail('Nao autorizado.', 401);
