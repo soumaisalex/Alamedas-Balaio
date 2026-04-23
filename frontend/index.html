@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#F5EFE0">
+<title>Balaio Junino · Alamedas 2026</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #F5EFE0;
+  --bg2:      #EDE5CC;
+  --card:     #FFFFFF;
+  --orange:   #E8651A;
+  --orange2:  #F07830;
+  --orange-l: #FFF1E8;
+  --green:    #22C55E;
+  --green-l:  #DCFCE7;
+  --red:      #EF4444;
+  --red-l:    #FEE2E2;
+  --amber:    #F59E0B;
+  --amber-l:  #FEF3C7;
+  --text:     #1C1917;
+  --text2:    #57534E;
+  --text3:    #A8A29E;
+  --border:   #E7DDD0;
+  --shadow:   0 2px 12px rgba(0,0,0,0.08);
+  --radius:   16px;
+  --radius-sm:10px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bandeirolas */
+.bunting { width:100%; height:48px; position:relative; overflow:hidden; flex-shrink:0; z-index:10; background:#8B5E2C; }
+.bunting-rope { position:absolute; top:6px; left:-2%; right:-2%; height:2px; background:#5C3D12; }
+.bunting-flags { display:flex; position:absolute; top:4px; left:-10px; gap:0; }
+.flag { width:28px; height:38px; clip-path:polygon(0 0,100% 0,50% 100%); flex-shrink:0; margin:0 2px; animation:sway 2.8s ease-in-out infinite alternate; transform-origin:top center; }
+.flag:nth-child(even) { animation-duration:3.4s; animation-direction:alternate-reverse; }
+@keyframes sway { from{transform:rotate(-5deg)} to{transform:rotate(5deg)} }
+
+/* Pages */
+.page { display:none; }
+.page.active { display:block; }
+
+/* Card */
+.card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+.card-body { padding:18px; }
+
+/* Section header */
+.sec-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.sec-icon { width:38px; height:38px; background:var(--orange-l); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.sec-title { font-size:1rem; font-weight:800; color:var(--text); }
+.sec-sub { font-size:0.78rem; color:var(--text3); margin-top:1px; }
+
+/* Progress */
+.progress-wrap { background:var(--bg2); border-radius:100px; height:36px; overflow:hidden; position:relative; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--orange),#FFB800); border-radius:100px; transition:width 1s cubic-bezier(0.34,1.56,0.64,1); }
+.progress-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:800; color:var(--text); }
+
+/* Stat grid */
+.stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.stat-card { background:var(--card); border-radius:var(--radius-sm); box-shadow:var(--shadow); padding:14px 10px; text-align:center; border:1.5px solid var(--border); }
+.stat-card .stat-icon { font-size:22px; margin-bottom:4px; }
+.stat-card .stat-num  { font-size:1.5rem; font-weight:900; color:var(--text); line-height:1; }
+.stat-card .stat-lbl  { font-size:0.7rem; color:var(--text3); font-weight:600; margin-top:3px; }
+
+/* Inputs */
+.form-group { margin-bottom:14px; }
+.form-label { display:block; font-size:0.82rem; font-weight:700; color:var(--text2); margin-bottom:6px; }
+.form-label .req { color:var(--orange); }
+.inp { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:'Nunito',sans-serif; font-size:0.95rem; padding:13px 14px; outline:none; transition:border-color 0.2s, box-shadow 0.2s; -webkit-appearance:none; }
+.inp::placeholder { color:var(--text3); }
+.inp:focus { border-color:var(--orange); box-shadow:0 0 0 3px rgba(232,101,26,0.12); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+/* Buttons */
+.btn-primary { width:100%; background:var(--orange); color:#fff; font-family:'Nunito',sans-serif; font-weight:800; font-size:1rem; padding:15px 20px; border:none; border-radius:100px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.15s, transform 0.1s; box-shadow:0 4px 16px rgba(232,101,26,0.3); -webkit-tap-highlight-color:transparent; }
+.btn-primary:hover:not(:disabled) { background:var(--orange2); }
+.btn-primary:active:not(:disabled) { transform:scale(0.98); }
+.btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
+.btn-ghost { background:transparent; border:1.5px solid var(--border); color:var(--text2); font-family:'Nunito',sans-serif; font-weight:700; font-size:0.85rem; padding:10px 16px; border-radius:100px; cursor:pointer; transition:background 0.15s; }
+.btn-ghost:hover { background:var(--bg2); }
+.btn-sm { padding:8px 14px; font-size:0.8rem; border-radius:100px; font-family:'Nunito',sans-serif; font-weight:700; cursor:pointer; border:none; transition:opacity 0.15s, transform 0.1s; }
+.btn-sm:active { transform:scale(0.96); }
+.btn-green  { background:var(--green-l);  color:#16A34A; }
+.btn-red    { background:var(--red-l);    color:#DC2626; }
+.btn-amber  { background:var(--amber-l);  color:#D97706; }
+
+/* Table rows */
+.item-row { display:flex; align-items:center; justify-content:space-between; padding:12px 18px; border-bottom:1px solid var(--bg); gap:12px; font-size:0.9rem; }
+.item-row:last-child { border-bottom:none; }
+.item-row .item-name { color:var(--text2); flex:1; }
+.item-row .item-val  { font-weight:700; color:var(--text); flex-shrink:0; }
+.item-total-row { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; background:var(--orange-l); border-top:2px solid var(--orange); }
+.item-total-row .lbl { font-weight:800; color:var(--orange); }
+.item-total-row .val { font-weight:900; font-size:1.05rem; color:var(--orange); }
+
+/* Badges */
+.badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:100px; font-size:0.75rem; font-weight:700; }
+.badge-pago      { background:var(--green-l); color:#16A34A; }
+.badge-pendente  { background:var(--amber-l); color:#D97706; }
+.badge-cancelado { background:var(--red-l);   color:#DC2626; }
+
+/* Modal */
+.modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.5); display:flex; align-items:flex-end; justify-content:center; animation:fadeIn 0.2s ease; }
+@media(min-width:600px){ .modal-bg { align-items:center; padding:20px; } }
+.modal-box { background:var(--card); border-radius:24px 24px 0 0; width:100%; max-width:480px; max-height:92vh; overflow-y:auto; padding:24px 20px 36px; animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+@media(min-width:600px){ .modal-box { border-radius:24px; } }
+@keyframes slideUp { from{transform:translateY(60px);opacity:0} to{transform:translateY(0);opacity:1} }
+@keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+.modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+
+/* Admin nav */
+.admin-nav { display:flex; align-items:center; gap:12px; padding:16px; background:var(--card); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10; }
+.admin-nav h1 { font-size:1.1rem; font-weight:900; }
+.admin-nav p  { font-size:0.75rem; color:var(--text3); margin-top:1px; }
+.back-btn { background:transparent; border:none; font-size:1.3rem; cursor:pointer; color:var(--text2); padding:4px; flex-shrink:0; display:flex; align-items:center; }
+.back-btn:hover { color:var(--orange); }
+
+/* Tab bar */
+.tab-bar { display:grid; grid-template-columns:repeat(3,1fr); background:var(--bg2); border-radius:var(--radius-sm); padding:4px; gap:4px; }
+.tab-btn { padding:10px; border:none; border-radius:7px; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:20px; transition:background 0.15s; color:var(--text3); }
+.tab-btn.active { background:var(--card); color:var(--orange); box-shadow:var(--shadow); }
+
+/* Search */
+.search-wrap { display:flex; gap:10px; align-items:center; }
+.search-inp { flex:1; background:var(--card); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:11px 14px; font-family:'Nunito',sans-serif; font-size:0.88rem; color:var(--text); outline:none; }
+.search-inp:focus { border-color:var(--orange); }
+.search-inp::placeholder { color:var(--text3); }
+.filter-sel { background:var(--card); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:11px 12px; font-family:'Nunito',sans-serif; font-size:0.85rem; color:var(--text); outline:none; cursor:pointer; flex-shrink:0; }
+
+/* Participant card */
+.p-card { background:var(--card); border-radius:var(--radius-sm); box-shadow:var(--shadow); padding:14px; border-left:4px solid var(--border); }
+.p-card.pago      { border-left-color:var(--green); }
+.p-card.pendente  { border-left-color:var(--amber); }
+.p-card.cancelado { border-left-color:var(--red);   }
+.p-card-header { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+.p-card-name   { font-weight:800; font-size:0.95rem; color:var(--text); }
+.p-card-info   { font-size:0.78rem; color:var(--text3); margin-top:2px; }
+.p-card-actions { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+
+/* Copy row */
+.copy-row { display:flex; gap:8px; align-items:center; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 14px; }
+.copy-row input { flex:1; border:none; background:transparent; font-size:0.78rem; color:var(--text2); font-family:'Nunito',sans-serif; outline:none; min-width:0; }
+.copy-btn { background:var(--orange); color:white; border:none; padding:7px 14px; border-radius:8px; font-size:0.8rem; font-weight:700; font-family:'Nunito',sans-serif; cursor:pointer; flex-shrink:0; }
+
+/* QR */
+#qr-box { background:white; border-radius:var(--radius-sm); padding:16px; display:flex; align-items:center; justify-content:center; }
+#qr-box canvas, #qr-box img { border-radius:8px; }
+
+/* Toast */
+#toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:white; font-family:'Nunito',sans-serif; font-size:0.88rem; font-weight:700; padding:12px 22px; border-radius:100px; white-space:nowrap; z-index:999; opacity:0; pointer-events:none; transition:opacity 0.3s, transform 0.3s; max-width:90vw; text-align:center; }
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* Footer link */
+.footer-link { display:flex; align-items:center; justify-content:center; gap:6px; background:transparent; border:1.5px solid var(--border); border-radius:100px; padding:10px 20px; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700; color:var(--text2); cursor:pointer; width:100%; transition:background 0.15s; }
+.footer-link:hover { background:var(--bg2); }
+
+/* Info box */
+.info-box { background:var(--orange-l); border:1px solid rgba(232,101,26,0.2); border-radius:var(--radius-sm); padding:14px; font-size:0.83rem; color:var(--text2); line-height:1.5; }
+.info-box strong { color:var(--orange); }
+
+/* Misc */
+.err-msg { font-size:0.82rem; color:var(--red); font-weight:600; text-align:center; margin-top:10px; }
+.empty { text-align:center; padding:40px 20px; color:var(--text3); }
+.empty-icon { font-size:2.5rem; margin-bottom:10px; }
+.empty-text { font-size:0.9rem; font-weight:600; }
+.hidden { display:none !important; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.spin { display:inline-block; animation:spin 1s linear infinite; }
+</style>
+</head>
+<body>
+
+<!-- ── PÁGINA PRINCIPAL ── -->
+<div id="page-main" class="page active">
+
+  <div class="bunting">
+    <div class="bunting-rope"></div>
+    <div class="bunting-flags" id="flags"></div>
+  </div>
+
+  <!-- Hero com gradiente -->
+  <div style="background:linear-gradient(180deg,#8B5E2C 0%,#C4883A 28%,#E8A84A 55%,#F5EFE0 100%);padding:28px 16px 32px;text-align:center;">
+    <div style="font-size:3rem;margin-bottom:8px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">🌽</div>
+    <h1 style="font-size:2rem;font-weight:900;line-height:1.15;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);">Balaio Junino</h1>
+    <p style="font-size:1.1rem;font-weight:800;color:#FFE68A;margin-top:2px;text-shadow:0 1px 4px rgba(0,0,0,0.2);">Alamedas 2026</p>
+    <p style="font-size:0.85rem;color:#3D1A00;font-weight:700;margin-top:10px;line-height:1.55;max-width:340px;margin-left:auto;margin-right:auto;" id="hdr-desc">Participe da nossa festa junina! Inscreva-se e ajude a fazer deste evento um sucesso.</p>
+  </div>
+
+  <div style="padding:20px 16px 40px; max-width:480px; margin:0 auto;">
+
+    <!-- Card: Sorteio -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-body">
+        <div class="sec-header">
+          <div class="sec-icon">🧺</div>
+          <div>
+            <div class="sec-title">Balaios para Sorteio</div>
+            <div class="sec-sub" id="sorteio-sub">Nenhum balaio completo ainda. Continue arrecadando!</div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid var(--bg);">
+          <span style="font-size:0.85rem; color:var(--text3); font-weight:600;">Total arrecadado</span>
+          <span style="font-weight:900; font-size:1rem; color:var(--orange);" id="sorteio-total">R$ 0,00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card: Termômetro -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-body">
+        <div class="sec-header">
+          <div class="sec-icon">🔥</div>
+          <div>
+            <div class="sec-title">Próximo Balaio</div>
+            <div class="sec-sub">Acompanhe a arrecadação</div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:0.82rem; color:var(--text3); font-weight:600;">Saldo acumulado</span>
+          <span style="font-weight:800; color:var(--orange);" id="thermo-val">R$ 0,00</span>
+        </div>
+
+        <div class="progress-wrap" style="margin-bottom:8px;">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+          <div class="progress-label" id="progress-label">0,0%</div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text3); font-weight:600; margin-bottom:14px;">
+          <span>R$ 0</span>
+          <span>⊙ Meta: <strong style="color:var(--text2);" id="thermo-meta">R$ —</strong></span>
+        </div>
+
+        <div style="background:var(--bg); border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:14px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;">
+          <span style="font-size:0.82rem; color:var(--text3); font-weight:600;" id="faltam-lbl">R$ 0,00 acumulados</span>
+          <span style="font-size:0.82rem; font-weight:800; color:var(--text2);">Faltam <span id="faltam-val" style="color:var(--orange);">R$ —</span></span>
+        </div>
+
+        <p style="font-size:0.78rem; color:var(--text3); text-align:center;">
+          Cada balaio custa <strong style="color:var(--text2);" id="custo-balaio">R$ —</strong> (soma dos itens da lista)
+        </p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid" style="margin-bottom:14px;">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-num" id="stat-inscritos">0</div>
+        <div class="stat-lbl">Inscritos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-num" style="color:var(--green);" id="stat-confirmados">0</div>
+        <div class="stat-lbl">Confirmados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-num" style="color:var(--amber);" id="stat-pendentes">0</div>
+        <div class="stat-lbl">Pendentes</div>
+      </div>
+    </div>
+
+    <!-- Card: Inscrição -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-body">
+        <div class="sec-header">
+          <div class="sec-icon">✍️</div>
+          <div>
+            <div class="sec-title">Inscrição</div>
+            <div class="sec-sub">Preencha seus dados para participar</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nome Completo <span class="req">*</span></label>
+          <input id="f-nome" class="inp" type="text" placeholder="Seu nome completo" autocomplete="name">
+        </div>
+
+        <div class="form-row form-group">
+          <div>
+            <label class="form-label">Bloco <span class="req">*</span></label>
+            <input id="f-bloco" class="inp" type="text" placeholder="Ex: A">
+          </div>
+          <div>
+            <label class="form-label">Apto <span class="req">*</span></label>
+            <input id="f-apt" class="inp" type="text" placeholder="Ex: 101">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Telefone</label>
+          <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" inputmode="tel">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Observação</label>
+          <input id="f-obs" class="inp" type="text" placeholder="Alguma observação? (opcional)">
+        </div>
+
+        <button class="btn-primary" id="btn-inscrever">
+          👥 Fazer Inscrição
+        </button>
+
+        <p style="text-align:center; margin-top:10px; font-size:0.82rem; color:var(--text3);">
+          Valor da cota: <strong style="color:var(--orange);" id="form-valor">R$ —</strong>
+        </p>
+        <p id="form-error" class="err-msg hidden"></p>
+      </div>
+    </div>
+
+    <!-- Card: Transparência -->
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-body" style="padding-bottom:0;">
+        <div class="sec-header">
+          <div class="sec-icon">📋</div>
+          <div>
+            <div class="sec-title">Transparência</div>
+            <div class="sec-sub">Veja o que será comprado com a arrecadação</div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--bg);">
+        <div style="display:flex; justify-content:space-between; padding:8px 18px 4px; font-size:0.75rem; font-weight:700; color:var(--text3); letter-spacing:0.04em;">
+          <span>ITEM</span><span>VALOR EST.</span>
+        </div>
+        <div id="itens-list">
+          <div class="empty"><div class="empty-text">Carregando…</div></div>
+        </div>
+      </div>
+      <div class="item-total-row">
+        <span class="lbl">Total do Balaio</span>
+        <span class="val" id="total-balaio">R$ —</span>
+      </div>
+    </div>
+
+    <button class="footer-link" onclick="abrirAdmin()">⚙️ Painel Administrativo</button>
+
+    <div style="text-align:center; margin-top:20px;">
+      <p style="font-size:0.78rem; color:var(--text3); font-weight:700;">🌽 Balaio Alamedas 2026</p>
+      <p style="font-size:0.72rem; color:var(--text3); margin-top:2px;">Desenvolvido por Alex Passos</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── PÁGINA ADMIN ── -->
+<div id="page-admin" class="page">
+
+  <div class="bunting" id="bunting-admin">
+    <div class="bunting-rope"></div>
+    <div class="bunting-flags" id="flags-admin"></div>
+  </div>
+
+  <div class="admin-nav">
+    <button class="back-btn" onclick="voltarMain()">←</button>
+    <div>
+      <h1>Painel Admin</h1>
+      <p>Gerencie o Balaio Junino</p>
+    </div>
+    <div style="flex:1"></div>
+    <button class="btn-ghost" style="padding:8px 14px; font-size:0.78rem;" onclick="logout()">Sair</button>
+  </div>
+
+  <div style="padding:16px; max-width:480px; margin:0 auto; padding-bottom:40px;">
+
+    <!-- Termômetro admin -->
+    <div style="text-align:center; margin-bottom:14px;">
+      <p style="font-size:1rem; font-weight:900; margin-bottom:2px;">🔥 Termômetro da Fogueira</p>
+      <p style="font-size:0.78rem; color:var(--text3); margin-bottom:12px;">Acompanhe o progresso da arrecadação</p>
+      <p style="font-size:2rem; font-weight:900; color:var(--orange); margin-bottom:12px;" id="adm-arrecadado">R$ 0,00</p>
+
+      <div class="progress-wrap" style="margin-bottom:8px;">
+        <div class="progress-fill" id="adm-progress" style="width:0%"></div>
+        <div class="progress-label" id="adm-pct">0,0%</div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text3); font-weight:600;">
+        <span>R$ 0</span>
+        <span>⊙ Meta: <strong style="color:var(--text2);" id="adm-meta">R$ —</strong></span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid" style="margin-bottom:14px;">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-num" id="adm-inscritos">0</div>
+        <div class="stat-lbl">Inscritos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-num" style="color:var(--green);" id="adm-confirmados">0</div>
+        <div class="stat-lbl">Confirmados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-num" style="color:var(--amber);" id="adm-pendentes">0</div>
+        <div class="stat-lbl">Pendentes</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tab-bar" style="margin-bottom:14px;">
+      <button class="tab-btn active" id="tab-participantes" onclick="mudarTab('participantes')">👥</button>
+      <button class="tab-btn"        id="tab-itens"         onclick="mudarTab('itens')">🧺</button>
+      <button class="tab-btn"        id="tab-config"        onclick="mudarTab('config')">⚙️</button>
+    </div>
+
+    <!-- Tab: Participantes -->
+    <div id="tab-content-participantes">
+      <div class="search-wrap" style="margin-bottom:12px;">
+        <input class="search-inp" id="search-input" type="text" placeholder="🔍 Buscar por nome, bloco ou apto…" oninput="filtrarParticipantes()">
+        <select class="filter-sel" id="filter-status" onchange="filtrarParticipantes()">
+          <option value="">Todos</option>
+          <option value="pago">Pagos</option>
+          <option value="pendente">Pendentes</option>
+          <option value="cancelado">Cancelados</option>
+        </select>
+      </div>
+      <div id="lista-participantes">
+        <div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Nenhum participante encontrado.</div></div>
+      </div>
+    </div>
+
+    <!-- Tab: Itens -->
+    <div id="tab-content-itens" class="hidden">
+      <div class="card">
+        <div id="adm-itens-list">
+          <div class="empty"><div class="empty-text">Carregando…</div></div>
+        </div>
+        <div class="item-total-row">
+          <span class="lbl">Total</span>
+          <span class="val" id="adm-total-balaio">R$ —</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Config -->
+    <div id="tab-content-config" class="hidden">
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-body">
+          <p style="font-weight:800; font-size:0.95rem; margin-bottom:14px;">⚙️ Configurações</p>
+          <div class="form-group">
+            <label class="form-label">Meta do Balaio (R$)</label>
+            <input id="cfg-meta" class="inp" type="number" step="0.01" placeholder="Ex: 500.00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Valor da Cota (R$)</label>
+            <input id="cfg-quota" class="inp" type="number" step="0.01" placeholder="Ex: 10.00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data do Evento</label>
+            <input id="cfg-data" class="inp" type="text" placeholder="Ex: 27 de Junho de 2026">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Local</label>
+            <input id="cfg-local" class="inp" type="text" placeholder="Ex: Área de Lazer – Bloco Central">
+          </div>
+          <button class="btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
+          <p id="cfg-msg" class="err-msg hidden"></p>
+        </div>
+      </div>
+
+<div style="background:var(--orange-l);border:1px solid rgba(232,101,26,0.2);border-radius:var(--radius-sm);padding:14px;font-size:0.82rem;color:var(--text2);">🔑 <strong style="color:var(--orange);">Senha do administrador</strong> é configurada via variável de ambiente <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:0.8rem;">ADMIN_PASSWORD</code> no painel do Cloudflare Workers. Para alterar, acesse o dashboard da Cloudflare e atualize o secret.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── MODAL PIX ── -->
+<div id="modal-pix" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-pix')">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div style="text-align:center; margin-bottom:16px;">
+      <p style="font-size:1.1rem; font-weight:900;">🎉 Pague com PIX</p>
+      <p style="font-size:0.82rem; color:var(--text3); margin-top:4px;">Escaneie o QR Code ou copie o código</p>
+    </div>
+    <div style="text-align:center; margin-bottom:14px;">
+      <p style="font-size:0.8rem; color:var(--text3); font-weight:600;">Valor</p>
+      <p style="font-size:2rem; font-weight:900; color:var(--orange);" id="pix-valor">R$ —</p>
+    </div>
+    <div id="qr-box" style="margin-bottom:14px;"></div>
+    <div style="margin-bottom:14px;">
+      <p style="font-size:0.78rem; font-weight:700; color:var(--text3); margin-bottom:6px;">Código Copia e Cola</p>
+      <div class="copy-row">
+        <input id="pix-payload" type="text" readonly>
+        <button class="copy-btn" onclick="copiarPix()">Copiar</button>
+      </div>
+    </div>
+    <div class="info-box" style="margin-bottom:14px;">
+      📌 <strong>Após o pagamento</strong>, guarde o comprovante. O administrador confirmará em breve.
+    </div>
+    <button class="btn-primary" onclick="fecharModal('modal-pix')">Fechar</button>
+    <p style="text-align:center; font-size:0.72rem; color:var(--text3); margin-top:10px;" id="pix-txid"></p>
+  </div>
+</div>
+
+<!-- ── MODAL LOGIN ── -->
+<div id="modal-login" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-login')">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <p style="font-size:1.1rem; font-weight:900; margin-bottom:16px;">🔐 Área Administrativa</p>
+    <div class="form-group">
+      <label class="form-label">Senha</label>
+      <input id="login-senha" class="inp" type="password" placeholder="Digite a senha" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="btn-login">🔓 Entrar</button>
+    <p id="login-error" class="err-msg hidden"></p>
+
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─── Configuração ─────────────────────────────────────────────────
+// ⚠️ Altere para a URL do seu Worker após o deploy:
+const API_BASE = 'https://balaio-alamedas-worker.SEU_USUARIO.workers.dev';
+
+let adminToken = localStorage.getItem('ba_token') || null;
+let todosParticipantes = [];
+
+// ─── Bandeirolas ──────────────────────────────────────────────────
+(function(){
+  const cores = ['#FF4136','#FF851B','#FFD700','#2ECC40','#0074D9','#B10DC9','#FF69B4','#7FDBFF','#FFDC00','#FF4136'];
+  function popularBandeiras(id){
+    const container = document.getElementById(id);
+    if(!container) return;
+    const n = Math.ceil((window.innerWidth + 60) / 32);
+    for(let i=0; i<n; i++){
+      const el = document.createElement('div');
+      el.className = 'flag';
+      el.style.background = cores[i % cores.length];
+      container.appendChild(el);
+    }
+  }
+  popularBandeiras('flags');
+  popularBandeiras('flags-admin');
+})();
+
+// ─── Helpers ──────────────────────────────────────────────────────
+function brl(v){ return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(+v); }
+function toast(msg, d=2800){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), d);
+}
+
+// ─── Navegação ────────────────────────────────────────────────────
+function mostrarPagina(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function voltarMain(){ mostrarPagina('page-main'); }
+
+function abrirModal(id)  { document.getElementById(id).classList.remove('hidden'); }
+function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
+function fecharModalBg(e,id){ if(e.target===e.currentTarget) fecharModal(id); }
+
+// ─── Dados públicos ──────────────────────────────────────────────
+let custoBalaioGlobal = 0;
+
+async function carregarDados(){
+  try{
+    const res  = await fetch(`${API_BASE}/api/dados`);
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error);
+
+    const {config, itens, stats} = data;
+
+    if(config.descricao) document.getElementById('hdr-desc').textContent = config.descricao;
+    document.getElementById('form-valor').textContent = brl(config.valor_quota||10);
+
+    const totalI = +stats.total_inscritos, pagos = +stats.total_pagos;
+    document.getElementById('stat-inscritos').textContent    = totalI;
+    document.getElementById('stat-confirmados').textContent  = pagos;
+    document.getElementById('stat-pendentes').textContent    = Math.max(0, totalI - pagos);
+
+    // Custo do balaio = soma dos itens
+    const custo = itens ? itens.reduce((s,i)=> s + (+i.preco_estimado * +i.quantidade), 0) : 0;
+    custoBalaioGlobal = custo;
+    const arrec = +(stats.total_arrecadado || 0);
+
+    if(custo > 0){
+      const balaios   = Math.floor(arrec / custo);
+      const acumulado = arrec - (balaios * custo);
+      const faltam    = custo - acumulado;
+      const p         = (acumulado / custo) * 100;
+
+      document.getElementById('thermo-val').textContent    = brl(acumulado);
+      document.getElementById('thermo-meta').textContent   = brl(custo);
+      document.getElementById('faltam-lbl').textContent    = `${brl(acumulado)} acumulados`;
+      document.getElementById('faltam-val').textContent    = brl(faltam);
+      document.getElementById('sorteio-total').textContent = brl(arrec);
+      document.getElementById('custo-balaio').textContent  = brl(custo);
+
+      document.getElementById('sorteio-sub').textContent = balaios > 0
+        ? `${balaios} balaio${balaios>1?'s':''} completo${balaios>1?'s':''}! 🎉`
+        : 'Nenhum balaio completo ainda. Continue arrecadando!';
+
+      setTimeout(()=>{
+        document.getElementById('progress-fill').style.width = p.toFixed(1)+'%';
+        document.getElementById('progress-label').textContent = p.toFixed(1).replace('.',',')+' %';
+      }, 200);
+    }
+    renderizarItens(itens);
+  } catch(err){
+    console.error(err);
+    document.getElementById('itens-list').innerHTML = '<div class="empty"><div class="empty-text" style="color:var(--red);">Erro ao carregar dados.</div></div>';
+  }
+}
+
+// ─── Itens (pública) ───────────────────────────────────────────
+function renderizarItens(itens){
+  const lista = document.getElementById('itens-list');
+  if(!itens||itens.length===0){
+    lista.innerHTML='<div class="empty"><div class="empty-text">Nenhum item cadastrado.</div></div>';
+    return;
+  }
+  let total=0;
+  const html = itens.map(item=>{
+    const val = +item.preco_estimado * +item.quantidade; total+=val;
+    return `<div class="item-row"><span class="item-name">${item.icone?item.icone+' ':''} ${item.nome}${+item.quantidade>1?' <span style="color:var(--text3);font-size:0.75rem;">(×'+item.quantidade+')</span>':''}</span><span class="item-val">${brl(val)}</span></div>`;
+  }).join('');
+  lista.innerHTML = html;
+  document.getElementById('total-balaio').textContent = brl(total);
+  document.getElementById('custo-balaio').textContent  = brl(total);
+  renderizarItensAdmin(itens, total);
+}
+
+// ─── Itens admin (editáveis) ────────────────────────────────
+function renderizarItensAdmin(itens, total){
+  const admLista = document.getElementById('adm-itens-list');
+  if(!admLista) return;
+  if(!itens||itens.length===0){
+    admLista.innerHTML='<div class="empty"><div class="empty-text">Nenhum item cadastrado.</div></div>';
+    return;
+  }
+  admLista.innerHTML = itens.map(item => {
+    const val = +item.preco_estimado * +item.quantidade;
+    const nomeSafe = item.nome.replace(/'/g, "\\'");
+    return `
+    <div id="item-row-${item.id}" style="border-bottom:1px solid var(--bg);">
+      <div style="display:flex;align-items:center;gap:8px;padding:11px 14px;">
+        <span style="font-size:1rem;flex-shrink:0;">${item.icone||'🎉'}</span>
+        <span style="flex:1;font-size:0.88rem;font-weight:600;color:var(--text2);">${item.nome}${+item.quantidade>1?' (×'+item.quantidade+')':''}</span>
+        <span style="font-weight:700;font-size:0.88rem;color:var(--text);flex-shrink:0;">${brl(val)}</span>
+        <button class="btn-sm btn-orange" onclick="iniciarEdicaoItem(${item.id},'${nomeSafe}',${item.preco_estimado},${item.quantidade})" style="padding:5px 10px;font-size:0.75rem;flex-shrink:0;">✏️</button>
+      </div>
+      <div id="item-edit-${item.id}" class="hidden" style="margin:0 14px 12px;background:var(--bg);border-radius:8px;padding:12px;">
+        <div class="form-group" style="margin-bottom:8px;">
+          <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">NOME</label>
+          <input id="item-edit-nome-${item.id}" class="inp" type="text" placeholder="Nome do item" style="font-size:0.85rem;padding:9px 12px;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <div>
+            <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">PREÇO UNIT. (R$)</label>
+            <input id="item-edit-preco-${item.id}" class="inp" type="number" step="0.01" min="0" style="font-size:0.85rem;padding:9px 12px;">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">QUANTIDADE</label>
+            <input id="item-edit-qtd-${item.id}" class="inp" type="number" min="1" style="font-size:0.85rem;padding:9px 12px;">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-sm btn-green" style="flex:1;padding:9px;" onclick="salvarEdicaoItem(${item.id})">✅ Salvar</button>
+          <button class="btn-sm" style="flex:1;padding:9px;background:var(--bg2);color:var(--text2);" onclick="cancelarEdicaoItem(${item.id})">✕ Cancelar</button>
+        </div>
+        <p id="item-edit-err-${item.id}" class="err-msg hidden" style="margin-top:6px;"></p>
+      </div>
+    </div>`;
+  }).join('');
+  if(document.getElementById('adm-total-balaio'))
+    document.getElementById('adm-total-balaio').textContent = brl(total||0);
+}
+
+function iniciarEdicaoItem(id, nome, preco, qtd){
+  document.querySelectorAll('[id^="item-edit-"]').forEach(el=>{
+    if(!el.id.match(/item-edit-(nome|preco|qtd|err)-/)) el.classList.add('hidden');
+  });
+  const edit = document.getElementById(`item-edit-${id}`);
+  edit.classList.remove('hidden');
+  document.getElementById(`item-edit-nome-${id}`).value  = nome;
+  document.getElementById(`item-edit-preco-${id}`).value = preco;
+  document.getElementById(`item-edit-qtd-${id}`).value   = qtd;
+}
+
+function cancelarEdicaoItem(id){
+  document.getElementById(`item-edit-${id}`).classList.add('hidden');
+}
+
+async function salvarEdicaoItem(id){
+  const nome  = document.getElementById(`item-edit-nome-${id}`).value.trim();
+  const preco = parseFloat(document.getElementById(`item-edit-preco-${id}`).value);
+  const qtd   = parseInt(document.getElementById(`item-edit-qtd-${id}`).value) || 1;
+  const errEl = document.getElementById(`item-edit-err-${id}`);
+  errEl.classList.add('hidden');
+  if(!nome || isNaN(preco) || preco < 0){
+    errEl.textContent='⚠️ Preencha nome e preço válido.';
+    errEl.classList.remove('hidden'); return;
+  }
+  try{
+    const res = await fetch(`${API_BASE}/api/admin/item/atualizar`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', Authorization:`Bearer ${adminToken}`},
+      body: JSON.stringify({id, nome, preco_estimado: preco, quantidade: qtd}),
+    });
+    if(res.ok){
+      toast('✅ Item atualizado!');
+      cancelarEdicaoItem(id);
+      carregarDados();
+    } else {
+      const d = await res.json();
+      errEl.textContent='❌ '+(d.error||'Erro ao salvar.'); errEl.classList.remove('hidden');
+    }
+  } catch{ errEl.textContent='❌ Erro de conexão.'; errEl.classList.remove('hidden'); }
+}
+
+// ─── Inscrição ────────────────────────────────────────────────────
+document.getElementById('btn-inscrever').addEventListener('click', async()=>{
+  const nome=document.getElementById('f-nome').value.trim();
+  const bloco=document.getElementById('f-bloco').value.trim();
+  const apt=document.getElementById('f-apt').value.trim();
+  const tel=document.getElementById('f-tel').value.trim();
+  const obs=document.getElementById('f-obs').value.trim();
+  const errEl=document.getElementById('form-error');
+  const btn=document.getElementById('btn-inscrever');
+
+  errEl.classList.add('hidden');
+  if(!nome||!bloco||!apt){ errEl.textContent='⚠️ Preencha nome, bloco e apartamento.'; errEl.classList.remove('hidden'); return; }
+
+  btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span> Aguarde…';
+  try{
+    const res=await fetch(`${API_BASE}/api/inscricao`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,bloco,apartamento:apt,telefone:tel,observacao:obs})});
+    const data=await res.json();
+    if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Erro ao realizar inscrição.'); errEl.classList.remove('hidden'); return; }
+    abrirModalPix(data.pix);
+    toast('🎉 Inscrição realizada!');
+    ['f-nome','f-bloco','f-apt','f-tel','f-obs'].forEach(id=>document.getElementById(id).value='');
+    carregarDados();
+  } catch{ errEl.textContent='⚠️ Erro de conexão. Tente novamente.'; errEl.classList.remove('hidden'); }
+  finally{ btn.disabled=false; btn.innerHTML='👥 Fazer Inscrição'; }
+});
+
+// ─── PIX ──────────────────────────────────────────────────────────
+function abrirModalPix({payload,valor,txid}){
+  document.getElementById('pix-valor').textContent=brl(+valor);
+  document.getElementById('pix-payload').value=payload;
+  document.getElementById('pix-txid').textContent='ID: '+txid;
+  const qrBox=document.getElementById('qr-box'); qrBox.innerHTML='';
+  new QRCode(qrBox,{text:payload,width:220,height:220,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
+  abrirModal('modal-pix');
+}
+function copiarPix(){
+  const p=document.getElementById('pix-payload').value;
+  navigator.clipboard.writeText(p).then(()=>toast('✅ Código PIX copiado!')).catch(()=>{document.getElementById('pix-payload').select();document.execCommand('copy');toast('✅ Copiado!');});
+}
+
+// ─── Admin ────────────────────────────────────────────────────────
+function abrirAdmin(){
+  if(adminToken){ mostrarPagina('page-admin'); carregarAdmin(); }
+  else abrirModal('modal-login');
+}
+function logout(){
+  adminToken=null; localStorage.removeItem('ba_token');
+  mostrarPagina('page-main'); toast('👋 Sessão encerrada.');
+}
+
+document.getElementById('btn-login').addEventListener('click', fazerLogin);
+document.getElementById('login-senha').addEventListener('keypress', e=>{ if(e.key==='Enter') fazerLogin(); });
+
+async function fazerLogin(){
+  const senha=document.getElementById('login-senha').value;
+  const errEl=document.getElementById('login-error');
+  const btn=document.getElementById('btn-login');
+  errEl.classList.add('hidden');
+  if(!senha){ errEl.textContent='⚠️ Digite a senha.'; errEl.classList.remove('hidden'); return; }
+  btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span>';
+  try{
+    const res=await fetch(`${API_BASE}/api/admin/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({senha})});
+    const data=await res.json();
+    if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Senha incorreta.'); errEl.classList.remove('hidden'); return; }
+    adminToken=data.token; localStorage.setItem('ba_token',adminToken);
+    document.getElementById('login-senha').value='';
+    fecharModal('modal-login'); mostrarPagina('page-admin'); carregarAdmin();
+    toast('🔓 Acesso liberado!');
+  } catch{ errEl.textContent='⚠️ Erro de conexão.'; errEl.classList.remove('hidden'); }
+  finally{ btn.disabled=false; btn.innerHTML='🔓 Entrar'; }
+}
+
+  try{
+    const res=await fetch(`${API_BASE}/api/admin/setup`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({senha})});
+    const data=await res.json();
+    if(res.ok){ toast('✅ Senha configurada! Faça o login.'); document.getElementById('setup-senha').value=''; }
+    else{ msg.textContent='⚠️'+data.error; msg.classList.remove('hidden'); }
+  } catch{ msg.textContent='⚠️ Erro de conexão.'; msg.classList.remove('hidden'); }
+}
+
+async function carregarAdmin(){
+  try{
+    const [resP,resD]=await Promise.all([
+      fetch(`${API_BASE}/api/admin/participantes`,{headers:{Authorization:`Bearer ${adminToken}`}}),
+      fetch(`${API_BASE}/api/dados`),
+    ]);
+    if(resP.status===401){ logout(); return; }
+    const {participantes}=await resP.json();
+    const {stats,config,itens}=await resD.json();
+
+    const total=+stats.total_inscritos, pagos=+stats.total_pagos;
+    document.getElementById('adm-inscritos').textContent   = total;
+    document.getElementById('adm-confirmados').textContent = pagos;
+    document.getElementById('adm-pendentes').textContent   = Math.max(0,total-pagos);
+    document.getElementById('adm-arrecadado').textContent  = brl(stats.total_arrecadado);
+    document.getElementById('adm-meta').textContent        = brl(config.meta_balaio);
+
+    const p=Math.min(100,(+stats.total_arrecadado/+config.meta_balaio)*100);
+    document.getElementById('adm-progress').style.width=p.toFixed(1)+'%';
+    document.getElementById('adm-pct').textContent=p.toFixed(1).replace('.',',')+' %';
+
+    document.getElementById('cfg-meta').value  = config.meta_balaio  || '';
+    document.getElementById('cfg-quota').value = config.valor_quota   || '';
+    document.getElementById('cfg-data').value  = config.data_evento   || '';
+    document.getElementById('cfg-local').value = config.local_evento  || '';
+
+    todosParticipantes = participantes || [];
+    filtrarParticipantes();
+    renderizarItens(itens);
+  } catch(err){ console.error(err); toast('❌ Erro ao carregar painel.'); }
+}
+
+function filtrarParticipantes(){
+  const q=document.getElementById('search-input').value.toLowerCase();
+  const status=document.getElementById('filter-status').value;
+  const filtrados=todosParticipantes.filter(p=>{
+    const mQ=!q||p.nome.toLowerCase().includes(q)||p.bloco.toLowerCase().includes(q)||p.apartamento.toLowerCase().includes(q);
+    const mS=!status||p.status_pagamento===status;
+    return mQ&&mS;
+  });
+  const lista=document.getElementById('lista-participantes');
+  if(!filtrados.length){ lista.innerHTML='<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Nenhum participante encontrado.</div></div>'; return; }
+  lista.innerHTML=filtrados.map(p=>`
+    <div class="p-card ${p.status_pagamento}" style="margin-bottom:10px;">
+      <div class="p-card-header">
+        <div>
+          <div class="p-card-name">${p.nome}</div>
+          <div class="p-card-info">🏠 Bloco ${p.bloco} · Apto ${p.apartamento} · ${p.data_inscricao}</div>
+        </div>
+        <span class="badge badge-${p.status_pagamento}">${p.status_pagamento==='pago'?'✅':p.status_pagamento==='cancelado'?'❌':'⏳'} ${p.status_pagamento}</span>
+      </div>
+      <div class="p-card-actions">
+        ${p.status_pagamento!=='pago'?`<button class="btn-sm btn-green" onclick="atualizarStatus(${p.id},'pago')">✅ Confirmar Pago</button>`:''}
+        ${p.status_pagamento!=='pendente'?`<button class="btn-sm btn-amber" onclick="atualizarStatus(${p.id},'pendente')">⏳ Pendente</button>`:''}
+        ${p.status_pagamento!=='cancelado'?`<button class="btn-sm btn-red" onclick="atualizarStatus(${p.id},'cancelado')">❌ Cancelar</button>`:''}
+      </div>
+    </div>`).join('');
+}
+
+async function atualizarStatus(id,status){
+  try{
+    const res=await fetch(`${API_BASE}/api/admin/confirmar`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${adminToken}`},body:JSON.stringify({id,status})});
+    if(res.ok){ toast('✅ Status atualizado!'); carregarAdmin(); carregarDados(); }
+    else toast('❌ Erro ao atualizar.');
+  } catch{ toast('❌ Erro de conexão.'); }
+}
+
+function mudarTab(tab){
+  ['participantes','itens','config'].forEach(t=>{
+    document.getElementById(`tab-content-${t}`).classList.add('hidden');
+    document.getElementById(`tab-${t}`).classList.remove('active');
+  });
+  document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
+  document.getElementById(`tab-${tab}`).classList.add('active');
+}
+
+async function salvarConfig(){
+  const msg=document.getElementById('cfg-msg'); msg.classList.add('hidden');
+  try{
+    const updates=[
+      {chave:'meta_balaio', valor:document.getElementById('cfg-meta').value},
+      {chave:'valor_quota', valor:document.getElementById('cfg-quota').value},
+      {chave:'data_evento', valor:document.getElementById('cfg-data').value},
+      {chave:'local_evento',valor:document.getElementById('cfg-local').value},
+    ];
+    const res=await fetch(`${API_BASE}/api/admin/config`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${adminToken}`},body:JSON.stringify({updates})});
+    if(res.ok){ toast('✅ Configurações salvas!'); carregarAdmin(); carregarDados(); }
+    else{ msg.textContent='❌ Erro ao salvar.'; msg.classList.remove('hidden'); }
+  } catch{ msg.textContent='❌ Erro de conexão.'; msg.classList.remove('hidden'); }
+}
+
+
+// ─── Init ─────────────────────────────────────────────────────────
+carregarDados();
+setInterval(carregarDados, 60_000);
+</script>
+</body>
+</html>
