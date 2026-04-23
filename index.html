@@ -779,18 +779,50 @@
                   if(!nome||!bloco||!apt){ errEl.textContent='⚠️ Preencha nome, bloco e apartamento.'; errEl.classList.remove('hidden'); return; }
                 
                   btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span> Aguarde…';
-
-                  try{
-                    const res=await fetch(`${API_BASE}/api/inscricao`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,bloco,apartamento:apt,telefone:tel,observacao:obs})});
-                    const data=await res.json();
-                    if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Erro ao realizar inscrição.'); errEl.classList.remove('hidden'); return; }
-                    abrirModalPix(data.pix);
-                    toast('🎉 Inscrição realizada!');
-                    ['f-nome','f-bloco','f-apt','f-tel','f-obs'].forEach(id=>document.getElementById(id).value='');
+                // ... dentro do click do btn-inscrever ...
+                try {
+                    const res = await fetch(`${API_BASE}/api/inscricao`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nome, bloco, apartamento: apt, telefone: tel, observacao: obs })
+                    });
+                    
+                    const data = await res.json();
+                    console.log("Resposta do Worker:", data); // ADICIONE ISSO PARA DEBUGAR
+                
+                    if (!res.ok) { 
+                        errEl.textContent = '⚠️ ' + (data.error || 'Erro ao realizar inscrição.'); 
+                        errEl.classList.remove('hidden'); 
+                        return; 
+                    }
+                
+                    // Se chegou aqui, o participante foi salvo. Vamos tentar abrir o PIX:
+                    if (data.pix) {
+                        abrirModalPix(data.pix);
+                        toast('🎉 Inscrição realizada!');
+                        // Limpa os campos...
+                    } else {
+                        console.error("Worker não devolveu os dados do PIX:", data);
+                        toast('⚠️ Inscrição salva, mas falha ao gerar PIX.');
+                    }
+                    
                     carregarDados();
-                  } catch{ errEl.textContent='⚠️ Erro de conexão. Tente novamente.'; errEl.classList.remove('hidden'); }
-                  finally{ btn.disabled=false; btn.innerHTML='👥 Fazer Inscrição'; }
-                  console.log("Botão de inscrição clicado!");
+                } catch (err) {
+                    console.error("Erro detalhado:", err); // ADICIONE ISSO
+                    errEl.textContent = '⚠️ Erro de conexão. Tente novamente.'; 
+                    errEl.classList.remove('hidden'); 
+                }
+//                  try{
+//                    const res=await fetch(`${API_BASE}/api/inscricao`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,bloco,apartamento:apt,telefone:tel,observacao:obs})});
+//                    const data=await res.json();
+//                    if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Erro ao realizar inscrição.'); errEl.classList.remove('hidden'); return; }
+//                    abrirModalPix(data.pix);
+//                    toast('🎉 Inscrição realizada!');
+//                    ['f-nome','f-bloco','f-apt','f-tel','f-obs'].forEach(id=>document.getElementById(id).value='');
+//                    carregarDados();
+//                  } catch{ errEl.textContent='⚠️ Erro de conexão. Tente novamente.'; errEl.classList.remove('hidden'); }
+//                  finally{ btn.disabled=false; btn.innerHTML='👥 Fazer Inscrição'; }
+//                  console.log("Botão de inscrição clicado!");
               });
          } else {
               console.warn("Aviso: Elemento 'btn-inscrever' não encontrado nesta página.");
