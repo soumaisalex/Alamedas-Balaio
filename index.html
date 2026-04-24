@@ -1006,7 +1006,27 @@
             console.error("Erro fatal no carregarAdmin:", err);
             toast('❌ Erro ao carregar painel.'); 
           }
-        }        
+        }
+
+        async function excluirParticipante(id) { 
+            if(!confirm('Deseja excluir este participante permanentemente?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/participante/${id}`, { 
+                    method: 'DELETE', 
+                    headers: { 'Authorization': `Bearer ${adminToken}` } 
+                });
+                if(res.ok) { 
+                    toast('🗑️ Removido com sucesso!'); 
+                    carregarAdmin(); 
+                    carregarDados(); 
+                } else {
+                    toast('❌ Erro ao excluir.');
+                }
+            } catch(err) {
+                toast('❌ Erro de conexão.');
+            }
+        }
+        
         function filtrarParticipantes() {
             const q = document.getElementById('search-input').value.toLowerCase();
             const status = document.getElementById('filter-status').value;
