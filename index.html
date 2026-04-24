@@ -202,7 +202,7 @@
     <div style="font-size:3rem;margin-bottom:8px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">&#127805;</div>
     <h1 style="font-size:2rem;font-weight:900;line-height:1.15;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);">Balaio Junino</h1>
     <p style="font-size:1.1rem;font-weight:800;color:#FFE68A;margin-top:2px;text-shadow:0 1px 4px rgba(0,0,0,0.2);">Alamedas 2026</p>
-    <p style="font-size:0.85rem;color:#3D1A00;font-weight:700;margin-top:10px;line-height:1.55;max-width:340px;margin-left:auto;margin-right:auto;" id="hdr-desc">Participe da nossa festa junina! Inscreva-se e ajude a fazer deste evento um sucesso.</p>
+    <p style="font-size:0.85rem;color:#3D1A00;font-weight:700;margin-top:10px;line-height:1.55;max-width:340px;margin-left:auto;margin-right:auto;" id="hdr-desc"></p>
   </div>
  
   <div style="padding:20px 16px 40px; max-width:480px; margin:0 auto;">
@@ -230,8 +230,8 @@
         <div class="sec-header">
           <div class="sec-icon">&#128293;</div>
           <div>
-            <div class="sec-title">Proximo Balaio</div>
-            <div class="sec-sub">Acompanhe a arrecadacao</div>
+            <div class="sec-title">Próximo Balaio</div>
+            <div class="sec-sub">Acompanhe a arrecadação</div>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
@@ -279,7 +279,7 @@
         <div class="sec-header">
           <div class="sec-icon">&#9997;</div>
           <div>
-            <div class="sec-title">Inscricao</div>
+            <div class="sec-title">Inscrição</div>
             <div class="sec-sub">Preencha seus dados para participar</div>
           </div>
         </div>
@@ -298,7 +298,7 @@
           </div>
         </div>
         <div class="form-row form-group">
-          <div><label class="form-label">Telefone</label>
+          <div><label class="form-label">Telefone <span class="req">*</span></label>
           <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" inputmode="tel"></div>
         <div class="form-group"><label class="form-label">Quantidade de Cotas (Chances)</label><select id="f-qtd" class="inp"></select></div>
         </div>
@@ -753,7 +753,7 @@
                   const btn=document.getElementById('btn-inscrever');
                 
                   errEl.classList.add('hidden');
-                  if(!nome||!bloco||!apt){ errEl.textContent='⚠️ Preencha nome, bloco e apartamento.'; errEl.classList.remove('hidden'); return; }
+                  if(!nome||!bloco||!apt){ errEl.textContent='⚠️ Preencha nome, bloco, apartamento e telefone.'; errEl.classList.remove('hidden'); return; }
                 
                   btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span> Aguarde…';
                 // ... dentro do click do btn-inscrever ...
