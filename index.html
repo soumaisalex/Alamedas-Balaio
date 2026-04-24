@@ -1128,7 +1128,7 @@
                     <style>
                         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
                         
-                        body { font-family: 'Nunito', sans-serif; padding: 10px; background: #fff; margin: 0; }
+                        body { font-family: 'Nunito', sans-serif; padding: 6px; background: #fff; margin: 0; }
                         
                         /* Grid configurado para 4 colunas */
                         .grid { 
@@ -1139,7 +1139,7 @@
                         
                         .ticket { 
                             border: 1.5px solid #000; 
-                            padding: 8px; 
+                            padding: 6px; 
                             box-sizing: border-box;
                             page-break-inside: avoid;
                             display: flex;
@@ -1154,10 +1154,10 @@
                             font-size: 0.55rem;
                             font-weight: 900;
                             border-bottom: 1px dashed #000;
-                            padding-bottom: 4px;
+                            padding-bottom: 2px;
                         }
         
-                        .ticket-body { text-align: center; padding: 5px 0; }
+                        .ticket-body { text-align: center; padding: 3px 0; }
                         .ticket-nome { 
                             font-size: 0.85rem; 
                             font-weight: 900; 
@@ -1177,7 +1177,7 @@
                             font-size: 0.5rem;
                             color: #888;
                             text-align: center;
-                            padding-top: 4px;
+                            padding-top: 2px;
                         }
         
                         @media print {
@@ -1233,6 +1233,7 @@
             
             win.document.close();
         }  
+        
         function mudarTab(tab){
           ['participantes','itens','config'].forEach(t=>{
             document.getElementById(`tab-content-${t}`).classList.add('hidden');
