@@ -1,417 +1,498 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#F5EFE0">
     <title>Balaio Junino · Alamedas 2026</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        :root {
-          --bg: #F5EFE0; --bg2: #EDE5CC; --card: #FFFFFF;
-          --orange: #E8651A; --orange2: #F07830; --orange-l: #FFF1E8;
-          --green: #22C55E; --green-l: #DCFCE7; --red: #EF4444; --red-l: #FEE2E2;
-          --amber: #F59E0B; --amber-l: #FEF3C7; --text: #1C1917;
-          --text2: #57534E; --text3: #A8A29E; --border: #E7DDD0;
-          --shadow: 0 2px 12px rgba(0,0,0,0.08); --radius: 16px; --radius-sm: 10px;
-        }
-        body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
         
-        /* Bandeirolas Pé de Pato */
-        .bunting { width:100%; height:48px; position:relative; overflow:hidden; z-index:10; background:#8B5E2C; }
-        .bunting-flags { display:flex; position:absolute; top:4px; left:-10px; }
-        .flag { 
-            width:28px; height:40px; 
-            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%);
-            flex-shrink:0; margin:0 2px; 
-            animation: sway 1.2s ease-in-out infinite alternate; 
-            transform-origin: top center; 
+        :root {
+          --bg:       #F5EFE0;
+          --bg2:      #EDE5CC;
+          --card:     #FFFFFF;
+          --orange:   #E8651A;
+          --orange2:  #F07830;
+          --orange-l: #FFF1E8;
+          --green:    #22C55E;
+          --green-l:  #DCFCE7;
+          --red:      #EF4444;
+          --red-l:    #FEE2E2;
+          --amber:    #F59E0B;
+          --amber-l:  #FEF3C7;
+          --text:     #1C1917;
+          --text2:    #57534E;
+          --text3:    #A8A29E;
+          --border:   #E7DDD0;
+          --shadow:   0 2px 12px rgba(0,0,0,0.08);
+          --radius:   16px;
+          --radius-sm:10px;
         }
-        @keyframes sway { from{transform:rotate(-8deg)} to{transform:rotate(8deg)} }
-
-        .page { display:none; padding: 16px; max-width: 480px; margin: 0 auto; }
+        
+        html { scroll-behavior: smooth; }
+        body {
+          font-family: 'Nunito', sans-serif;
+          background: var(--bg);
+          color: var(--text);
+          min-height: 100vh;
+          overflow-x: hidden;
+          -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Bandeirolas */
+        .bunting { width:100%; height:48px; position:relative; overflow:hidden; flex-shrink:0; z-index:10; background:#8B5E2C; }
+        .bunting-rope { position:absolute; top:6px; left:-2%; right:-2%; height:2px; background:#5C3D12; }
+        .bunting-flags { display:flex; position:absolute; top:4px; left:-10px; gap:0; }
+        .flag { width:28px; height:38px; clip-path:polygon(0 0,100% 0,50% 100%); flex-shrink:0; margin:0 2px; animation:sway 2.8s ease-in-out infinite alternate; transform-origin:top center; }
+        .flag:nth-child(even) { animation-duration:3.4s; animation-direction:alternate-reverse; }
+        /*.flag { width: 28px; height: 40px; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 75%, 0% 100%); flex-shrink: 0; margin: 0 2px; animation: sway 1.5s ease-in-out infinite alternate; transform-origin: top center; */
+        @keyframes sway { from{transform:rotate(-5deg)} to{transform:rotate(5deg)} }
+        
+        /* Pages */
+        .page { display:none; }
         .page.active { display:block; }
-        .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom: 16px; overflow:hidden; }
+        
+        /* Card */
+        .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
         .card-body { padding:18px; }
         
-        .progress-wrap { background:var(--bg2); border-radius:100px; height:36px; overflow:hidden; position:relative; }
-        .progress-fill { height:100%; background:linear-gradient(90deg,var(--orange),#FFB800); transition:width 1s cubic-bezier(0.34,1.56,0.64,1); }
-        .progress-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:800; }
-
-        .stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom: 16px; }
-        .stat-card { background:var(--card); border-radius:var(--radius-sm); padding:14px 10px; text-align:center; border:1.5px solid var(--border); }
-        .stat-num { font-size:1.4rem; font-weight:900; }
-        .stat-lbl { font-size:0.7rem; color:var(--text3); }
-
-        .form-group { margin-bottom:14px; }
-        .form-label { display:block; font-size:0.82rem; font-weight:700; margin-bottom:6px; }
-        .inp { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:13px; font-family:inherit; outline:none; }
+        /* Section header */
+        .sec-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+        .sec-icon { width:38px; height:38px; background:var(--orange-l); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+        .sec-title { font-size:1rem; font-weight:800; color:var(--text); }
+        .sec-sub { font-size:0.78rem; color:var(--text3); margin-top:1px; }
         
-        .btn-primary { width:100%; background:var(--orange); color:#fff; font-weight:800; padding:15px; border:none; border-radius:100px; cursor:pointer; box-shadow:0 4px 16px rgba(232,101,26,0.3); }
-        .btn-sm { padding:6px 12px; border-radius:100px; border:none; cursor:pointer; font-size: 0.75rem; font-weight: 700; }
-        .btn-red { background: var(--red-l); color: var(--red); }
-        .btn-green { background: var(--green-l); color: var(--green); }
-        .btn-amber { background: var(--amber-l); color: var(--amber); }
-
-        .p-card { background:var(--card); border-radius:var(--radius-sm); padding:14px; border-left:4px solid var(--border); margin-bottom: 10px; box-shadow: var(--shadow); }
-        .p-card.pago { border-left-color:var(--green); }
-        .modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.5); display:flex; align-items:flex-end; justify-content:center; }
-        .modal-box { background:var(--card); border-radius:24px 24px 0 0; width:100%; max-width:480px; padding:24px; animation:slideUp 0.3s ease; }
-        @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+        /* Progress */
+        .progress-wrap { background:var(--bg2); border-radius:100px; height:36px; overflow:hidden; position:relative; }
+        .progress-fill { height:100%; background:linear-gradient(90deg,var(--orange),#FFB800); border-radius:100px; transition:width 1s cubic-bezier(0.34,1.56,0.64,1); }
+        .progress-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:800; color:var(--text); }
+        
+        /* Stat grid */
+        .stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+        .stat-card { background:var(--card); border-radius:var(--radius-sm); box-shadow:var(--shadow); padding:14px 10px; text-align:center; border:1.5px solid var(--border); }
+        .stat-card .stat-icon { font-size:22px; margin-bottom:4px; }
+        .stat-card .stat-num  { font-size:1.5rem; font-weight:900; color:var(--text); line-height:1; }
+        .stat-card .stat-lbl  { font-size:0.7rem; color:var(--text3); font-weight:600; margin-top:3px; }
+        
+        /* Inputs */
+        .form-group { margin-bottom:14px; }
+        .form-label { display:block; font-size:0.82rem; font-weight:700; color:var(--text2); margin-bottom:6px; }
+        .form-label .req { color:var(--orange); }
+        .inp { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:'Nunito',sans-serif; font-size:0.95rem; padding:13px 14px; outline:none; transition:border-color 0.2s, box-shadow 0.2s; -webkit-appearance:none; }
+        .inp::placeholder { color:var(--text3); }
+        .inp:focus { border-color:var(--orange); box-shadow:0 0 0 3px rgba(232,101,26,0.12); }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        
+        /* Buttons */
+        .btn-primary { width:100%; background:var(--orange); color:#fff; font-family:'Nunito',sans-serif; font-weight:800; font-size:1rem; padding:15px 20px; border:none; border-radius:100px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.15s, transform 0.1s; box-shadow:0 4px 16px rgba(232,101,26,0.3); -webkit-tap-highlight-color:transparent; }
+        .btn-primary:hover:not(:disabled) { background:var(--orange2); }
+        .btn-primary:active:not(:disabled) { transform:scale(0.98); }
+        .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
+        .btn-ghost { background:transparent; border:1.5px solid var(--border); color:var(--text2); font-family:'Nunito',sans-serif; font-weight:700; font-size:0.85rem; padding:10px 16px; border-radius:100px; cursor:pointer; transition:background 0.15s; }
+        .btn-ghost:hover { background:var(--bg2); }
+        .btn-sm { padding:8px 14px; font-size:0.8rem; border-radius:100px; font-family:'Nunito',sans-serif; font-weight:700; cursor:pointer; border:none; transition:opacity 0.15s, transform 0.1s; }
+        .btn-sm:active { transform:scale(0.96); }
+        .btn-green  { background:var(--green-l);  color:#16A34A; }
+        .btn-red    { background:var(--red-l);    color:#DC2626; }
+        .btn-amber  { background:var(--amber-l);  color:#D97706; }
+        
+        /* Table rows */
+        .item-row { display:flex; align-items:center; justify-content:space-between; padding:12px 18px; border-bottom:1px solid var(--bg); gap:12px; font-size:0.9rem; }
+        .item-row:last-child { border-bottom:none; }
+        .item-row .item-name { color:var(--text2); flex:1; }
+        .item-row .item-val  { font-weight:700; color:var(--text); flex-shrink:0; }
+        .item-total-row { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; background:var(--orange-l); border-top:2px solid var(--orange); }
+        .item-total-row .lbl { font-weight:800; color:var(--orange); }
+        .item-total-row .val { font-weight:900; font-size:1.05rem; color:var(--orange); }
+        
+        /* Badges */
+        .badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:100px; font-size:0.75rem; font-weight:700; }
+        .badge-pago      { background:var(--green-l); color:#16A34A; }
+        .badge-pendente  { background:var(--amber-l); color:#D97706; }
+        .badge-cancelado { background:var(--red-l);   color:#DC2626; }
+        
+        /* Modal */
+        .modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.5); display:flex; align-items:flex-end; justify-content:center; animation:fadeIn 0.2s ease; }
+        @media(min-width:600px){ .modal-bg { align-items:center; padding:20px; } }
+        .modal-box { background:var(--card); border-radius:24px 24px 0 0; width:100%; max-width:480px; max-height:92vh; overflow-y:auto; padding:24px 20px 36px; animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+        @media(min-width:600px){ .modal-box { border-radius:24px; } }
+        @keyframes slideUp { from{transform:translateY(60px);opacity:0} to{transform:translateY(0);opacity:1} }
+        @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+        .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+        
+        /* Admin nav */
+        .admin-nav { display:flex; align-items:center; gap:12px; padding:16px; background:var(--card); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10; }
+        .admin-nav h1 { font-size:1.1rem; font-weight:900; }
+        .admin-nav p  { font-size:0.75rem; color:var(--text3); margin-top:1px; }
+        .back-btn { background:transparent; border:none; font-size:1.3rem; cursor:pointer; color:var(--text2); padding:4px; flex-shrink:0; display:flex; align-items:center; }
+        .back-btn:hover { color:var(--orange); }
+        
+        /* Tab bar */
+        .tab-bar { display:grid; grid-template-columns:repeat(3,1fr); background:var(--bg2); border-radius:var(--radius-sm); padding:4px; gap:4px; }
+        .tab-btn { padding:10px; border:none; border-radius:7px; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:20px; transition:background 0.15s; color:var(--text3); }
+        .tab-btn.active { background:var(--card); color:var(--orange); box-shadow:var(--shadow); }
+        
+        /* Search */
+        .search-wrap { display:flex; gap:10px; align-items:center; }
+        .search-inp { flex:1; background:var(--card); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:11px 14px; font-family:'Nunito',sans-serif; font-size:0.88rem; color:var(--text); outline:none; }
+        .search-inp:focus { border-color:var(--orange); }
+        .search-inp::placeholder { color:var(--text3); }
+        .filter-sel { background:var(--card); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:11px 12px; font-family:'Nunito',sans-serif; font-size:0.85rem; color:var(--text); outline:none; cursor:pointer; flex-shrink:0; }
+        
+        /* Participant card */
+        .p-card { background:var(--card); border-radius:var(--radius-sm); box-shadow:var(--shadow); padding:14px; border-left:4px solid var(--border); }
+        .p-card.pago      { border-left-color:var(--green); }
+        .p-card.pendente  { border-left-color:var(--amber); }
+        .p-card.cancelado { border-left-color:var(--red);   }
+        .p-card-header { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+        .p-card-name   { font-weight:800; font-size:0.95rem; color:var(--text); }
+        .p-card-info   { font-size:0.78rem; color:var(--text3); margin-top:2px; }
+        .p-card-actions { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+        
+        /* Copy row */
+        .copy-row { display:flex; gap:8px; align-items:center; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 14px; }
+        .copy-row input { flex:1; border:none; background:transparent; font-size:0.78rem; color:var(--text2); font-family:'Nunito',sans-serif; outline:none; min-width:0; }
+        .copy-btn { background:var(--orange); color:white; border:none; padding:7px 14px; border-radius:8px; font-size:0.8rem; font-weight:700; font-family:'Nunito',sans-serif; cursor:pointer; flex-shrink:0; }
+        
+        /* QR */
+        #qr-box { background:white; border-radius:var(--radius-sm); padding:16px; display:flex; align-items:center; justify-content:center; }
+        #qr-box canvas, #qr-box img { border-radius:8px; }
+        
+        /* Toast */
+        #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:white; font-family:'Nunito',sans-serif; font-size:0.88rem; font-weight:700; padding:12px 22px; border-radius:100px; white-space:nowrap; z-index:999; opacity:0; pointer-events:none; transition:opacity 0.3s, transform 0.3s; max-width:90vw; text-align:center; }
+        #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+        
+        /* Footer link */
+        .footer-link { display:flex; align-items:center; justify-content:center; gap:6px; background:transparent; border:1.5px solid var(--border); border-radius:100px; padding:10px 20px; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700; color:var(--text2); cursor:pointer; width:100%; transition:background 0.15s; }
+        .footer-link:hover { background:var(--bg2); }
+        
+        /* Info box */
+        .info-box { background:var(--orange-l); border:1px solid rgba(232,101,26,0.2); border-radius:var(--radius-sm); padding:14px; font-size:0.83rem; color:var(--text2); line-height:1.5; }
+        .info-box strong { color:var(--orange); }
+        
+        /* Misc */
+        .err-msg { font-size:0.82rem; color:var(--red); font-weight:600; text-align:center; margin-top:10px; }
+        .empty { text-align:center; padding:40px 20px; color:var(--text3); }
+        .empty-icon { font-size:2.5rem; margin-bottom:10px; }
+        .empty-text { font-size:0.9rem; font-weight:600; }
         .hidden { display:none !important; }
-        .spin { display:inline-block; animation:spin 1s linear infinite; }
         @keyframes spin { to{transform:rotate(360deg)} }
-
-        #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#000; color:#fff; padding:12px 24px; border-radius:100px; font-size:0.85rem; opacity:0; transition:0.3s; z-index:999; }
-        #toast.show { opacity:1; }
+        .spin { display:inline-block; animation:spin 1s linear infinite; }
     </style>
+
 </head>
+
 <body>
+<div id="page-main" class="page active">
+  <div class="bunting"><div class="bunting-flags" id="flags"></div></div>
 
-    <div class="bunting"><div class="bunting-flags" id="flags"></div></div>
-
-    <div id="page-main" class="page active">
-        <div style="text-align:center; margin: 20px 0;">
-            <h1 style="font-weight:900;">Balaio Alamedas</h1>
-            <p id="hdr-desc" style="color:var(--text3);">Carregando evento...</p>
+  <div style="background:linear-gradient(180deg,#8B5E2C 0%,#C4883A 28%,#E8A84A 55%,#F5EFE0 100%);padding:28px 16px 32px;text-align:center;">
+    <div style="font-size:3rem;margin-bottom:8px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">&#127805;</div>
+    <h1 style="font-size:2rem;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);">Balaio Junino</h1>
+    <p style="font-size:1.1rem;font-weight:800;color:#FFE68A;">Alamedas 2026</p>
+    <p style="font-size:0.85rem;color:#3D1A00;font-weight:700;margin-top:10px;max-width:340px;margin-left:auto;margin-right:auto;" id="hdr-desc">Carregando informações...</p>
+  </div>
+ 
+  <div style="padding:20px 16px 40px; max-width:480px; margin:0 auto;">
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-body">
+        <div class="sec-header">
+          <div class="sec-icon">&#129530;</div>
+          <div>
+            <div class="sec-title">Balaios para Sorteio</div>
+            <div class="sec-sub" id="sorteio-sub">Calculando...</div>
+          </div>
         </div>
-
-        <div class="card">
-            <div class="card-body">
-                <div class="progress-wrap" style="margin-bottom:8px;">
-                    <div id="progress-fill" class="progress-fill" style="width:0%"></div>
-                    <div id="progress-label" class="progress-label">0%</div>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text3);">
-                    <span>Acumulado: <strong id="thermo-val">R$ 0</strong></span>
-                    <span>Meta: <strong id="thermo-meta">R$ 0</strong></span>
-                </div>
-            </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--bg);">
+          <span style="font-size:0.85rem;color:var(--text3);font-weight:600;">Total arrecadado</span>
+          <span style="font-weight:900;font-size:1rem;color:var(--orange);" id="sorteio-total">R$ 0,00</span>
         </div>
-
-        <div class="stat-grid">
-            <div class="stat-card">
-                <div class="stat-num" id="stat-inscritos">0</div>
-                <div class="stat-lbl">Inscritos</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-num" style="color:var(--green)" id="stat-confirmados">0</div>
-                <div class="stat-lbl">Confirmados</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-num" style="color:var(--amber)" id="stat-pendentes">0</div>
-                <div class="stat-lbl">Pendentes</div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <h3 style="margin-bottom:14px;">🧺 Faça sua Inscrição</h3>
-                <div class="form-group">
-                    <label class="form-label">Nome Completo</label>
-                    <input id="f-nome" class="inp" type="text" placeholder="Seu nome">
-                </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div class="form-group">
-                        <label class="form-label">Bloco</label>
-                        <input id="f-bloco" class="inp" type="text" placeholder="Ex: A">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Apto</label>
-                        <input id="f-apt" class="inp" type="text" placeholder="Ex: 101">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Quantidade de Cotas</label>
-                    <select id="f-qtd" class="inp"></select>
-                </div>
-                <button id="btn-inscrever" class="btn-primary">🔥 Participar do Balaio</button>
-                <p id="form-error" style="color:var(--red); font-size:0.8rem; margin-top:10px;" class="hidden"></p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <h3 style="margin-bottom:10px;">📋 Itens do Balaio</h3>
-                <div id="itens-list"></div>
-                <div style="margin-top:14px; padding-top:10px; border-top:2px dashed var(--border); display:flex; justify-content:space-between; font-weight:900;">
-                    <span>Total Estimado:</span>
-                    <span id="total-balaio">R$ 0,00</span>
-                </div>
-            </div>
-        </div>
-
-        <button onclick="abrirAdmin()" style="width:100%; background:transparent; border:1px solid var(--border); padding:12px; border-radius:100px; color:var(--text3); font-size:0.8rem; margin-top:20px;">🔐 Área Administrativa</button>
+      </div>
     </div>
 
-    <div id="page-admin" class="page">
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
-            <button onclick="voltarMain()" class="btn-sm" style="background:var(--bg2);">← Voltar</button>
-            <h1 style="font-weight:900;">Painel Admin</h1>
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-body">
+        <div class="sec-header"><div class="sec-icon">&#128293;</div><div class="sec-title">Próximo Balaio</div></div>
+        <div class="progress-wrap" style="margin-bottom:8px;">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+          <div class="progress-label" id="progress-label">0%</div>
         </div>
-
-        <div class="card">
-            <div class="card-body">
-                <div style="display:flex; gap:8px; margin-bottom:15px;">
-                    <button onclick="mudarTab('participantes')" class="btn-sm btn-green">Participantes</button>
-                    <button onclick="imprimirListaSorteio()" class="btn-sm btn-amber">🖨️ Imprimir p/ Sorteio</button>
-                    <button onclick="logout()" class="btn-sm btn-red">Sair</button>
-                </div>
-                <div id="adm-content">
-                    <input type="text" id="search-input" class="inp" placeholder="🔍 Buscar..." oninput="filtrarParticipantes()" style="margin-bottom:15px;">
-                    <div id="lista-participantes"></div>
-                </div>
-            </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text3);font-weight:600;">
+          <span>Saldo: <strong id="thermo-val">R$ 0,00</strong></span>
+          <span>Meta: <strong id="thermo-meta">R$ --</strong></span>
         </div>
+      </div>
     </div>
 
-    <div id="modal-pix" class="modal-bg hidden">
-        <div class="modal-box">
-            <h2 style="text-align:center; margin-bottom:10px;">Quase lá! 🤠</h2>
-            <p style="text-align:center; font-size:0.9rem; color:var(--text2); margin-bottom:20px;">Pague o PIX para confirmar sua participação.</p>
-            <div style="text-align:center; margin-bottom:20px;">
-                <p style="font-size:0.8rem; color:var(--text3);">Valor Total</p>
-                <p id="pix-valor" style="font-size:2rem; font-weight:900; color:var(--orange);">R$ 0,00</p>
-            </div>
-            <div id="qr-box" style="display:flex; justify-content:center; margin-bottom:20px;"></div>
-            <div class="form-group">
-                <label class="form-label">Código Copia e Cola</label>
-                <div style="display:flex; gap:5px;">
-                    <input id="pix-payload" class="inp" readonly style="font-size:0.7rem;">
-                    <button onclick="copiarPix()" class="btn-sm btn-green">Copiar</button>
-                </div>
-            </div>
-            <button onclick="fecharModal('modal-pix')" class="btn-primary">Já paguei / Fechar</button>
-        </div>
+    <div class="stat-grid" style="margin-bottom:14px;">
+      <div class="stat-card"><div class="stat-num" id="stat-inscritos">0</div><div class="stat-lbl">Cotas</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--green);" id="stat-confirmados">0</div><div class="stat-lbl">Pagas</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--amber);" id="stat-pendentes">0</div><div class="stat-lbl">Pendentes</div></div>
     </div>
 
-    <div id="modal-login" class="modal-bg hidden">
-        <div class="modal-box">
-            <h3>🔐 Login Admin</h3>
-            <div class="form-group" style="margin-top:15px;">
-                <input id="login-senha" type="password" class="inp" placeholder="Senha">
-            </div>
-            <button id="btn-login" class="btn-primary" onclick="fazerLogin()">Entrar</button>
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-body">
+        <div class="sec-header"><div class="sec-icon">&#9997;</div><div class="sec-title">Inscrição</div></div>
+        <div class="form-group"><label class="form-label">Nome Completo *</label><input id="f-nome" class="inp" type="text" placeholder="Seu nome"></div>
+        <div class="form-row form-group">
+          <div><label class="form-label">Bloco *</label><input id="f-bloco" class="inp" type="text" placeholder="A"></div>
+          <div><label class="form-label">Apto *</label><input id="f-apt" class="inp" type="text" placeholder="101"></div>
         </div>
+        <div class="form-group"><label class="form-label">Quantidade de Cotas (Chances)</label><select id="f-qtd" class="inp"></select></div>
+        <button class="btn-primary" id="btn-inscrever">🔥 Garantir Minha Participação</button>
+        <p id="form-error" class="err-msg hidden"></p>
+      </div>
     </div>
 
-    <div id="toast"></div>
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-body"><div class="sec-header"><div class="sec-icon">&#128203;</div><div class="sec-title">Transparência</div></div></div>
+      <div id="itens-list"></div>
+      <div class="item-total-row"><span class="lbl">Custo do Balaio</span><span class="val" id="total-balaio">R$ --</span></div>
+    </div>
 
-    <script>
-        const API_BASE = 'https://alamedas-balaio.alexdesouzapassos.workers.dev';
-        let adminToken = localStorage.getItem('ba_token');
-        let todosParticipantes = [];
-        let configGlobal = {};
+    <button class="footer-link" onclick="abrirAdmin()">Painel Administrativo</button>
+    <div style="text-align:center;margin-top:20px;font-size:0.75rem;color:var(--text3);">Desenvolvido por Alex Passos</div>
+  </div>
+</div>
 
-        // Helper BRL
-        const brl = v => new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v);
+<div id="page-admin" class="page">
+    <div class="admin-nav">
+        <button class="back-btn" onclick="voltarMain()">←</button>
+        <div><h1>Painel Admin</h1><p>Gestão do Balaio</p></div>
+        <div style="flex:1"></div>
+        <button class="btn-ghost" onclick="logout()">Sair</button>
+    </div>
+    <div style="padding:16px;">
+        <div class="tab-bar" style="margin-bottom:14px;">
+            <button class="tab-btn active" onclick="mudarTab('participantes')">👥</button>
+            <button class="tab-btn" onclick="imprimirListaSorteio()">🖨️</button>
+            <button class="tab-btn" onclick="mudarTab('config')">⚙️</button>
+        </div>
+        <div id="tab-content-participantes">
+            <input class="search-inp" id="search-input" type="text" placeholder="🔍 Buscar..." oninput="filtrarParticipantes()" style="margin-bottom:12px; width:100%;">
+            <div id="lista-participantes"></div>
+        </div>
+        <div id="tab-content-config" class="hidden">
+            <div class="card"><div class="card-body">
+                <div class="form-group"><label class="form-label">Meta (R$)</label><input id="cfg-meta" class="inp" type="number"></div>
+                <div class="form-group"><label class="form-label">Valor Cota (R$)</label><input id="cfg-quota" class="inp" type="number"></div>
+                <button class="btn-primary" onclick="salvarConfig()">Salvar</button>
+            </div></div>
+        </div>
+    </div>
+</div>
 
-        // Bandeirinhas
-        const cores = ['#FF4136', '#FF851B', '#FFDC00', '#2ECC40', '#0074D9', '#B10DC9', '#FF69B4', '#01FF70'];
-        const container = document.getElementById('flags');
-        for(let i=0; i<25; i++) {
-            const f = document.createElement('div');
-            f.className = 'flag';
-            f.style.background = cores[i % cores.length];
-            container.appendChild(f);
+<div id="modal-pix" class="modal-bg hidden">
+    <div class="modal-box">
+        <h2 style="text-align:center; margin-bottom:15px;">Pague com PIX 🌵</h2>
+        <div style="text-align:center; margin-bottom:15px;">
+            <p style="font-size:2rem; font-weight:900; color:var(--orange);" id="pix-valor">R$ 0,00</p>
+        </div>
+        <div id="qr-box"></div>
+        <div class="form-group" style="margin-top:15px;">
+            <label class="form-label">Copia e Cola</label>
+            <div style="display:flex; gap:8px;">
+                <input id="pix-payload" class="inp" readonly style="font-size:0.75rem;">
+                <button class="copy-btn" onclick="copiarPix()" style="background:var(--orange); color:white; border:none; padding:10px; border-radius:8px;">Copiar</button>
+            </div>
+        </div>
+        <button class="btn-primary" onclick="fecharModal('modal-pix')">Fechar</button>
+    </div>
+</div>
+
+<div id="modal-login" class="modal-bg hidden">
+    <div class="modal-box">
+        <h3>Acesso Restrito</h3>
+        <input id="login-senha" type="password" class="inp" placeholder="Senha" style="margin:15px 0;">
+        <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
+    </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+    const API_BASE = 'https://alamedas-balaio.alexdesouzapassos.workers.dev';
+    let adminToken = localStorage.getItem('ba_token');
+    let todosParticipantes = [];
+
+    const brl = v => new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v);
+    function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+
+    // Bandeirolas
+    (function(){
+        const cores = ['#FF4136','#FF851B','#FFD700','#2ECC40','#0074D9','#B10DC9','#FF69B4','#01FF70'];
+        const cont = document.getElementById('flags');
+        for(let i=0; i<30; i++){
+            const f = document.createElement('div'); f.className = 'flag';
+            f.style.background = cores[i % cores.length]; cont.appendChild(f);
         }
+    })();
 
-        async function carregarDados() {
-            try {
-                const res = await fetch(`${API_BASE}/api/dados`);
-                const data = await res.json();
-                configGlobal = data.config;
-                
-                document.getElementById('hdr-desc').textContent = data.config.data_evento || 'Festa Junina Alamedas';
-                document.getElementById('stat-inscritos').textContent = data.stats.total_inscritos;
-                document.getElementById('stat-confirmados').textContent = data.stats.total_pagos;
-                document.getElementById('stat-pendentes').textContent = data.stats.total_inscritos - data.stats.total_pagos;
-                
-                // Update Seletor Cotas
-                const v = parseFloat(data.config.valor_quota || 10);
-                document.getElementById('f-qtd').innerHTML = [1,2,3,5,10].map(n => `<option value="${n}">${n} cotas (${brl(n*v)})</option>`).join('');
+    async function carregarDados(){
+        try {
+            const res = await fetch(`${API_BASE}/api/dados`);
+            const data = await res.json();
+            const {config, itens, stats} = data;
 
-                // Termômetro
-                const meta = parseFloat(data.config.meta_balaio || 500);
-                const arrec = parseFloat(data.stats.total_arrecadado);
-                const pct = Math.min(100, (arrec/meta)*100);
-                document.getElementById('progress-fill').style.width = pct + '%';
-                document.getElementById('progress-label').textContent = pct.toFixed(1) + '%';
-                document.getElementById('thermo-val').textContent = brl(arrec);
-                document.getElementById('thermo-meta').textContent = brl(meta);
+            document.getElementById('hdr-desc').textContent = config.data_evento || 'Festa Junina Alamedas';
+            document.getElementById('stat-inscritos').textContent = stats.total_inscritos;
+            document.getElementById('stat-confirmados').textContent = stats.total_pagos;
+            document.getElementById('stat-pendentes').textContent = stats.total_inscritos - stats.total_pagos;
 
-                // Lista Itens
-                document.getElementById('itens-list').innerHTML = data.itens.map(it => `
-                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:5px;">
-                        <span>${it.icone} ${it.nome} (x${it.quantidade})</span>
-                        <span>${brl(it.preco_estimado * it.quantidade)}</span>
-                    </div>
-                `).join('');
-                const total = data.itens.reduce((acc, it) => acc + (it.preco_estimado * it.quantidade), 0);
-                document.getElementById('total-balaio').textContent = brl(total);
+            // Seletor de Cotas Dinâmico
+            const vCota = parseFloat(config.valor_quota || 10);
+            document.getElementById('f-qtd').innerHTML = [1,2,3,5,10].map(n => 
+                `<option value="${n}">${n} cotas (${brl(n * vCota)})</option>`
+            ).join('');
 
-            } catch (e) { console.error(e); }
-        }
+            const custo = itens.reduce((s,i)=> s + (i.preco_estimado * i.quantidade), 0);
+            const arrec = parseFloat(stats.total_arrecadado);
+            const balaios = Math.floor(arrec / custo);
+            const saldoAtual = arrec % custo;
+            const p = (saldoAtual / custo) * 100;
 
-        document.getElementById('btn-inscrever').onclick = async () => {
-            const btn = document.getElementById('btn-inscrever');
-            const err = document.getElementById('form-error');
-            const payload = {
-                nome: document.getElementById('f-nome').value,
-                bloco: document.getElementById('f-bloco').value,
-                apartamento: document.getElementById('f-apt').value,
-                quantidade: document.getElementById('f-qtd').value
-            };
+            document.getElementById('progress-fill').style.width = p + '%';
+            document.getElementById('progress-label').textContent = Math.round(p) + '%';
+            document.getElementById('thermo-val').textContent = brl(saldoAtual);
+            document.getElementById('thermo-meta').textContent = brl(custo);
+            document.getElementById('total-balaio').textContent = brl(custo);
+            document.getElementById('sorteio-total').textContent = brl(arrec);
+            document.getElementById('sorteio-sub').textContent = balaios > 0 ? `${balaios} balaio(s) completo(s)! 🎉` : 'Acumulando para o 1º balaio...';
 
-            if(!payload.nome || !payload.bloco || !payload.apartamento) return toast('Preencha tudo, sô!');
+            document.getElementById('itens-list').innerHTML = itens.map(i => `
+                <div class="item-row"><span>${i.icone} ${i.nome} (x${i.quantidade})</span><span>${brl(i.preco_estimado * i.quantidade)}</span></div>
+            `).join('');
 
-            btn.disabled = true; btn.innerHTML = '<span class="spin">⏳</span>';
-            try {
-                const res = await fetch(`${API_BASE}/api/inscricao`, {
-                    method: 'POST',
-                    headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                if(!res.ok) throw new Error(data.error);
+            // Preenche config se no admin
+            if(document.getElementById('cfg-meta')){
+                document.getElementById('cfg-meta').value = config.meta_balaio;
+                document.getElementById('cfg-quota').value = config.valor_quota;
+            }
+        } catch(e) { console.error(e); }
+    }
 
-                // PIX
-                document.getElementById('pix-valor').textContent = brl(data.pix.valor);
-                document.getElementById('pix-payload').value = data.pix.payload;
-                const qrBox = document.getElementById('qr-box');
-                qrBox.innerHTML = '';
-                new QRCode(qrBox, {text: data.pix.payload, width:200, height:200});
-                
-                document.getElementById('modal-pix').classList.remove('hidden');
-                carregarDados();
-            } catch (e) { toast(e.message); }
-            finally { btn.disabled = false; btn.innerHTML = '🔥 Participar do Balaio'; }
+    document.getElementById('btn-inscrever').onclick = async () => {
+        const btn = document.getElementById('btn-inscrever');
+        const payload = {
+            nome: document.getElementById('f-nome').value.trim(),
+            bloco: document.getElementById('f-bloco').value.trim(),
+            apartamento: document.getElementById('f-apt').value.trim(),
+            quantidade: document.getElementById('f-qtd').value
         };
+        if(!payload.nome || !payload.bloco || !payload.apartamento) return toast('Preencha os campos obrigatórios!');
 
-        // ADMIN FUNCTIONS
-        function abrirAdmin() { 
-            if(adminToken) {
-                document.getElementById('page-main').classList.remove('active');
-                document.getElementById('page-admin').classList.add('active');
-                carregarAdmin();
-            } else { document.getElementById('modal-login').classList.remove('hidden'); }
-        }
+        btn.disabled = true; btn.innerHTML = '<span class="spin">⏳</span>';
+        try {
+            const res = await fetch(`${API_BASE}/api/inscricao`, {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if(!res.ok) throw new Error(data.error);
 
-        async function fazerLogin() {
-            const senha = document.getElementById('login-senha').value;
-            try {
-                const res = await fetch(`${API_BASE}/api/admin/login`, {
-                    method: 'POST',
-                    body: JSON.stringify({senha})
-                });
-                const data = await res.json();
-                if(!res.ok) throw new Error(data.error);
-                adminToken = data.token;
-                localStorage.setItem('ba_token', data.token);
-                document.getElementById('modal-login').classList.add('hidden');
-                abrirAdmin();
-            } catch (e) { toast(e.message); }
-        }
+            document.getElementById('pix-valor').textContent = brl(data.pix.valor);
+            document.getElementById('pix-payload').value = data.pix.payload;
+            const qrb = document.getElementById('qr-box'); qrb.innerHTML='';
+            new QRCode(qrb, {text:data.pix.payload, width:220, height:220});
+            document.getElementById('modal-pix').classList.remove('hidden');
+            carregarDados();
+        } catch(e){ toast(e.message); }
+        finally { btn.disabled=false; btn.innerHTML='🔥 Garantir Minha Participação'; }
+    };
 
-        async function carregarAdmin() {
-            try {
-                const res = await fetch(`${API_BASE}/api/admin/participantes`, {
-                    headers: {'Authorization': `Bearer ${adminToken}`}
-                });
-                const data = await res.json();
-                todosParticipantes = data.participantes;
-                filtrarParticipantes();
-            } catch (e) { logout(); }
-        }
+    function abrirAdmin(){ adminToken ? (mostrarPagina('page-admin'), carregarAdmin()) : document.getElementById('modal-login').classList.remove('hidden'); }
+    function mostrarPagina(id){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    function voltarMain(){ mostrarPagina('page-main'); }
+    function fecharModal(id){ document.getElementById(id).classList.add('hidden'); }
+    function logout(){ localStorage.removeItem('ba_token'); location.reload(); }
+    function copiarPix(){ document.getElementById('pix-payload').select(); document.execCommand('copy'); toast('Código copiado!'); }
 
-        function filtrarParticipantes() {
-            const q = document.getElementById('search-input').value.toLowerCase();
-            const list = document.getElementById('lista-participantes');
-            const filtered = todosParticipantes.filter(p => p.nome.toLowerCase().includes(q) || p.bloco.toLowerCase().includes(q));
-            
-            list.innerHTML = filtered.map(p => `
+    async function fazerLogin(){
+        const senha = document.getElementById('login-senha').value;
+        const res = await fetch(`${API_BASE}/api/admin/login`, { method:'POST', body: JSON.stringify({senha}) });
+        const data = await res.json();
+        if(res.ok){ adminToken=data.token; localStorage.setItem('ba_token', data.token); fecharModal('modal-login'); abrirAdmin(); }
+        else toast('Senha incorreta');
+    }
+
+    async function carregarAdmin(){
+        const res = await fetch(`${API_BASE}/api/admin/participantes`, { headers:{'Authorization':`Bearer ${adminToken}`} });
+        if(res.status===401) return logout();
+        const data = await res.json();
+        todosParticipantes = data.participantes;
+        filtrarParticipantes();
+    }
+
+    function filtrarParticipantes(){
+        const q = document.getElementById('search-input').value.toLowerCase();
+        const html = todosParticipantes.filter(p => p.nome.toLowerCase().includes(q) || p.apartamento.includes(q))
+            .map(p => `
                 <div class="p-card ${p.status_pagamento}">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div>
-                            <strong>${p.nome}</strong> (${p.quantidade} cotas)<br>
-                            <small>Bloco ${p.bloco} - Apto ${p.apartamento}</small>
-                        </div>
-                        <div style="text-align:right">
-                            <span class="btn-sm ${p.status_pagamento === 'pago' ? 'btn-green' : 'btn-amber'}">${p.status_pagamento}</span>
-                        </div>
-                    </div>
-                    <div style="margin-top:10px; display:flex; gap:5px;">
-                        ${p.status_pagamento !== 'pago' ? `<button onclick="alterarStatus(${p.id}, 'pago')" class="btn-sm btn-green">Confirmar</button>` : ''}
-                        <button onclick="excluirParticipante(${p.id})" class="btn-sm btn-red">🗑️ Excluir</button>
+                    <strong>${p.nome}</strong> (${p.quantidade} cotas) - Bloco ${p.bloco} Apt ${p.apartamento}
+                    <div style="margin-top:8px; display:flex; gap:5px;">
+                        ${p.status_pagamento!=='pago' ? `<button class="btn-sm btn-green" onclick="confirmar(${p.id})">✅ Pago</button>` : ''}
+                        <button class="btn-sm btn-red" onclick="excluir(${p.id})">🗑️</button>
                     </div>
                 </div>
             `).join('');
-        }
+        document.getElementById('lista-participantes').innerHTML = html || 'Ninguém encontrado';
+    }
 
-        async function alterarStatus(id, status) {
-            await fetch(`${API_BASE}/api/admin/confirmar`, {
-                method: 'POST',
-                headers: {'Authorization': `Bearer ${adminToken}`, 'Content-Type': 'application/json'},
-                body: JSON.stringify({id, status})
-            });
-            carregarAdmin(); carregarDados();
-        }
+    async function confirmar(id){ 
+        await fetch(`${API_BASE}/api/admin/confirmar`, { 
+            method:'POST', headers:{'Authorization':`Bearer ${adminToken}`, 'Content-Type':'application/json'},
+            body: JSON.stringify({id, status:'pago'}) 
+        }); carregarAdmin(); carregarDados();
+    }
 
-        async function excluirParticipante(id) {
-            if(!confirm('Deseja excluir permanentemente?')) return;
-            const res = await fetch(`${API_BASE}/api/admin/participante/${id}`, {
-                method: 'DELETE',
-                headers: {'Authorization': `Bearer ${adminToken}`}
-            });
-            if(res.ok) { toast('Removido!'); carregarAdmin(); carregarDados(); }
-        }
+    async function excluir(id){ 
+        if(!confirm('Excluir para sempre?')) return;
+        await fetch(`${API_BASE}/api/admin/participante/${id}`, { 
+            method:'DELETE', headers:{'Authorization':`Bearer ${adminToken}`} 
+        }); carregarAdmin(); carregarDados();
+    }
 
-        function imprimirListaSorteio() {
-            const pagantes = todosParticipantes.filter(p => p.status_pagamento === 'pago');
-            let win = window.open('', '_blank');
-            win.document.write(`
-                <html><head><title>Sorteio Balaio</title>
-                <style>
-                    body { font-family: sans-serif; display: flex; flex-wrap: wrap; gap: 10px; }
-                    .ticket { border: 2px dashed #000; padding: 15px; width: 220px; text-align: center; }
-                    @media print { .no-print { display: none; } }
-                </style></head><body>
-                <button class="no-print" onclick="window.print()">Imprimir Agora</button>
+    function imprimirListaSorteio(){
+        const pagantes = todosParticipantes.filter(p => p.status_pagamento === 'pago');
+        const win = window.open('', '_blank');
+        win.document.write(`<html><head><style>
+            body{ font-family:sans-serif; display:flex; flex-wrap:wrap; gap:10px; }
+            .ticket{ border:2px dashed #000; padding:10px; width:200px; text-align:center; }
+        </style></head><body>`);
+        pagantes.forEach(p => {
+            for(let i=0; i<p.quantidade; i++) win.document.write(`
+                <div class="ticket"><strong>${p.nome}</strong><br>B${p.bloco} - Apt${p.apartamento}<br><small>Cota ${i+1}/${p.quantidade}</small></div>
             `);
-            pagantes.forEach(p => {
-                for(let i=0; i<p.quantidade; i++) {
-                    win.document.write(`
-                        <div class="ticket">
-                            <h3 style="margin:0">BALAIO 2026</h3>
-                            <hr>
-                            <strong>${p.nome}</strong><br>
-                            Bloco ${p.bloco} - Apto ${p.apartamento}<br>
-                            <small>Cota ${i+1}/${p.quantidade}</small>
-                        </div>
-                    `);
-                }
-            });
-            win.document.write('</body></html>');
-            win.document.close();
-        }
+        });
+        win.document.write(`</body></html>`); win.document.close(); win.print();
+    }
 
-        function toast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg; t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3000);
-        }
-        function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function voltarMain() { document.getElementById('page-admin').classList.remove('active'); document.getElementById('page-main').classList.add('active'); }
-        function logout() { localStorage.removeItem('ba_token'); location.reload(); }
-        function copiarPix() { document.getElementById('pix-payload').select(); document.execCommand('copy'); toast('Código copiado!'); }
+    function mudarTab(tab){
+        ['participantes', 'config'].forEach(t => document.getElementById('tab-content-'+t).classList.add('hidden'));
+        document.getElementById('tab-content-'+tab).classList.remove('hidden');
+    }
 
-        // Init
-        carregarDados();
-        setInterval(carregarDados, 60000);
-    </script>
+    async function salvarConfig(){
+        const updates = [
+            {chave:'meta_balaio', valor: document.getElementById('cfg-meta').value},
+            {chave:'valor_quota', valor: document.getElementById('cfg-quota').value}
+        ];
+        await fetch(`${API_BASE}/api/admin/config`, { 
+            method:'POST', headers:{'Authorization':`Bearer ${adminToken}`, 'Content-Type':'application/json'},
+            body: JSON.stringify({updates}) 
+        }); toast('Configurações salvas!'); carregarDados();
+    }
+
+    carregarDados();
+    setInterval(carregarDados, 60000);
+</script>
 </body>
 </html>
