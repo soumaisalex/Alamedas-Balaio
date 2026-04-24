@@ -456,31 +456,27 @@
                             <label class="form-label">Valor da Cota (R$)</label>
                             <input id="cfg-quota" class="inp" type="number" step="0.01">
                         </div>
+                        <div class="form-group">
+                            <label class="form-label">Data do Evento</label>
+                            <input id="cfg-data" class="inp" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Local</label>
+                            <input id="cfg-local" class="inp" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Descrição</label>
+                            <input id="cfg-descricao" class="inp" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nome do Evento</label>
+                            <input id="cfg-nome" class="inp" type="text">
+                        </div>
                         <button class="btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
                     </div>
                 </div>
-                <div style="background:var(--orange-l);border:1px solid rgba(232,101,26,0.2);border-radius:var(--radius-sm);padding:14px;font-size:0.82rem;color:var(--text2);">🔑 <strong style="color:var(--orange);">Senha do administrador</strong> é configurada via variável de ambiente <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:0.8rem;">ADMIN_PASSWORD</code> no painel do Cloudflare
-                    Workers. Para alterar, acesse o dashboard da Cloudflare e atualize o secret.</div>
             </div>
-            <!-- aqui
-            <div id="tab-content-config" class="hidden">
-                <div class="card" style="margin-bottom:12px;">
-                    <div class="card-body">
-                        <p style="font-weight:800; font-size:0.95rem; margin-bottom:14px;">⚙️ Configurações</p>
-                        <div class="form-group">
-                            <label class="form-label">Meta do Balaio (R$)</label>
-                            <input id="cfg-meta" class="inp" type="number" step="0.01" placeholder="Ex: 500.00">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Valor da Cota (R$)</label>
-                            <input id="cfg-quota" class="inp" type="number" step="0.01" placeholder="Ex: 10.00">
-                        </div>
-                        <button class="btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
-                        <p id="cfg-msg" class="err-msg hidden"></p>
-                    </div>
-                </div>
-            </div>-->
-
+            <div style="background:var(--orange-l);border:1px solid rgba(232,101,26,0.2);border-radius:var(--radius-sm);padding:14px;font-size:0.82rem;color:var(--text2);">🔑 <strong style="color:var(--orange);">Senha do administrador</strong> é configurada via variável de ambiente <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:0.8rem;">ADMIN_PASSWORD</code> no painel do Cloudflare Workers. Para alterar, acesse o dashboard da Cloudflare e atualize o secret.</div>
         </div>
     </div>
 
@@ -872,41 +868,46 @@
             const { participantes } = await resP.json();
             const { stats, config, itens } = await resD.json();
         
-            // Atualiza Stats do topo
-            const totalCotas = stats.total_inscritos || 0;
-            const pagas = stats.total_pagos || 0;
+            const setTxt = (id, txt) => { const el = document.getElementById(id); if(el) el.textContent = txt; };
+        
+            setTxt('adm-inscritos', stats.total_inscritos || 0);
+            setTxt('adm-confirmados', stats.total_pagos || 0);
+            setTxt('adm-pendentes', Math.max(0, (stats.total_inscritos || 0) - (stats.total_pagos || 0)));
+            setTxt('adm-arrecadado', brl(stats.total_arrecadado));
+            setTxt('adm-meta', brl(config.meta_balaio));
+        
+            const pFill = document.getElementById('adm-progress');
+            const pPct = document.getElementById('adm-pct');
+            const pVal = Math.min(100, (+stats.total_arrecadado / +config.meta_balaio) * 100);
             
-            document.getElementById('adm-inscritos').textContent = totalCotas;
-            document.getElementById('adm-confirmados').textContent = pagas;
-            document.getElementById('adm-pendentes').textContent = Math.max(0, totalCotas - pagas);
-            document.getElementById('adm-arrecadado').textContent = brl(stats.total_arrecadado);
-            document.getElementById('adm-meta').textContent = brl(config.meta_balaio);
+            if(pFill) pFill.style.width = pVal.toFixed(1) + '%';
+            if(pPct) pPct.textContent = pVal.toFixed(1).replace('.', ',') + ' %';
         
-            const p = Math.min(100, (+stats.total_arrecadado / +config.meta_balaio) * 100);
-            document.getElementById('adm-progress').style.width = p.toFixed(1) + '%';
-            document.getElementById('adm-pct').textContent = p.toFixed(1).replace('.', ',') + ' %';
+            const campos = {
+              'cfg-meta': config.meta_balaio,
+              'cfg-quota': config.valor_quota,
+              'cfg-data': config.data_evento,
+              'cfg-descricao': config.descricao,
+              'cfg-nome': config.nome_evento,
+              'cfg-local': config.local_evento
+            };
         
-            // --- CORREÇÃO AQUI: Verifica se os campos de config existem antes de setar o valor ---
-            const campoMeta = document.getElementById('cfg-meta');
-            const campoQuota = document.getElementById('cfg-quota');
-            const campoData = document.getElementById('cfg-data');
-            const campoLocal = document.getElementById('cfg-local');
-        
-            if (campoMeta) campoMeta.value = config.meta_balaio || '';
-            if (campoQuota) campoQuota.value = config.valor_quota || '';
-            if (campoData) campoData.value = config.data_evento || '';
-            if (campoLocal) campoLocal.value = config.local_evento || '';
+            for (const [id, valor] of Object.entries(campos)) {
+              const el = document.getElementById(id);
+              if(el) el.value = valor || '';
+            }
         
             todosParticipantes = participantes || [];
-            filtrarParticipantes();
+            
+            // AGORA SIM: chama a renderização da lista
+            filtrarParticipantes(); 
             renderizarItens(itens);
             
           } catch(err) { 
-            console.error("Erro no carregarAdmin:", err);
+            console.error("Erro fatal no carregarAdmin:", err);
             toast('❌ Erro ao carregar painel.'); 
           }
-        }
-        
+        }        
         function filtrarParticipantes() {
             const q = document.getElementById('search-input').value.toLowerCase();
             const status = document.getElementById('filter-status').value;
