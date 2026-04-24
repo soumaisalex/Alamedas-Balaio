@@ -123,10 +123,6 @@ export default {
         const cfgR = await sql`SELECT valor FROM configuracoes WHERE chave = 'valor_quota'`;
         const valorUnitario = parseFloat(cfgR[0]?.valor ?? '10.00');
         const valorTotal = (valorUnitario * qtd).toFixed(2);
-        
-        // No gerarPix, use 'valor: valorTotal'
-        const cfgR = await sql`SELECT valor FROM configuracoes WHERE chave = 'valor_quota'`;
-        const valor = cfgR[0]?.valor ?? '10.00';
         const txid  = `BAL${String(ins.id).padStart(8, '0')}`;
 
         if (!env.PIX_KEY)
@@ -135,7 +131,7 @@ export default {
 
         const pixPayload = gerarPix({
           chave: env.PIX_KEY, nome: env.PIX_NOME ?? 'Alex de Souza Passos',
-          cidade: env.PIX_CIDADE ?? 'Aracaju', valor: valorTotal, txid,
+          cidade: env.PIX_CIDADE ?? 'Aracaju', valorTotal, txid,
         });
         return respond({ sucesso: true, participante_id: ins.id,
           pix: { payload: pixPayload, valor, txid } });
