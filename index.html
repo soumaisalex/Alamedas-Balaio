@@ -184,6 +184,37 @@
         .hidden { display:none !important; }
         @keyframes spin { to{transform:rotate(360deg)} }
         .spin { display:inline-block; animation:spin 1s linear infinite; }
+
+        /* Impressão */
+        @media print {
+        .cupom-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed #ccc;
+            margin-bottom: 4px;
+            padding-bottom: 2px;
+            font-size: 0.7rem;
+        }
+        
+        .cupom-footer {
+            margin-top: 4px;
+            font-size: 0.6rem;
+            color: #666;
+            text-align: right;
+            border-top: 1px solid #eee;
+        }
+    
+        .cupom {
+            width: 20%; /* Para caber 5 por linha se preferir */
+            border: 2px solid #000;
+            padding: 10px;
+            margin: 4px;
+            display: inline-block;
+            vertical-align: top;
+            page-break-inside: avoid;
+        }
+    }
     </style>
 
 </head>
@@ -1196,7 +1227,6 @@
                         <div class="ticket">
                             <div class="ticket-header">
                                 <span>2º BALAIO ALAMEDAS 2026</span>
-                                <span>${idFormatado}</span>
                             </div>
                             <div class="ticket-body">
                                 <div class="ticket-nome">${p.nome}</div>
@@ -1204,7 +1234,7 @@
                                 <div class="ticket-cota">COTA ${i} DE ${qtdCotas}</div>
                             </div>
                             <div class="ticket-footer">
-                                Identificador único para conferência
+                                Identificador único para conferência <span>${idFormatado}</span>
                             </div>
                         </div>
                     `);
