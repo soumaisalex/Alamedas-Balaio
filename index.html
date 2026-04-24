@@ -403,7 +403,7 @@
             </div>
 
             <!-- Tabs -->
-            <div class="tab-bar" style="margin-bottom:14px;">
+            <div class="tab-bar" style="display:flex; gap:8px; margin-bottom:15px;">
                 <button class="tab-btn active" id="tab-participantes" onclick="mudarTab('participantes')">👥</button>
                 <button class="tab-btn" id="tab-itens" onclick="mudarTab('itens')">🧺</button>
                 <button class="tab-btn" onclick="imprimirListaSorteio()">🖨️</button>
@@ -910,7 +910,21 @@
             else toast('❌ Erro ao atualizar.');
           } catch{ toast('❌ Erro de conexão.'); }
         }
-        
+        function imprimirListaSorteio(){
+          const pagantes = todosParticipantes.filter(p => p.status_pagamento === 'pago');
+          const win = window.open('', '_blank');
+          win.document.write(`<html><head><style>
+            body{ font-family:sans-serif; display:flex; flex-wrap:wrap; gap:10px; }
+            .ticket{ border:2px dashed #000; padding:10px; width:200px; text-align:center; }
+        </style></head><body>`);
+        pagantes.forEach(p => {
+            for(let i=0; i<p.quantidade; i++) win.document.write(`
+                <div class="ticket"><strong>${p.nome}</strong><br>B${p.bloco} - Apt${p.apartamento}<br><small>Cota ${i+1}/${p.quantidade}</small></div>
+            `);
+        });
+          win.document.write(`</body></html>`); win.document.close(); win.print();
+        }
+  
         function mudarTab(tab){
           ['participantes','itens','config'].forEach(t=>{
             document.getElementById(`tab-content-${t}`).classList.add('hidden');
@@ -926,8 +940,6 @@
             const updates=[
               {chave:'meta_balaio', valor:document.getElementById('cfg-meta').value},
               {chave:'valor_quota', valor:document.getElementById('cfg-quota').value},
-              {chave:'data_evento', valor:document.getElementById('cfg-data').value},
-              {chave:'local_evento',valor:document.getElementById('cfg-local').value},
             ];
             const res=await fetch(`${API_BASE}/api/admin/config`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${adminToken}`},body:JSON.stringify({updates})});
             if(res.ok){ toast('✅ Configurações salvas!'); carregarAdmin(); carregarDados(); }
