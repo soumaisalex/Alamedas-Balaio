@@ -475,7 +475,7 @@
                         <button class="btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
                     </div>
                 </div>
-            </div>
+            </div><br />
             <div style="background:var(--orange-l);border:1px solid rgba(232,101,26,0.2);border-radius:var(--radius-sm);padding:14px;font-size:0.82rem;color:var(--text2);">🔑 <strong style="color:var(--orange);">Senha do administrador</strong> é configurada via variável de ambiente <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:0.8rem;">ADMIN_PASSWORD</code> no painel do Cloudflare Workers. Para alterar, acesse o dashboard da Cloudflare e atualize o secret.</div>
         </div>
     </div>
@@ -981,17 +981,47 @@
           document.getElementById(`tab-${tab}`).classList.add('active');
         }
         
-        async function salvarConfig(){
-          const msg=document.getElementById('cfg-msg'); msg.classList.add('hidden');
-          try{
-            const updates=[
-              {chave:'meta_balaio', valor:document.getElementById('cfg-meta').value},
-              {chave:'valor_quota', valor:document.getElementById('cfg-quota').value},
-            ];
-            const res=await fetch(`${API_BASE}/api/admin/config`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${adminToken}`},body:JSON.stringify({updates})});
-            if(res.ok){ toast('✅ Configurações salvas!'); carregarAdmin(); carregarDados(); }
-            else{ msg.textContent='❌ Erro ao salvar.'; msg.classList.remove('hidden'); }
-          } catch{ msg.textContent='❌ Erro de conexão.'; msg.classList.remove('hidden'); }
+        async function salvarConfig() {
+            const msg = document.getElementById('cfg-msg');
+            if (msg) msg.classList.add('hidden'); // Só tenta esconder se o elemento existir
+        
+            try {
+                const updates = [
+                    { chave: 'meta_balaio', valor: document.getElementById('cfg-meta').value },
+                    { chave: 'valor_quota', valor: document.getElementById('cfg-quota').value },
+                    { chave: 'nome_evento', valor: document.getElementById('cfg-nome').value },
+                    { chave: 'descricao', valor: document.getElementById('cfg-descricao').value },                    
+                    { chave: 'data_evento', valor: document.getElementById('cfg-data').value },
+                    { chave: 'local_evento', valor: document.getElementById('cfg-local').value },
+                ];
+        
+                const res = await fetch(`${API_BASE}/api/admin/config`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'Authorization': `Bearer ${adminToken}` 
+                    },
+                    body: JSON.stringify({ updates })
+                });
+        
+                if (res.ok) {
+                    toast('✅ Configurações salvas com sucesso!');
+                    carregarAdmin();
+                    carregarDados();
+                } else {
+                    const data = await res.json();
+                    if (msg) {
+                        msg.textContent = '❌ Erro ao salvar: ' + (data.error || 'Erro desconhecido');
+                        msg.classList.remove('hidden');
+                    }
+                }
+            } catch (err) {
+                console.error("Erro ao salvar config:", err);
+                if (msg) {
+                    msg.textContent = '❌ Erro de conexão com o servidor.';
+                    msg.classList.remove('hidden');
+                }
+            }
         }
         
         
