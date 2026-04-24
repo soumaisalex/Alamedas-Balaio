@@ -1,11 +1,41 @@
-# 🎪 Balaio Alamedas 2026
+# 🧺 Balaio Alamedas 2026
+Sistema de gestão de rifas e arrecadação para eventos comunitários, focado em facilidade de uso para o morador e controle total para o administrador. Desenvolvido para o condomínio Alamedas, com integração de pagamentos via PIX e painel administrativo dinâmico.
 
-Sistema de gestão e transparência para o Balaio Junino do Condomínio Alamedas Jardins
+## 🚀 Funcionalidades
+### Para o Morador
+**Inscrição Simplificada:** Seleção de bloco (1 a 26) e apartamento via menus suspensos para evitar erros.  
+**Múltiplas Cotas:** Opção de comprar até 10 cotas de uma vez, aumentando as chances no sorteio.  
+**Cálculo em Tempo Real:** Visualização do valor total antes de finalizar a inscrição.  
+**Pagamento via PIX:** Geração automática de QR Code e código "Copia e Cola" (Padrão EMV).  
+**Termômetro de Arrecadação:** Acompanhamento visual do progresso para o próximo balaio.  
 
----
+### Para o Administrador
+**Painel Administrativo Protegido:** Acesso restrito via senha configurada no servidor.  
+**Gestão de Participantes:** Lista completa com busca, filtragem por status e exclusão com modal de confirmação.  
+**Confirmação de Pagamento:** Atualização manual de status (Pendente para Pago).  
+**Configurações Dinâmicas:** Ajuste de valor da cota, meta do balaio e data do evento sem mexer no código.  
+**Impressão de Sorteio Econômica:** Geração de cupons automáticos formatados (4 por linha) com IDs únicos para auditoria.  
+
+## 📦 Tecnologias
+| Camada | Tecnologia | Custo |
+|--------|-----------|-------|
+| Frontend | HTML5 + Tailwind CSS (Mobile First) + JavaScript Vanilla | Grátis |
+| Hospedagem Frontend | Cloudflare Pages | Grátis |
+| Backend | Cloudflare Workers | Grátis (100k req/dia) |
+| Banco de Dados | Neon PostgreSQL (Serverless Postgres) | Grátis (0.5 GB) |
+| PIX | Payloads EMV QR Code padrão Banco Central | Grátis |
+
+**Custo total: R$ 0,00** 🎉
+
+## 🔐 Segurança
+| Item | Como funciona |
+|------|---------------|
+| Senha admin | SHA-256 hash armazenado no banco — nunca texto puro |
+| Token de sessão | O próprio hash funciona como bearer token |
+| CORS | Configurado para aceitar qualquer origem |
+| Variáveis sensíveis | `DATABASE_URL` e `PIX_KEY` como Secrets do Cloudflare, nunca no código |
 
 ## 📁 Estrutura de Arquivos
-
 ```
 balaio-alamedas/
 │
@@ -21,157 +51,58 @@ balaio-alamedas/
     └── schema.sql          ← Tabelas e dados iniciais (Neon)
 ```
 
----
+## ⚙️ Configuração e Instalação
+### 1. Requisitos
+Conta na [Cloudflare](https://dash.cloudflare.com/sign-up) (para o Worker).
+Banco de Dados PostgreSQL ([neon.tech](https://neon.tech) sugerido).
+> Na aba **SQL Editor**, cole e execute o conteúdo de `schema.sql`
+Chave PIX configurada (preferencialmente aleatória).
 
-## 🚀 Deploy: Passo a Passo
+### 2. Deploy
 
-### 1. Banco de Dados (Neon.tech)
-
-1. Acesse [neon.tech](https://neon.tech) e crie uma conta gratuita
-2. Crie um novo **Project** (ex: `balaio-alamedas`)
-3. Na aba **SQL Editor**, cole e execute o conteúdo de `schema.sql`
-4. Copie a **Connection String** (formato `postgresql://user:pass@host/db?sslmode=require`)
-
----
-
-### 2. Backend (Cloudflare Workers)
-
-**Pré-requisitos:** Node.js 18+ instalado
-
-```bash
-# Entre na pasta do worker
-cd worker/
-
-# Instale as dependencias
+- Acesse o [cloudflare](https://dash.cloudflare.com) → **Pages** → **Create a project**
+- Escolha **"Github"** (para CI/CD automático) 
+```
+# Comando da build:
 npm install
 
-# Faca login na Cloudflare
-npx wrangler login
+# Comando de implantação:
+npx wrangler deploy
 
-# Configure os secrets (digitados de forma segura, nunca ficam no codigo):
-npx wrangler secret put ADMIN_PASSWORD   # senha do painel admin
-npx wrangler secret put DATABASE_URL     # connection string do Neon
-npx wrangler secret put PIX_KEY          # sua chave PIX
+# Comando da versão:
+npx wrangler versions upload
 
-# Deploy do worker
-npm run deploy
+# Diretório raiz:/
 ```
-
-> **Seguranca da senha**: a `ADMIN_PASSWORD` fica apenas no servidor Cloudflare.
-> O frontend jamais ve a senha — recebe apenas um token `sha256(senha)` apos o login.
-> Para trocar a senha, basta rodar `wrangler secret put ADMIN_PASSWORD` novamente.
-
-Após o deploy, você verá a URL do Worker, algo como:
+Após o deploy, você verá a URL do Worker (que deverá adicionar ao index.html na constante `API_BASE`), algo como:
 ```
-https://balaio-alamedas-worker.SEU_USUARIO.workers.dev
+https://SEUPROJETO.SEU_USUARIO.workers.dev
 ```
+Com o Worker online, faça a configuração inicial da senha **uma única vez** através do painel (botão ⚙️ no canto inferior direito do site) > "Primeira configuração" > "Variáveis e Segredos".
 
-**Edite variáveis públicas** em `wrangler.toml` se necessário:
-```toml
-[vars]
-PIX_NOME   = "CONDOMINIO ALAMEDAS"   # Nome no QR Code PIX (máx 25 chars)
-PIX_CIDADE = "SALVADOR"              # Cidade no PIX (máx 15 chars)
-```
+### 3. Variáveis de Ambiente (Secrets)
+No painel da Cloudflare ou via Wrangler, configure as seguintes variáveis:
 
----
-
-### 3. Configurar Senha do Admin
-
-Com o Worker online, faça a configuração inicial da senha **uma única vez** através do painel (botão ⚙️ no canto inferior direito do site) > "Primeira configuração".
-
-Ou via cURL:
-```bash
-curl -X POST https://SEU_WORKER.workers.dev/api/admin/setup \
-  -H "Content-Type: application/json" \
-  -d '{"senha": "suaSenhaSegura123"}'
-```
-
----
-
-### 4. Frontend (Cloudflare Pages)
-
-1. **Edite `index.html`** — atualize a constante `API_BASE`:
-   ```javascript
-   const API_BASE = 'https://balaio-alamedas-worker.SEU_USUARIO.workers.dev';
-   ```
-
-2. Acesse [dash.cloudflare.com](https://dash.cloudflare.com) → **Pages** → **Create a project**
-
-3. Escolha **"Upload assets"** (deploy direto, sem Git) e faça upload do `index.html`
-
-4. Ou conecte ao GitHub para CI/CD automático
-
----
-
-## 🔐 Segurança
-
-| Item | Como funciona |
-|------|--------------|
-| Senha admin | SHA-256 hash armazenado no banco — nunca texto puro |
-| Token de sessão | O próprio hash funciona como bearer token |
-| CORS | Configurado para aceitar qualquer origem — restrinja em produção |
-| Variáveis sensíveis | `DATABASE_URL` e `PIX_KEY` como Secrets do Cloudflare, nunca no código |
-
-Para restringir CORS apenas ao seu domínio, edite `worker.js`:
-```javascript
-const CORS = {
-  'Access-Control-Allow-Origin': 'https://balaio.seudominio.com',
-  ...
-};
-```
-
----
+`DATABASE_URL`: String de conexão do PostgreSQL (formato `postgresql://user:pass@host/db?sslmode=require`).  
+`PIX_KEY`: Sua chave PIX (CPF, E-mail ou Telefone).  
+`PIX_NOME`: Nome do recebedor (ex: Condomínio Alamedas).  
+`PIX_CIDADE`: Cidade do recebedor.  
+`ADMIN_PASSWORD`: Senha de acesso ao painel administrativo.  
+> **Segurança da senha**: a `ADMIN_PASSWORD` fica apenas no servidor Cloudflare. O frontend **jamais** vê a senha, recebe apenas um token `sha256(senha)` após o login.
 
 ## 🛠️ Rotas da API
-
 | Método | Rota | Acesso | Descrição |
 |--------|------|--------|-----------|
 | `GET`  | `/api/dados` | Público | Dashboard: config, itens, stats |
 | `POST` | `/api/inscricao` | Público | Inscrever participante + gerar PIX |
-| `POST` | `/api/admin/setup` | Público (1x) | Configurar senha inicial |
 | `POST` | `/api/admin/login` | Público | Login → retorna token |
 | `GET`  | `/api/admin/participantes` | 🔒 Admin | Listar todos os inscritos |
 | `POST` | `/api/admin/confirmar` | 🔒 Admin | Alterar status de pagamento |
 | `POST` | `/api/admin/item` | 🔒 Admin | Adicionar item ao balaio |
 
----
+## 📜 Licença
+Este projeto foi desenvolvido por **[Alex Passos](https://www.instagram.com/soumaisalex)** para uso comunitário. Sinta-se livre para adaptar e utilizar em seu condomínio ou evento.
 
-## 💡 Personalizações comuns
-
-### Alterar meta e valor da cota
-Execute no SQL Editor do Neon:
-```sql
-UPDATE configuracoes SET valor = '2500.00' WHERE chave = 'meta_balaio';
-UPDATE configuracoes SET valor = '60.00'   WHERE chave = 'valor_quota';
-UPDATE configuracoes SET valor = '04 de Julho de 2026' WHERE chave = 'data_evento';
 ```
-
-### Adicionar item à lista
-```sql
-INSERT INTO itens_balaio (nome, quantidade, preco_estimado, categoria, icone)
-VALUES ('Cachorro-quente', 100, 150.00, 'Comidas', '🌭');
+"Que o São João do Alamedas seja repleto de alegria e balaios cheios, sempre!" 🌽🔥
 ```
-
-### Trocar senha do admin
-```bash
-wrangler secret put ADMIN_PASSWORD
-# Digite a nova senha quando solicitado, pressione Enter
-```
-
----
-
-## 📦 Tecnologias
-
-| Camada | Tecnologia | Custo |
-|--------|-----------|-------|
-| Frontend | HTML5 + Tailwind CSS | Grátis |
-| Hospedagem Frontend | Cloudflare Pages | Grátis |
-| Backend | Cloudflare Workers | Grátis (100k req/dia) |
-| Banco de Dados | Neon PostgreSQL | Grátis (0.5 GB) |
-| PIX | EMV QR Code padrão Banco Central | Grátis |
-
-**Custo total: R$ 0,00** 🎉
-
----
-
-Desenvolvido por **Alex Passos** · 2026
