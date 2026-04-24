@@ -168,6 +168,25 @@ export default {
                   WHERE id = ${id}`;
         return respond({ sucesso: true });
       }
+
+      // DELETE /api/admin/item/:id - Remover item
+      if (pathname.startsWith('/api/admin/item/') && request.method === 'DELETE') {
+        const id = pathname.split('/').pop();
+        await sql`DELETE FROM itens_balaio WHERE id = ${id}`;
+        return respond({ sucesso: true });
+      }
+      
+      // POST /api/admin/item - Adicionar novo item
+      if (pathname === '/api/admin/item' && request.method === 'POST') {
+        const { nome, quantidade, preco_estimado, icone } = await request.json().catch(() => ({}));
+        if (!nome || !preco_estimado) return fail('Nome e preço são obrigatórios.');
+        
+        await sql`
+          INSERT INTO itens_balaio (nome, quantidade, preco_estimado, icone, categoria)
+          VALUES (${nome}, ${+quantidade || 1}, ${+preco_estimado}, ${icone || '🎁'}, 'Geral')
+        `;
+        return respond({ sucesso: true });
+      }
       
       // GET /api/admin/participantes
       if (pathname === '/api/admin/participantes' && request.method === 'GET') {
