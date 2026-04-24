@@ -1,1228 +1,417 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#F5EFE0">
     <title>Balaio Junino · Alamedas 2026</title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
         :root {
-          --bg:       #F5EFE0;
-          --bg2:      #EDE5CC;
-          --card:     #FFFFFF;
-          --orange:   #E8651A;
-          --orange2:  #F07830;
-          --orange-l: #FFF1E8;
-          --green:    #22C55E;
-          --green-l:  #DCFCE7;
-          --red:      #EF4444;
-          --red-l:    #FEE2E2;
-          --amber:    #F59E0B;
-          --amber-l:  #FEF3C7;
-          --text:     #1C1917;
-          --text2:    #57534E;
-          --text3:    #A8A29E;
-          --border:   #E7DDD0;
-          --shadow:   0 2px 12px rgba(0,0,0,0.08);
-          --radius:   16px;
-          --radius-sm:10px;
+          --bg: #F5EFE0; --bg2: #EDE5CC; --card: #FFFFFF;
+          --orange: #E8651A; --orange2: #F07830; --orange-l: #FFF1E8;
+          --green: #22C55E; --green-l: #DCFCE7; --red: #EF4444; --red-l: #FEE2E2;
+          --amber: #F59E0B; --amber-l: #FEF3C7; --text: #1C1917;
+          --text2: #57534E; --text3: #A8A29E; --border: #E7DDD0;
+          --shadow: 0 2px 12px rgba(0,0,0,0.08); --radius: 16px; --radius-sm: 10px;
         }
+        body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
         
-        html { scroll-behavior: smooth; }
-        body {
-          font-family: 'Nunito', sans-serif;
-          background: var(--bg);
-          color: var(--text);
-          min-height: 100vh;
-          overflow-x: hidden;
-          -webkit-font-smoothing: antialiased;
+        /* Bandeirolas Pé de Pato */
+        .bunting { width:100%; height:48px; position:relative; overflow:hidden; z-index:10; background:#8B5E2C; }
+        .bunting-flags { display:flex; position:absolute; top:4px; left:-10px; }
+        .flag { 
+            width:28px; height:40px; 
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%);
+            flex-shrink:0; margin:0 2px; 
+            animation: sway 1.2s ease-in-out infinite alternate; 
+            transform-origin: top center; 
         }
-        
-        /* Bandeirolas */
-        .bunting { width:100%; height:48px; position:relative; overflow:hidden; flex-shrink:0; z-index:10; background:#8B5E2C; }
-        .bunting-rope { position:absolute; top:6px; left:-2%; right:-2%; height:2px; background:#5C3D12; }
-        .bunting-flags { display:flex; position:absolute; top:4px; left:-10px; gap:0; }
-        .flag { width:28px; height:38px; clip-path:polygon(0 0,100% 0,50% 100%); flex-shrink:0; margin:0 2px; animation:sway 2.8s ease-in-out infinite alternate; transform-origin:top center; }
-        .flag:nth-child(even) { animation-duration:3.4s; animation-direction:alternate-reverse; }
-        /*.flag { width: 28px; height: 40px; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 75%, 0% 100%); flex-shrink: 0; margin: 0 2px; animation: sway 1.5s ease-in-out infinite alternate; transform-origin: top center; */
-        @keyframes sway { from{transform:rotate(-5deg)} to{transform:rotate(5deg)} }
-        
-        /* Pages */
-        .page { display:none; }
+        @keyframes sway { from{transform:rotate(-8deg)} to{transform:rotate(8deg)} }
+
+        .page { display:none; padding: 16px; max-width: 480px; margin: 0 auto; }
         .page.active { display:block; }
-        
-        /* Card */
-        .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+        .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom: 16px; overflow:hidden; }
         .card-body { padding:18px; }
         
-        /* Section header */
-        .sec-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-        .sec-icon { width:38px; height:38px; background:var(--orange-l); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-        .sec-title { font-size:1rem; font-weight:800; color:var(--text); }
-        .sec-sub { font-size:0.78rem; color:var(--text3); margin-top:1px; }
-        
-        /* Progress */
         .progress-wrap { background:var(--bg2); border-radius:100px; height:36px; overflow:hidden; position:relative; }
-        .progress-fill { height:100%; background:linear-gradient(90deg,var(--orange),#FFB800); border-radius:100px; transition:width 1s cubic-bezier(0.34,1.56,0.64,1); }
-        .progress-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:800; color:var(--text); }
-        
-        /* Stat grid */
-        .stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-        .stat-card { background:var(--card); border-radius:var(--radius-sm); box-shadow:var(--shadow); padding:14px 10px; text-align:center; border:1.5px solid var(--border); }
-        .stat-card .stat-icon { font-size:22px; margin-bottom:4px; }
-        .stat-card .stat-num  { font-size:1.5rem; font-weight:900; color:var(--text); line-height:1; }
-        .stat-card .stat-lbl  { font-size:0.7rem; color:var(--text3); font-weight:600; margin-top:3px; }
-        
-        /* Inputs */
+        .progress-fill { height:100%; background:linear-gradient(90deg,var(--orange),#FFB800); transition:width 1s cubic-bezier(0.34,1.56,0.64,1); }
+        .progress-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:800; }
+
+        .stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom: 16px; }
+        .stat-card { background:var(--card); border-radius:var(--radius-sm); padding:14px 10px; text-align:center; border:1.5px solid var(--border); }
+        .stat-num { font-size:1.4rem; font-weight:900; }
+        .stat-lbl { font-size:0.7rem; color:var(--text3); }
+
         .form-group { margin-bottom:14px; }
-        .form-label { display:block; font-size:0.82rem; font-weight:700; color:var(--text2); margin-bottom:6px; }
-        .form-label .req { color:var(--orange); }
-        .inp { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:'Nunito',sans-serif; font-size:0.95rem; padding:13px 14px; outline:none; transition:border-color 0.2s, box-shadow 0.2s; -webkit-appearance:none; }
-        .inp::placeholder { color:var(--text3); }
-        .inp:focus { border-color:var(--orange); box-shadow:0 0 0 3px rgba(232,101,26,0.12); }
-        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .form-label { display:block; font-size:0.82rem; font-weight:700; margin-bottom:6px; }
+        .inp { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:13px; font-family:inherit; outline:none; }
         
-        /* Buttons */
-        .btn-primary { width:100%; background:var(--orange); color:#fff; font-family:'Nunito',sans-serif; font-weight:800; font-size:1rem; padding:15px 20px; border:none; border-radius:100px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.15s, transform 0.1s; box-shadow:0 4px 16px rgba(232,101,26,0.3); -webkit-tap-highlight-color:transparent; }
-        .btn-primary:hover:not(:disabled) { background:var(--orange2); }
-        .btn-primary:active:not(:disabled) { transform:scale(0.98); }
-        .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
-        .btn-ghost { background:transparent; border:1.5px solid var(--border); color:var(--text2); font-family:'Nunito',sans-serif; font-weight:700; font-size:0.85rem; padding:10px 16px; border-radius:100px; cursor:pointer; transition:background 0.15s; }
-        .btn-ghost:hover { background:var(--bg2); }
-        .btn-sm { padding:8px 14px; font-size:0.8rem; border-radius:100px; font-family:'Nunito',sans-serif; font-weight:700; cursor:pointer; border:none; transition:opacity 0.15s, transform 0.1s; }
-        .btn-sm:active { transform:scale(0.96); }
-        .btn-green  { background:var(--green-l);  color:#16A34A; }
-        .btn-red    { background:var(--red-l);    color:#DC2626; }
-        .btn-amber  { background:var(--amber-l);  color:#D97706; }
-        
-        /* Table rows */
-        .item-row { display:flex; align-items:center; justify-content:space-between; padding:12px 18px; border-bottom:1px solid var(--bg); gap:12px; font-size:0.9rem; }
-        .item-row:last-child { border-bottom:none; }
-        .item-row .item-name { color:var(--text2); flex:1; }
-        .item-row .item-val  { font-weight:700; color:var(--text); flex-shrink:0; }
-        .item-total-row { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; background:var(--orange-l); border-top:2px solid var(--orange); }
-        .item-total-row .lbl { font-weight:800; color:var(--orange); }
-        .item-total-row .val { font-weight:900; font-size:1.05rem; color:var(--orange); }
-        
-        /* Badges */
-        .badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:100px; font-size:0.75rem; font-weight:700; }
-        .badge-pago      { background:var(--green-l); color:#16A34A; }
-        .badge-pendente  { background:var(--amber-l); color:#D97706; }
-        .badge-cancelado { background:var(--red-l);   color:#DC2626; }
-        
-        /* Modal */
-        .modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.5); display:flex; align-items:flex-end; justify-content:center; animation:fadeIn 0.2s ease; }
-        @media(min-width:600px){ .modal-bg { align-items:center; padding:20px; } }
-        .modal-box { background:var(--card); border-radius:24px 24px 0 0; width:100%; max-width:480px; max-height:92vh; overflow-y:auto; padding:24px 20px 36px; animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1); }
-        @media(min-width:600px){ .modal-box { border-radius:24px; } }
-        @keyframes slideUp { from{transform:translateY(60px);opacity:0} to{transform:translateY(0);opacity:1} }
-        @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
-        .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
-        
-        /* Admin nav */
-        .admin-nav { display:flex; align-items:center; gap:12px; padding:16px; background:var(--card); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10; }
-        .admin-nav h1 { font-size:1.1rem; font-weight:900; }
-        .admin-nav p  { font-size:0.75rem; color:var(--text3); margin-top:1px; }
-        .back-btn { background:transparent; border:none; font-size:1.3rem; cursor:pointer; color:var(--text2); padding:4px; flex-shrink:0; display:flex; align-items:center; }
-        .back-btn:hover { color:var(--orange); }
-        
-        /* Tab bar */
-        .tab-bar { display:grid; grid-template-columns:repeat(3,1fr); background:var(--bg2); border-radius:var(--radius-sm); padding:4px; gap:4px; }
-        .tab-btn { padding:10px; border:none; border-radius:7px; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:20px; transition:background 0.15s; color:var(--text3); }
-        .tab-btn.active { background:var(--card); color:var(--orange); box-shadow:var(--shadow); }
-        
-        /* Search */
-        .search-wrap { display:flex; gap:10px; align-items:center; }
-        .search-inp { flex:1; background:var(--card); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:11px 14px; font-family:'Nunito',sans-serif; font-size:0.88rem; color:var(--text); outline:none; }
-        .search-inp:focus { border-color:var(--orange); }
-        .search-inp::placeholder { color:var(--text3); }
-        .filter-sel { background:var(--card); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:11px 12px; font-family:'Nunito',sans-serif; font-size:0.85rem; color:var(--text); outline:none; cursor:pointer; flex-shrink:0; }
-        
-        /* Participant card */
-        .p-card { background:var(--card); border-radius:var(--radius-sm); box-shadow:var(--shadow); padding:14px; border-left:4px solid var(--border); }
-        .p-card.pago      { border-left-color:var(--green); }
-        .p-card.pendente  { border-left-color:var(--amber); }
-        .p-card.cancelado { border-left-color:var(--red);   }
-        .p-card-header { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
-        .p-card-name   { font-weight:800; font-size:0.95rem; color:var(--text); }
-        .p-card-info   { font-size:0.78rem; color:var(--text3); margin-top:2px; }
-        .p-card-actions { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
-        
-        /* Copy row */
-        .copy-row { display:flex; gap:8px; align-items:center; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 14px; }
-        .copy-row input { flex:1; border:none; background:transparent; font-size:0.78rem; color:var(--text2); font-family:'Nunito',sans-serif; outline:none; min-width:0; }
-        .copy-btn { background:var(--orange); color:white; border:none; padding:7px 14px; border-radius:8px; font-size:0.8rem; font-weight:700; font-family:'Nunito',sans-serif; cursor:pointer; flex-shrink:0; }
-        
-        /* QR */
-        #qr-box { background:white; border-radius:var(--radius-sm); padding:16px; display:flex; align-items:center; justify-content:center; }
-        #qr-box canvas, #qr-box img { border-radius:8px; }
-        
-        /* Toast */
-        #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:white; font-family:'Nunito',sans-serif; font-size:0.88rem; font-weight:700; padding:12px 22px; border-radius:100px; white-space:nowrap; z-index:999; opacity:0; pointer-events:none; transition:opacity 0.3s, transform 0.3s; max-width:90vw; text-align:center; }
-        #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-        
-        /* Footer link */
-        .footer-link { display:flex; align-items:center; justify-content:center; gap:6px; background:transparent; border:1.5px solid var(--border); border-radius:100px; padding:10px 20px; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700; color:var(--text2); cursor:pointer; width:100%; transition:background 0.15s; }
-        .footer-link:hover { background:var(--bg2); }
-        
-        /* Info box */
-        .info-box { background:var(--orange-l); border:1px solid rgba(232,101,26,0.2); border-radius:var(--radius-sm); padding:14px; font-size:0.83rem; color:var(--text2); line-height:1.5; }
-        .info-box strong { color:var(--orange); }
-        
-        /* Misc */
-        .err-msg { font-size:0.82rem; color:var(--red); font-weight:600; text-align:center; margin-top:10px; }
-        .empty { text-align:center; padding:40px 20px; color:var(--text3); }
-        .empty-icon { font-size:2.5rem; margin-bottom:10px; }
-        .empty-text { font-size:0.9rem; font-weight:600; }
+        .btn-primary { width:100%; background:var(--orange); color:#fff; font-weight:800; padding:15px; border:none; border-radius:100px; cursor:pointer; box-shadow:0 4px 16px rgba(232,101,26,0.3); }
+        .btn-sm { padding:6px 12px; border-radius:100px; border:none; cursor:pointer; font-size: 0.75rem; font-weight: 700; }
+        .btn-red { background: var(--red-l); color: var(--red); }
+        .btn-green { background: var(--green-l); color: var(--green); }
+        .btn-amber { background: var(--amber-l); color: var(--amber); }
+
+        .p-card { background:var(--card); border-radius:var(--radius-sm); padding:14px; border-left:4px solid var(--border); margin-bottom: 10px; box-shadow: var(--shadow); }
+        .p-card.pago { border-left-color:var(--green); }
+        .modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.5); display:flex; align-items:flex-end; justify-content:center; }
+        .modal-box { background:var(--card); border-radius:24px 24px 0 0; width:100%; max-width:480px; padding:24px; animation:slideUp 0.3s ease; }
+        @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
         .hidden { display:none !important; }
-        @keyframes spin { to{transform:rotate(360deg)} }
         .spin { display:inline-block; animation:spin 1s linear infinite; }
+        @keyframes spin { to{transform:rotate(360deg)} }
+
+        #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#000; color:#fff; padding:12px 24px; border-radius:100px; font-size:0.85rem; opacity:0; transition:0.3s; z-index:999; }
+        #toast.show { opacity:1; }
     </style>
-
 </head>
-
 <body>
 
-    <!-- ════════ OVERLAY DE DIAGNÓSTICO | SALVO PARA NECESSIDADES════════ 
+    <div class="bunting"><div class="bunting-flags" id="flags"></div></div>
 
-    <div id="diag-overlay" style="position:fixed;inset:0;z-index:9999;background:#F5EFE0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:Nunito,sans-serif;">
-        <div style="width:100%;max-width:400px;">
+    <div id="page-main" class="page active">
+        <div style="text-align:center; margin: 20px 0;">
+            <h1 style="font-weight:900;">Balaio Alamedas</h1>
+            <p id="hdr-desc" style="color:var(--text3);">Carregando evento...</p>
+        </div>
 
-            <div style="text-align:center;margin-bottom:28px;">
-                <div style="font-size:2.2rem;margin-bottom:8px;">🔍</div>
-                <h2 id="diag-h2" style="font-size:1.15rem;font-weight:900;color:#1C1917;">Verificando conexão…</h2>
-                <p id="diag-p" style="font-size:0.82rem;color:#A8A29E;margin-top:4px;">Aguarde, testando os serviços</p>
-                <div id="diag-timer" style="font-size:0.75rem;color:#D4C5B0;margin-top:4px;"></div>
+        <div class="card">
+            <div class="card-body">
+                <div class="progress-wrap" style="margin-bottom:8px;">
+                    <div id="progress-fill" class="progress-fill" style="width:0%"></div>
+                    <div id="progress-label" class="progress-label">0%</div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text3);">
+                    <span>Acumulado: <strong id="thermo-val">R$ 0</strong></span>
+                    <span>Meta: <strong id="thermo-meta">R$ 0</strong></span>
+                </div>
             </div>
+        </div>
 
-            <div id="diag-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;"></div>
-            <div id="diag-detail" style="display:none;background:#FEE2E2;border:1px solid #FECACA;border-radius:12px;padding:14px;margin-bottom:16px;font-size:0.78rem;color:#991B1B;line-height:1.65;word-break:break-word;"></div>
-            <div id="diag-actions" style="display:none;flex-direction:column;gap:10px;">
-                <button onclick="runDiagnostic()" style="background:#E8651A;color:#fff;border:none;border-radius:100px;padding:14px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;width:100%;">↻ Tentar novamente</button>
-                <button id="diag-proceed" onclick="fecharDiagnostico()" style="display:none;background:transparent;border:1.5px solid #E7DDD0;border-radius:100px;padding:12px;font-family:Nunito,sans-serif;font-weight:700;font-size:0.85rem;color:#57534E;cursor:pointer;width:100%;">Continuar mesmo assim</button>
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-num" id="stat-inscritos">0</div>
+                <div class="stat-lbl">Inscritos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:var(--green)" id="stat-confirmados">0</div>
+                <div class="stat-lbl">Confirmados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:var(--amber)" id="stat-pendentes">0</div>
+                <div class="stat-lbl">Pendentes</div>
             </div>
         </div>
-    </div>
-    -->
-<!-- PAGINA PRINCIPAL -->
-<div id="page-main" class="page active">
- 
-  <div class="bunting">
-    <div class="bunting-rope"></div>
-    <div class="bunting-flags" id="flags"></div>
-  </div>
 
-  <!-- Hero com gradiente -->
-  <div style="background:linear-gradient(180deg,#8B5E2C 0%,#C4883A 28%,#E8A84A 55%,#F5EFE0 100%);padding:28px 16px 32px;text-align:center;">
-    <div style="font-size:3rem;margin-bottom:8px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">&#127805;</div>
-    <h1 style="font-size:2rem;font-weight:900;line-height:1.15;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);">Balaio Junino</h1>
-    <p style="font-size:1.1rem;font-weight:800;color:#FFE68A;margin-top:2px;text-shadow:0 1px 4px rgba(0,0,0,0.2);">Alamedas 2026</p>
-    <p style="font-size:0.85rem;color:#3D1A00;font-weight:700;margin-top:10px;line-height:1.55;max-width:340px;margin-left:auto;margin-right:auto;" id="hdr-desc">Participe da nossa festa junina! Inscreva-se e ajude a fazer deste evento um sucesso.</p>
-  </div>
- 
-  <div style="padding:20px 16px 40px; max-width:480px; margin:0 auto;">
- 
-    <!-- Card: Sorteio -->
-    <div class="card" style="margin-bottom:14px;">
-      <div class="card-body">
-        <div class="sec-header">
-          <div class="sec-icon">&#129530;</div>
-          <div>
-            <div class="sec-title">Balaios para Sorteio</div>
-            <div class="sec-sub" id="sorteio-sub">Nenhum balaio completo ainda. Continue arrecadando!</div>
-          </div>
+        <div class="card">
+            <div class="card-body">
+                <h3 style="margin-bottom:14px;">🧺 Faça sua Inscrição</h3>
+                <div class="form-group">
+                    <label class="form-label">Nome Completo</label>
+                    <input id="f-nome" class="inp" type="text" placeholder="Seu nome">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="form-group">
+                        <label class="form-label">Bloco</label>
+                        <input id="f-bloco" class="inp" type="text" placeholder="Ex: A">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Apto</label>
+                        <input id="f-apt" class="inp" type="text" placeholder="Ex: 101">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Quantidade de Cotas</label>
+                    <select id="f-qtd" class="inp"></select>
+                </div>
+                <button id="btn-inscrever" class="btn-primary">🔥 Participar do Balaio</button>
+                <p id="form-error" style="color:var(--red); font-size:0.8rem; margin-top:10px;" class="hidden"></p>
+            </div>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--bg);">
-          <span style="font-size:0.85rem;color:var(--text3);font-weight:600;">Total arrecadado</span>
-          <span style="font-weight:900;font-size:1rem;color:var(--orange);" id="sorteio-total">R$ 0,00</span>
+
+        <div class="card">
+            <div class="card-body">
+                <h3 style="margin-bottom:10px;">📋 Itens do Balaio</h3>
+                <div id="itens-list"></div>
+                <div style="margin-top:14px; padding-top:10px; border-top:2px dashed var(--border); display:flex; justify-content:space-between; font-weight:900;">
+                    <span>Total Estimado:</span>
+                    <span id="total-balaio">R$ 0,00</span>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <button onclick="abrirAdmin()" style="width:100%; background:transparent; border:1px solid var(--border); padding:12px; border-radius:100px; color:var(--text3); font-size:0.8rem; margin-top:20px;">🔐 Área Administrativa</button>
     </div>
- 
-    <!-- Card: Termometro -->
-    <div class="card" style="margin-bottom:14px;">
-      <div class="card-body">
-        <div class="sec-header">
-          <div class="sec-icon">&#128293;</div>
-          <div>
-            <div class="sec-title">Proximo Balaio</div>
-            <div class="sec-sub">Acompanhe a arrecadacao</div>
-          </div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="font-size:0.82rem;color:var(--text3);font-weight:600;">Saldo acumulado</span>
-          <span style="font-weight:800;color:var(--orange);" id="thermo-val">R$ 0,00</span>
-        </div>
-        <div class="progress-wrap" style="margin-bottom:8px;">
-          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-          <div class="progress-label" id="progress-label">0%</div>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text3);font-weight:600;margin-bottom:14px;">
-          <span>R$ 0</span>
-          <span>Meta: <strong style="color:var(--text2);" id="thermo-meta">R$ --</strong></span>
-        </div>
-        <div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
-          <span style="font-size:0.82rem;color:var(--text3);font-weight:600;" id="faltam-lbl">R$ 0,00 acumulados</span>
-          <span style="font-size:0.82rem;font-weight:800;color:var(--text2);">Faltam <span id="faltam-val" style="color:var(--orange);">R$ --</span></span>
-        </div>
-        <p style="font-size:0.78rem;color:var(--text3);text-align:center;">Cada balaio custa <strong style="color:var(--text2);" id="custo-balaio">R$ --</strong></p>
-      </div>
-    </div>
- 
-    <!-- Stats -->
-    <div class="stat-grid" style="margin-bottom:14px;">
-      <div class="stat-card">
-        <div class="stat-icon">&#128101;</div>
-        <div class="stat-num" id="stat-inscritos">0</div>
-        <div class="stat-lbl">Inscritos</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">&#9989;</div>
-        <div class="stat-num" style="color:var(--green);" id="stat-confirmados">0</div>
-        <div class="stat-lbl">Confirmados</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">&#8987;</div>
-        <div class="stat-num" style="color:var(--amber);" id="stat-pendentes">0</div>
-        <div class="stat-lbl">Pendentes</div>
-      </div>
-    </div>
- 
-    <!-- Card: Inscricao -->
-    <div class="card" style="margin-bottom:14px;">
-      <div class="card-body">
-        <div class="sec-header">
-          <div class="sec-icon">&#9997;</div>
-          <div>
-            <div class="sec-title">Inscricao</div>
-            <div class="sec-sub">Preencha seus dados para participar</div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Nome Completo <span class="req">*</span></label>
-          <input id="f-nome" class="inp" type="text" placeholder="Seu nome completo" autocomplete="name">
-        </div>
-        <div class="form-row form-group">
-          <div>
-            <label class="form-label">Bloco <span class="req">*</span></label>
-            <input id="f-bloco" class="inp" type="text" placeholder="Ex: A">
-          </div>
-          <div>
-            <label class="form-label">Apto <span class="req">*</span></label>
-            <input id="f-apt" class="inp" type="text" placeholder="Ex: 101">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Telefone</label>
-          <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" inputmode="tel">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Observacao</label>
-          <input id="f-obs" class="inp" type="text" placeholder="Alguma observacao? (opcional)">
-        </div>
-        <button class="btn-primary" id="btn-inscrever">Fazer Inscricao</button>
-        <p style="text-align:center;margin-top:10px;font-size:0.82rem;color:var(--text3);">Valor da cota: <strong style="color:var(--orange);" id="form-valor">R$ --</strong></p>
-        <p id="form-error" class="err-msg hidden"></p>
-      </div>
-    </div>
- 
-    <!-- Card: Transparencia -->
-    <div class="card" style="margin-bottom:24px;">
-      <div class="card-body" style="padding-bottom:0;">
-        <div class="sec-header">
-          <div class="sec-icon">&#128203;</div>
-          <div>
-            <div class="sec-title">Transparencia</div>
-            <div class="sec-sub">Veja o que sera comprado com a arrecadacao</div>
-          </div>
-        </div>
-      </div>
-      <div style="border-top:1px solid var(--bg);">
-        <div style="display:flex;justify-content:space-between;padding:8px 18px 4px;font-size:0.75rem;font-weight:700;color:var(--text3);letter-spacing:0.04em;">
-          <span>ITEM</span><span>VALOR EST.</span>
-        </div>
-        <div id="itens-list">
-          <div class="empty"><div class="empty-text">Carregando...</div></div>
-        </div>
-      </div>
-      <div class="item-total-row">
-        <span class="lbl">Total do Balaio</span>
-        <span class="val" id="total-balaio">R$ --</span>
-      </div>
-    </div>
- 
-    <button class="footer-link" onclick="abrirAdmin()">Painel Administrativo</button>
- 
-    <div style="text-align:center;margin-top:20px;">
-      <p style="font-size:0.78rem;color:var(--text3);font-weight:700;">Balaio Alamedas 2026</p>
-      <p style="font-size:0.72rem;color:var(--text3);margin-top:2px;">Desenvolvido por Alex Passos</p>
-    </div>
- 
-  </div>
-</div>
-    <!-- ── PÁGINA ADMIN ── -->
 
     <div id="page-admin" class="page">
-
-        <div class="bunting" id="bunting-admin">
-            <div class="bunting-rope"></div>
-            <div class="bunting-flags" id="flags-admin"></div>
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+            <button onclick="voltarMain()" class="btn-sm" style="background:var(--bg2);">← Voltar</button>
+            <h1 style="font-weight:900;">Painel Admin</h1>
         </div>
 
-        <div class="admin-nav">
-            <button class="back-btn" onclick="voltarMain()">←</button>
-            <div>
-                <h1>Painel Admin</h1>
-                <p>Gerencie o Balaio Junino</p>
-            </div>
-            <div style="flex:1"></div>
-            <button class="btn-ghost" style="padding:8px 14px; font-size:0.78rem;" onclick="logout()">Sair</button>
-        </div>
-
-        <div style="padding:16px; max-width:480px; margin:0 auto; padding-bottom:40px;">
-
-            <!-- Termômetro admin -->
-            <div style="text-align:center; margin-bottom:14px;">
-                <p style="font-size:1rem; font-weight:900; margin-bottom:2px;">🔥 Termômetro da Fogueira</p>
-                <p style="font-size:0.78rem; color:var(--text3); margin-bottom:12px;">Acompanhe o progresso da arrecadação</p>
-                <p style="font-size:2rem; font-weight:900; color:var(--orange); margin-bottom:12px;" id="adm-arrecadado">R$ 0,00</p>
-
-                <div class="progress-wrap" style="margin-bottom:8px;">
-                    <div class="progress-fill" id="adm-progress" style="width:0%"></div>
-                    <div class="progress-label" id="adm-pct">0,0%</div>
+        <div class="card">
+            <div class="card-body">
+                <div style="display:flex; gap:8px; margin-bottom:15px;">
+                    <button onclick="mudarTab('participantes')" class="btn-sm btn-green">Participantes</button>
+                    <button onclick="imprimirListaSorteio()" class="btn-sm btn-amber">🖨️ Imprimir p/ Sorteio</button>
+                    <button onclick="logout()" class="btn-sm btn-red">Sair</button>
                 </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text3); font-weight:600;">
-                    <span>R$ 0</span>
-                    <span>⊙ Meta: <strong style="color:var(--text2);" id="adm-meta">R$ —</strong></span>
+                <div id="adm-content">
+                    <input type="text" id="search-input" class="inp" placeholder="🔍 Buscar..." oninput="filtrarParticipantes()" style="margin-bottom:15px;">
+                    <div id="lista-participantes"></div>
                 </div>
             </div>
-
-            <!-- Stats -->
-            <div class="stat-grid" style="margin-bottom:14px;">
-                <div class="stat-card">
-                    <div class="stat-icon">👥</div>
-                    <div class="stat-num" id="adm-inscritos">0</div>
-                    <div class="stat-lbl">Inscritos</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">✅</div>
-                    <div class="stat-num" style="color:var(--green);" id="adm-confirmados">0</div>
-                    <div class="stat-lbl">Confirmados</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⏳</div>
-                    <div class="stat-num" style="color:var(--amber);" id="adm-pendentes">0</div>
-                    <div class="stat-lbl">Pendentes</div>
-                </div>
-            </div>
-
-            <!-- Tabs -->
-            <div class="tab-bar" style="margin-bottom:14px;">
-                <button class="tab-btn active" id="tab-participantes" onclick="mudarTab('participantes')">👥</button>
-                <button class="tab-btn" id="tab-itens" onclick="mudarTab('itens')">🧺</button>
-                <button class="tab-btn" id="tab-config" onclick="mudarTab('config')">⚙️</button>
-            </div>
-
-            <!-- Tab: Participantes -->
-            <div id="tab-content-participantes">
-                <div class="search-wrap" style="margin-bottom:12px;">
-                    <input class="search-inp" id="search-input" type="text" placeholder="🔍 Buscar por nome, bloco ou apto…" oninput="filtrarParticipantes()">
-                    <select class="filter-sel" id="filter-status" onchange="filtrarParticipantes()">
-                        <option value="">Todos</option>
-                        <option value="pago">Pagos</option>
-                        <option value="pendente">Pendentes</option>
-                        <option value="cancelado">Cancelados</option>
-                    </select>
-                </div>
-                <div id="lista-participantes">
-                    <div class="empty">
-                        <div class="empty-icon">👥</div>
-                        <div class="empty-text">Nenhum participante encontrado.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab: Itens -->
-            <div id="tab-content-itens" class="hidden">
-                <div class="card">
-                    <div id="adm-itens-list">
-                        <div class="empty">
-                            <div class="empty-text">Carregando…</div>
-                        </div>
-                    </div>
-                    <div class="item-total-row">
-                        <span class="lbl">Total</span>
-                        <span class="val" id="adm-total-balaio">R$ —</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab: Config -->
-            <div id="tab-content-config" class="hidden">
-                <div class="card" style="margin-bottom:12px;">
-                    <div class="card-body">
-                        <p style="font-weight:800; font-size:0.95rem; margin-bottom:14px;">⚙️ Configurações</p>
-                        <div class="form-group">
-                            <label class="form-label">Meta do Balaio (R$)</label>
-                            <input id="cfg-meta" class="inp" type="number" step="0.01" placeholder="Ex: 500.00">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Valor da Cota (R$)</label>
-                            <input id="cfg-quota" class="inp" type="number" step="0.01" placeholder="Ex: 10.00">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Data do Evento</label>
-                            <input id="cfg-data" class="inp" type="text" placeholder="Ex: 27 de Junho de 2026">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Local</label>
-                            <input id="cfg-local" class="inp" type="text" placeholder="Ex: Área de Lazer – Bloco Central">
-                        </div>
-                        <button class="btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
-                        <p id="cfg-msg" class="err-msg hidden"></p>
-                    </div>
-                </div>
-
-                <div style="background:var(--orange-l);border:1px solid rgba(232,101,26,0.2);border-radius:var(--radius-sm);padding:14px;font-size:0.82rem;color:var(--text2);">🔑 <strong style="color:var(--orange);">Senha do administrador</strong> é configurada via variável de ambiente <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:0.8rem;">ADMIN_PASSWORD</code> no painel do Cloudflare
-                    Workers. Para alterar, acesse o dashboard da Cloudflare e atualize o secret.</div>
-            </div>
-
         </div>
     </div>
 
-    <!-- ── MODAL PIX ── -->
-
-    <div id="modal-pix" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-pix')">
+    <div id="modal-pix" class="modal-bg hidden">
         <div class="modal-box">
-            <div class="modal-handle"></div>
-            <div style="text-align:center; margin-bottom:16px;">
-                <p style="font-size:1.1rem; font-weight:900;">🎉 Pague com PIX</p>
-                <p style="font-size:0.82rem; color:var(--text3); margin-top:4px;">Escaneie o QR Code ou copie o código</p>
+            <h2 style="text-align:center; margin-bottom:10px;">Quase lá! 🤠</h2>
+            <p style="text-align:center; font-size:0.9rem; color:var(--text2); margin-bottom:20px;">Pague o PIX para confirmar sua participação.</p>
+            <div style="text-align:center; margin-bottom:20px;">
+                <p style="font-size:0.8rem; color:var(--text3);">Valor Total</p>
+                <p id="pix-valor" style="font-size:2rem; font-weight:900; color:var(--orange);">R$ 0,00</p>
             </div>
-            <div style="text-align:center; margin-bottom:14px;">
-                <p style="font-size:0.8rem; color:var(--text3); font-weight:600;">Valor</p>
-                <p style="font-size:2rem; font-weight:900; color:var(--orange);" id="pix-valor">R$ —</p>
-            </div>
-            <div id="qr-box" style="margin-bottom:14px;"></div>
-            <div style="margin-bottom:14px;">
-                <p style="font-size:0.78rem; font-weight:700; color:var(--text3); margin-bottom:6px;">Código Copia e Cola</p>
-                <div class="copy-row">
-                    <input id="pix-payload" type="text" readonly>
-                    <button class="copy-btn" onclick="copiarPix()">Copiar</button>
-                </div>
-            </div>
-            <div class="info-box" style="margin-bottom:14px;">
-                📌 <strong>Após o pagamento</strong>, guarde o comprovante. O administrador confirmará em breve.
-            </div>
-            <button class="btn-primary" onclick="fecharModal('modal-pix')">Fechar</button>
-            <p style="text-align:center; font-size:0.72rem; color:var(--text3); margin-top:10px;" id="pix-txid"></p>
-        </div>
-    </div>
-
-    <!-- ── MODAL LOGIN ── -->
-
-    <div id="modal-login" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-login')">
-        <div class="modal-box">
-            <div class="modal-handle"></div>
-            <p style="font-size:1.1rem; font-weight:900; margin-bottom:16px;">🔐 Área Administrativa</p>
+            <div id="qr-box" style="display:flex; justify-content:center; margin-bottom:20px;"></div>
             <div class="form-group">
-                <label class="form-label">Senha</label>
-                <input id="login-senha" class="inp" type="password" placeholder="Digite a senha" autocomplete="current-password">
+                <label class="form-label">Código Copia e Cola</label>
+                <div style="display:flex; gap:5px;">
+                    <input id="pix-payload" class="inp" readonly style="font-size:0.7rem;">
+                    <button onclick="copiarPix()" class="btn-sm btn-green">Copiar</button>
+                </div>
             </div>
-            <button class="btn-primary" id="btn-login">🔓 Entrar</button>
-            <p id="login-error" class="err-msg hidden"></p>
+            <button onclick="fecharModal('modal-pix')" class="btn-primary">Já paguei / Fechar</button>
+        </div>
+    </div>
 
+    <div id="modal-login" class="modal-bg hidden">
+        <div class="modal-box">
+            <h3>🔐 Login Admin</h3>
+            <div class="form-group" style="margin-top:15px;">
+                <input id="login-senha" type="password" class="inp" placeholder="Senha">
+            </div>
+            <button id="btn-login" class="btn-primary" onclick="fazerLogin()">Entrar</button>
         </div>
     </div>
 
     <div id="toast"></div>
 
     <script>
-        // ─── Configuração ─────────────────────────────────────────────────
-        // ⚠️ Altere para a URL do seu Worker após o deploy:
         const API_BASE = 'https://alamedas-balaio.alexdesouzapassos.workers.dev';
-        
-        let adminToken = localStorage.getItem('ba_token') || null;
+        let adminToken = localStorage.getItem('ba_token');
         let todosParticipantes = [];
-        
-        // ─── Bandeirolas ──────────────────────────────────────────────────
-        (function(){
-          const cores = ['#FF4136','#FF851B','#FFD700','#2ECC40','#0074D9','#B10DC9','#FF69B4','#7FDBFF','#FFDC00','#FF4136'];
-          function popularBandeiras(id){
-            const container = document.getElementById(id);
-            if(!container) return;
-            const n = Math.ceil((window.innerWidth + 60) / 32);
-            for(let i=0; i<n; i++){
-              const el = document.createElement('div');
-              el.className = 'flag';
-              el.style.background = cores[i % cores.length];
-              container.appendChild(el);
-            }
-          }
-          popularBandeiras('flags');
-          popularBandeiras('flags-admin');
-        })();
-        
-        // ─── Helpers ──────────────────────────────────────────────────────
-        function brl(v){ return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(+v); }
-        function toast(msg, d=2800){
-          const el = document.getElementById('toast');
-          el.textContent = msg; el.classList.add('show');
-          setTimeout(()=>el.classList.remove('show'), d);
-        }
-        
-        // ─── Navegação ────────────────────────────────────────────────────
-        function mostrarPagina(id){
-          document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-          document.getElementById(id).classList.add('active');
-          window.scrollTo(0,0);
-        }
-        function voltarMain(){ mostrarPagina('page-main'); }
-        
-        function abrirModal(id)  { document.getElementById(id).classList.remove('hidden'); }
-        function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function fecharModalBg(e,id){ if(e.target===e.currentTarget) fecharModal(id); }
-        
-        // ─── Dados públicos ──────────────────────────────────────────────
-        let custoBalaioGlobal = 0;
+        let configGlobal = {};
 
-        async function carregarDados(){
-          try{
-            const res  = await fetch(`${API_BASE}/api/dados`);
-            const data = await res.json();
-            if(!res.ok) throw new Error(data.error);
-        
-            const {config, itens, stats} = data;
+        // Helper BRL
+        const brl = v => new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v);
 
-        // USE ESTE PADRÃO PARA CADA LINHA QUE DÁ ERRO:
-            const elDesc = document.getElementById('hdr-desc');
-            if (elDesc && config.descricao) elDesc.textContent = config.descricao;
-        
-            const elValor = document.getElementById('form-valor');
-            if (elValor) elValor.textContent = brl(config.valor_quota || 10);
-        
-            const elInscritos = document.getElementById('stat-inscritos');
-            if (elInscritos) elInscritos.textContent = stats.total_inscritos;
-        
-            const totalI = +stats.total_inscritos, pagos = +stats.total_pagos;
-              
-            document.getElementById('stat-inscritos').textContent    = totalI;
-            document.getElementById('stat-confirmados').textContent  = pagos;
-            document.getElementById('stat-pendentes').textContent    = Math.max(0, totalI - pagos);
-        
-            // Custo do balaio = soma dos itens
-            const custo = itens ? itens.reduce((s,i)=> s + (+i.preco_estimado * +i.quantidade), 0) : 0;
-            custoBalaioGlobal = custo;
-            const arrec = +(stats.total_arrecadado || 0);
-        
-            if(custo > 0){
-              const balaios   = Math.floor(arrec / custo);
-              const acumulado = arrec - (balaios * custo);
-              const faltam    = custo - acumulado;
-              const p         = (acumulado / custo) * 100;
-        
-              document.getElementById('thermo-val').textContent    = brl(acumulado);
-              document.getElementById('thermo-meta').textContent   = brl(custo);
-              document.getElementById('faltam-lbl').textContent    = `${brl(acumulado)} acumulados`;
-              document.getElementById('faltam-val').textContent    = brl(faltam);
-              document.getElementById('sorteio-total').textContent = brl(arrec);
-              document.getElementById('custo-balaio').textContent  = brl(custo);
-        
-              document.getElementById('sorteio-sub').textContent = balaios > 0
-                ? `${balaios} balaio${balaios>1?'s':''} completo${balaios>1?'s':''}! 🎉`
-                : 'Nenhum balaio completo ainda. Continue arrecadando!';
-        
-              setTimeout(()=>{
-                document.getElementById('progress-fill').style.width = p.toFixed(1)+'%';
-                document.getElementById('progress-label').textContent = p.toFixed(1).replace('.',',')+' %';
-              }, 200);
-            }
-            renderizarItens(itens);
-          } catch(err){
-            console.error(err);
-            document.getElementById('itens-list').innerHTML = '<div class="empty"><div class="empty-text" style="color:var(--red);">Erro ao carregar dados.</div></div>';
-          }
+        // Bandeirinhas
+        const cores = ['#FF4136', '#FF851B', '#FFDC00', '#2ECC40', '#0074D9', '#B10DC9', '#FF69B4', '#01FF70'];
+        const container = document.getElementById('flags');
+        for(let i=0; i<25; i++) {
+            const f = document.createElement('div');
+            f.className = 'flag';
+            f.style.background = cores[i % cores.length];
+            container.appendChild(f);
         }
-        
-        // ─── Itens (pública) ───────────────────────────────────────────
-        function renderizarItens(itens){
-          const lista = document.getElementById('itens-list');
-          if(!itens||itens.length===0){
-            lista.innerHTML='<div class="empty"><div class="empty-text">Nenhum item cadastrado.</div></div>';
-            return;
-          }
-          let total=0;
-          const html = itens.map(item=>{
-            const val = +item.preco_estimado * +item.quantidade; total+=val;
-            return `<div class="item-row"><span class="item-name">${item.icone?item.icone+' ':''} ${item.nome}${+item.quantidade>1?' <span style="color:var(--text3);font-size:0.75rem;">(×'+item.quantidade+')</span>':''}</span><span class="item-val">${brl(val)}</span></div>`;
-          }).join('');
-          lista.innerHTML = html;
-          document.getElementById('total-balaio').textContent = brl(total);
-          document.getElementById('custo-balaio').textContent  = brl(total);
-          renderizarItensAdmin(itens, total);
+
+        async function carregarDados() {
+            try {
+                const res = await fetch(`${API_BASE}/api/dados`);
+                const data = await res.json();
+                configGlobal = data.config;
+                
+                document.getElementById('hdr-desc').textContent = data.config.data_evento || 'Festa Junina Alamedas';
+                document.getElementById('stat-inscritos').textContent = data.stats.total_inscritos;
+                document.getElementById('stat-confirmados').textContent = data.stats.total_pagos;
+                document.getElementById('stat-pendentes').textContent = data.stats.total_inscritos - data.stats.total_pagos;
+                
+                // Update Seletor Cotas
+                const v = parseFloat(data.config.valor_quota || 10);
+                document.getElementById('f-qtd').innerHTML = [1,2,3,5,10].map(n => `<option value="${n}">${n} cotas (${brl(n*v)})</option>`).join('');
+
+                // Termômetro
+                const meta = parseFloat(data.config.meta_balaio || 500);
+                const arrec = parseFloat(data.stats.total_arrecadado);
+                const pct = Math.min(100, (arrec/meta)*100);
+                document.getElementById('progress-fill').style.width = pct + '%';
+                document.getElementById('progress-label').textContent = pct.toFixed(1) + '%';
+                document.getElementById('thermo-val').textContent = brl(arrec);
+                document.getElementById('thermo-meta').textContent = brl(meta);
+
+                // Lista Itens
+                document.getElementById('itens-list').innerHTML = data.itens.map(it => `
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:5px;">
+                        <span>${it.icone} ${it.nome} (x${it.quantidade})</span>
+                        <span>${brl(it.preco_estimado * it.quantidade)}</span>
+                    </div>
+                `).join('');
+                const total = data.itens.reduce((acc, it) => acc + (it.preco_estimado * it.quantidade), 0);
+                document.getElementById('total-balaio').textContent = brl(total);
+
+            } catch (e) { console.error(e); }
         }
-        
-        // ─── Itens admin (editáveis) ────────────────────────────────
-        function renderizarItensAdmin(itens, total){
-          const admLista = document.getElementById('adm-itens-list');
-          if(!admLista) return;
-          if(!itens||itens.length===0){
-            admLista.innerHTML='<div class="empty"><div class="empty-text">Nenhum item cadastrado.</div></div>';
-            return;
-          }
-          admLista.innerHTML = itens.map(item => {
-            const val = +item.preco_estimado * +item.quantidade;
-            const nomeSafe = item.nome.replace(/'/g, "\\'");
-            return `
-            <div id="item-row-${item.id}" style="border-bottom:1px solid var(--bg);">
-              <div style="display:flex;align-items:center;gap:8px;padding:11px 14px;">
-                <span style="font-size:1rem;flex-shrink:0;">${item.icone||'🎉'}</span>
-                <span style="flex:1;font-size:0.88rem;font-weight:600;color:var(--text2);">${item.nome}${+item.quantidade>1?' (×'+item.quantidade+')':''}</span>
-                <span style="font-weight:700;font-size:0.88rem;color:var(--text);flex-shrink:0;">${brl(val)}</span>
-                <button class="btn-sm btn-orange" onclick="iniciarEdicaoItem(${item.id},'${nomeSafe}',${item.preco_estimado},${item.quantidade})" style="padding:5px 10px;font-size:0.75rem;flex-shrink:0;">✏️</button>
-              </div>
-              <div id="item-edit-${item.id}" class="hidden" style="margin:0 14px 12px;background:var(--bg);border-radius:8px;padding:12px;">
-                <div class="form-group" style="margin-bottom:8px;">
-                  <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">NOME</label>
-                  <input id="item-edit-nome-${item.id}" class="inp" type="text" placeholder="Nome do item" style="font-size:0.85rem;padding:9px 12px;">
+
+        document.getElementById('btn-inscrever').onclick = async () => {
+            const btn = document.getElementById('btn-inscrever');
+            const err = document.getElementById('form-error');
+            const payload = {
+                nome: document.getElementById('f-nome').value,
+                bloco: document.getElementById('f-bloco').value,
+                apartamento: document.getElementById('f-apt').value,
+                quantidade: document.getElementById('f-qtd').value
+            };
+
+            if(!payload.nome || !payload.bloco || !payload.apartamento) return toast('Preencha tudo, sô!');
+
+            btn.disabled = true; btn.innerHTML = '<span class="spin">⏳</span>';
+            try {
+                const res = await fetch(`${API_BASE}/api/inscricao`, {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if(!res.ok) throw new Error(data.error);
+
+                // PIX
+                document.getElementById('pix-valor').textContent = brl(data.pix.valor);
+                document.getElementById('pix-payload').value = data.pix.payload;
+                const qrBox = document.getElementById('qr-box');
+                qrBox.innerHTML = '';
+                new QRCode(qrBox, {text: data.pix.payload, width:200, height:200});
+                
+                document.getElementById('modal-pix').classList.remove('hidden');
+                carregarDados();
+            } catch (e) { toast(e.message); }
+            finally { btn.disabled = false; btn.innerHTML = '🔥 Participar do Balaio'; }
+        };
+
+        // ADMIN FUNCTIONS
+        function abrirAdmin() { 
+            if(adminToken) {
+                document.getElementById('page-main').classList.remove('active');
+                document.getElementById('page-admin').classList.add('active');
+                carregarAdmin();
+            } else { document.getElementById('modal-login').classList.remove('hidden'); }
+        }
+
+        async function fazerLogin() {
+            const senha = document.getElementById('login-senha').value;
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/login`, {
+                    method: 'POST',
+                    body: JSON.stringify({senha})
+                });
+                const data = await res.json();
+                if(!res.ok) throw new Error(data.error);
+                adminToken = data.token;
+                localStorage.setItem('ba_token', data.token);
+                document.getElementById('modal-login').classList.add('hidden');
+                abrirAdmin();
+            } catch (e) { toast(e.message); }
+        }
+
+        async function carregarAdmin() {
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/participantes`, {
+                    headers: {'Authorization': `Bearer ${adminToken}`}
+                });
+                const data = await res.json();
+                todosParticipantes = data.participantes;
+                filtrarParticipantes();
+            } catch (e) { logout(); }
+        }
+
+        function filtrarParticipantes() {
+            const q = document.getElementById('search-input').value.toLowerCase();
+            const list = document.getElementById('lista-participantes');
+            const filtered = todosParticipantes.filter(p => p.nome.toLowerCase().includes(q) || p.bloco.toLowerCase().includes(q));
+            
+            list.innerHTML = filtered.map(p => `
+                <div class="p-card ${p.status_pagamento}">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div>
+                            <strong>${p.nome}</strong> (${p.quantidade} cotas)<br>
+                            <small>Bloco ${p.bloco} - Apto ${p.apartamento}</small>
+                        </div>
+                        <div style="text-align:right">
+                            <span class="btn-sm ${p.status_pagamento === 'pago' ? 'btn-green' : 'btn-amber'}">${p.status_pagamento}</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px; display:flex; gap:5px;">
+                        ${p.status_pagamento !== 'pago' ? `<button onclick="alterarStatus(${p.id}, 'pago')" class="btn-sm btn-green">Confirmar</button>` : ''}
+                        <button onclick="excluirParticipante(${p.id})" class="btn-sm btn-red">🗑️ Excluir</button>
+                    </div>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-                  <div>
-                    <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">PREÇO UNIT. (R$)</label>
-                    <input id="item-edit-preco-${item.id}" class="inp" type="number" step="0.01" min="0" style="font-size:0.85rem;padding:9px 12px;">
-                  </div>
-                  <div>
-                    <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">QUANTIDADE</label>
-                    <input id="item-edit-qtd-${item.id}" class="inp" type="number" min="1" style="font-size:0.85rem;padding:9px 12px;">
-                  </div>
-                </div>
-                <div style="display:flex;gap:8px;">
-                  <button class="btn-sm btn-green" style="flex:1;padding:9px;" onclick="salvarEdicaoItem(${item.id})">✅ Salvar</button>
-                  <button class="btn-sm" style="flex:1;padding:9px;background:var(--bg2);color:var(--text2);" onclick="cancelarEdicaoItem(${item.id})">✕ Cancelar</button>
-                </div>
-                <p id="item-edit-err-${item.id}" class="err-msg hidden" style="margin-top:6px;"></p>
-              </div>
-            </div>`;
-          }).join('');
-          if(document.getElementById('adm-total-balaio'))
-            document.getElementById('adm-total-balaio').textContent = brl(total||0);
+            `).join('');
         }
-        
-        function iniciarEdicaoItem(id, nome, preco, qtd){
-          document.querySelectorAll('[id^="item-edit-"]').forEach(el=>{
-            if(!el.id.match(/item-edit-(nome|preco|qtd|err)-/)) el.classList.add('hidden');
-          });
-          const edit = document.getElementById(`item-edit-${id}`);
-          edit.classList.remove('hidden');
-          document.getElementById(`item-edit-nome-${id}`).value  = nome;
-          document.getElementById(`item-edit-preco-${id}`).value = preco;
-          document.getElementById(`item-edit-qtd-${id}`).value   = qtd;
-        }
-        
-        function cancelarEdicaoItem(id){
-          document.getElementById(`item-edit-${id}`).classList.add('hidden');
-        }
-        
-        async function salvarEdicaoItem(id){
-          const nome  = document.getElementById(`item-edit-nome-${id}`).value.trim();
-          const preco = parseFloat(document.getElementById(`item-edit-preco-${id}`).value);
-          const qtd   = parseInt(document.getElementById(`item-edit-qtd-${id}`).value) || 1;
-          const errEl = document.getElementById(`item-edit-err-${id}`);
-          errEl.classList.add('hidden');
-          if(!nome || isNaN(preco) || preco < 0){
-            errEl.textContent='⚠️ Preencha nome e preço válido.';
-            errEl.classList.remove('hidden'); return;
-          }
-          try{
-            const res = await fetch(`${API_BASE}/api/admin/item/atualizar`, {
-              method: 'POST',
-              headers: {'Content-Type':'application/json', Authorization:`Bearer ${adminToken}`},
-              body: JSON.stringify({id, nome, preco_estimado: preco, quantidade: qtd}),
+
+        async function alterarStatus(id, status) {
+            await fetch(`${API_BASE}/api/admin/confirmar`, {
+                method: 'POST',
+                headers: {'Authorization': `Bearer ${adminToken}`, 'Content-Type': 'application/json'},
+                body: JSON.stringify({id, status})
             });
-            if(res.ok){
-              toast('✅ Item atualizado!');
-              cancelarEdicaoItem(id);
-              carregarDados();
-            } else {
-              const d = await res.json();
-              errEl.textContent='❌ '+(d.error||'Erro ao salvar.'); errEl.classList.remove('hidden');
-            }
-          } catch{ errEl.textContent='❌ Erro de conexão.'; errEl.classList.remove('hidden'); }
+            carregarAdmin(); carregarDados();
         }
-        
-        // ─── Inscrição ────────────────────────────────────────────────────
-        // Localiza o botão
-        const btnInscrever = document.getElementById('btn-inscrever');
-          if (btnInscrever) {
-              btnInscrever.addEventListener('click', async () => {
-                  const nome=document.getElementById('f-nome').value.trim();
-                  const bloco=document.getElementById('f-bloco').value.trim();
-                  const apt=document.getElementById('f-apt').value.trim();
-                  const tel=document.getElementById('f-tel').value.trim();
-                  const obs=document.getElementById('f-obs').value.trim();
-                  const errEl=document.getElementById('form-error');
-                  const btn=document.getElementById('btn-inscrever');
-                
-                  errEl.classList.add('hidden');
-                  if(!nome||!bloco||!apt){ errEl.textContent='⚠️ Preencha nome, bloco e apartamento.'; errEl.classList.remove('hidden'); return; }
-                
-                  btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span> Aguarde…';
-                // ... dentro do click do btn-inscrever ...
-                try {
-                    const res = await fetch(`${API_BASE}/api/inscricao`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ nome, bloco, apartamento: apt, telefone: tel, observacao: obs })
-                    });
-                    
-                    const data = await res.json();
-                    console.log("Resposta do Worker:", data); // ADICIONE ISSO PARA DEBUGAR
-                
-                    if (!res.ok) { 
-                        errEl.textContent = '⚠️ ' + (data.error || 'Erro ao realizar inscrição.'); 
-                        errEl.classList.remove('hidden'); 
-                        return; 
-                    }
-                
-                    // Se chegou aqui, o participante foi salvo. Vamos tentar abrir o PIX:
-                    if (data.pix) {
-                        abrirModalPix(data.pix);
-                        toast('🎉 Inscrição realizada!');
-                        // Limpa os campos...
-                    } else {
-                        console.error("Worker não devolveu os dados do PIX:", data);
-                        toast('⚠️ Inscrição salva, mas falha ao gerar PIX.');
-                    }
-                    
-                    carregarDados();
-                } catch (err) {
-                    console.error("Erro detalhado:", err); // ADICIONE ISSO
-                    errEl.textContent = '⚠️ Erro de conexão. Tente novamente.'; 
-                    errEl.classList.remove('hidden'); 
+
+        async function excluirParticipante(id) {
+            if(!confirm('Deseja excluir permanentemente?')) return;
+            const res = await fetch(`${API_BASE}/api/admin/participante/${id}`, {
+                method: 'DELETE',
+                headers: {'Authorization': `Bearer ${adminToken}`}
+            });
+            if(res.ok) { toast('Removido!'); carregarAdmin(); carregarDados(); }
+        }
+
+        function imprimirListaSorteio() {
+            const pagantes = todosParticipantes.filter(p => p.status_pagamento === 'pago');
+            let win = window.open('', '_blank');
+            win.document.write(`
+                <html><head><title>Sorteio Balaio</title>
+                <style>
+                    body { font-family: sans-serif; display: flex; flex-wrap: wrap; gap: 10px; }
+                    .ticket { border: 2px dashed #000; padding: 15px; width: 220px; text-align: center; }
+                    @media print { .no-print { display: none; } }
+                </style></head><body>
+                <button class="no-print" onclick="window.print()">Imprimir Agora</button>
+            `);
+            pagantes.forEach(p => {
+                for(let i=0; i<p.quantidade; i++) {
+                    win.document.write(`
+                        <div class="ticket">
+                            <h3 style="margin:0">BALAIO 2026</h3>
+                            <hr>
+                            <strong>${p.nome}</strong><br>
+                            Bloco ${p.bloco} - Apto ${p.apartamento}<br>
+                            <small>Cota ${i+1}/${p.quantidade}</small>
+                        </div>
+                    `);
                 }
-              });
-         } else {
-              console.warn("Aviso: Elemento 'btn-inscrever' não encontrado nesta página.");
-          }
-           
-        // ─── PIX ──────────────────────────────────────────────────────────
-        function abrirModalPix({payload,valor,txid}){
-          document.getElementById('pix-valor').textContent=brl(+valor);
-          document.getElementById('pix-payload').value=payload;
-          document.getElementById('pix-txid').textContent='ID: '+txid;
-          const qrBox=document.getElementById('qr-box'); qrBox.innerHTML='';
-          new QRCode(qrBox,{text:payload,width:220,height:220,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
-          abrirModal('modal-pix');
-        }
-        function copiarPix(){
-          const p=document.getElementById('pix-payload').value;
-          navigator.clipboard.writeText(p).then(()=>toast('✅ Código PIX copiado!')).catch(()=>{document.getElementById('pix-payload').select();document.execCommand('copy');toast('✅ Copiado!');});
-        }
-        
-        // ─── Admin ────────────────────────────────────────────────────────
-        function abrirAdmin(){
-          if(adminToken){ mostrarPagina('page-admin'); carregarAdmin(); }
-          else abrirModal('modal-login');
-        }
-        function logout(){
-          adminToken=null; localStorage.removeItem('ba_token');
-          mostrarPagina('page-main'); toast('👋 Sessão encerrada.');
-        }
-        
-        document.getElementById('btn-login').addEventListener('click', fazerLogin);
-        document.getElementById('login-senha').addEventListener('keypress', e=>{ if(e.key==='Enter') fazerLogin(); });
-        
-        async function fazerLogin(){
-          const senha=document.getElementById('login-senha').value;
-          const errEl=document.getElementById('login-error');
-          const btn=document.getElementById('btn-login');
-          errEl.classList.add('hidden');
-          if(!senha){ errEl.textContent='⚠️ Digite a senha.'; errEl.classList.remove('hidden'); return; }
-          btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span>';
-          try{
-            const res=await fetch(`${API_BASE}/api/admin/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({senha})});
-            const data=await res.json();
-            if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Senha incorreta.'); errEl.classList.remove('hidden'); return; }
-            adminToken=data.token; localStorage.setItem('ba_token',adminToken);
-            document.getElementById('login-senha').value='';
-            fecharModal('modal-login'); mostrarPagina('page-admin'); carregarAdmin();
-            toast('🔓 Acesso liberado!');
-          } catch(err) { 
-              errEl.textContent='⚠️ Erro de conexão.'; 
-              errEl.classList.remove('hidden'); 
-            } finally { 
-              btn.disabled=false; 
-              btn.innerHTML='🔓 Entrar'; 
-            }
-          }
-
-        async function configurarAdmin(senha) {
-          try {
-            const res = await fetch(`${API_BASE}/api/admin/setup`, {
-              method:'POST',
-              headers:{'Content-Type':'application/json'},
-              body:JSON.stringify({senha})
             });
-            // ... restante da lógica ...
-          } catch(e) { console.error(e); }
+            win.document.write('</body></html>');
+            win.document.close();
         }
-        async function carregarAdmin(){
-          try{
-            const [resP,resD]=await Promise.all([
-              fetch(`${API_BASE}/api/admin/participantes`,{headers:{Authorization:`Bearer ${adminToken}`}}),
-              fetch(`${API_BASE}/api/dados`),
-            ]);
-            if(resP.status===401){ logout(); return; }
-            const {participantes}=await resP.json();
-            const {stats,config,itens}=await resD.json();
-        
-            const total=+stats.total_inscritos, pagos=+stats.total_pagos;
-            document.getElementById('adm-inscritos').textContent   = total;
-            document.getElementById('adm-confirmados').textContent = pagos;
-            document.getElementById('adm-pendentes').textContent   = Math.max(0,total-pagos);
-            document.getElementById('adm-arrecadado').textContent  = brl(stats.total_arrecadado);
-            document.getElementById('adm-meta').textContent        = brl(config.meta_balaio);
-        
-            const p=Math.min(100,(+stats.total_arrecadado/+config.meta_balaio)*100);
-            document.getElementById('adm-progress').style.width=p.toFixed(1)+'%';
-            document.getElementById('adm-pct').textContent=p.toFixed(1).replace('.',',')+' %';
-        
-            document.getElementById('cfg-meta').value  = config.meta_balaio  || '';
-            document.getElementById('cfg-quota').value = config.valor_quota   || '';
-            document.getElementById('cfg-data').value  = config.data_evento   || '';
-            document.getElementById('cfg-local').value = config.local_evento  || '';
-        
-            todosParticipantes = participantes || [];
-            filtrarParticipantes();
-            renderizarItens(itens);
-          } catch(err){ console.error(err); toast('❌ Erro ao carregar painel.'); }
-        }
-        
-        function filtrarParticipantes(){
-          const q=document.getElementById('search-input').value.toLowerCase();
-          const status=document.getElementById('filter-status').value;
-          const filtrados=todosParticipantes.filter(p=>{
-            const mQ=!q||p.nome.toLowerCase().includes(q)||p.bloco.toLowerCase().includes(q)||p.apartamento.toLowerCase().includes(q);
-            const mS=!status||p.status_pagamento===status;
-            return mQ&&mS;
-          });
-          const lista=document.getElementById('lista-participantes');
-          if(!filtrados.length){ lista.innerHTML='<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Nenhum participante encontrado.</div></div>'; return; }
-          lista.innerHTML=filtrados.map(p=>`
-            <div class="p-card ${p.status_pagamento}" style="margin-bottom:10px;">
-              <div class="p-card-header">
-                <div>
-                  <div class="p-card-name">${p.nome}</div>
-                  <div class="p-card-info">🏠 Bloco ${p.bloco} · Apto ${p.apartamento} · ${p.data_inscricao}</div>
-                </div>
-                <span class="badge badge-${p.status_pagamento}">${p.status_pagamento==='pago'?'✅':p.status_pagamento==='cancelado'?'❌':'⏳'} ${p.status_pagamento}</span>
-              </div>
-              <div class="p-card-actions">
-                ${p.status_pagamento!=='pago'?`<button class="btn-sm btn-green" onclick="atualizarStatus(${p.id},'pago')">✅ Confirmar Pago</button>`:''}
-                ${p.status_pagamento!=='pendente'?`<button class="btn-sm btn-amber" onclick="atualizarStatus(${p.id},'pendente')">⏳ Pendente</button>`:''}
-                ${p.status_pagamento!=='cancelado'?`<button class="btn-sm btn-red" onclick="atualizarStatus(${p.id},'cancelado')">❌ Cancelar</button>`:''}
-              </div>
-            </div>`).join('');
-        }
-        
-        async function atualizarStatus(id,status){
-          try{
-            const res=await fetch(`${API_BASE}/api/admin/confirmar`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${adminToken}`},body:JSON.stringify({id,status})});
-            if(res.ok){ toast('✅ Status atualizado!'); carregarAdmin(); carregarDados(); }
-            else toast('❌ Erro ao atualizar.');
-          } catch{ toast('❌ Erro de conexão.'); }
-        }
-        
-        function mudarTab(tab){
-          ['participantes','itens','config'].forEach(t=>{
-            document.getElementById(`tab-content-${t}`).classList.add('hidden');
-            document.getElementById(`tab-${t}`).classList.remove('active');
-          });
-          document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
-          document.getElementById(`tab-${tab}`).classList.add('active');
-        }
-        
-        async function salvarConfig(){
-          const msg=document.getElementById('cfg-msg'); msg.classList.add('hidden');
-          try{
-            const updates=[
-              {chave:'meta_balaio', valor:document.getElementById('cfg-meta').value},
-              {chave:'valor_quota', valor:document.getElementById('cfg-quota').value},
-              {chave:'data_evento', valor:document.getElementById('cfg-data').value},
-              {chave:'local_evento',valor:document.getElementById('cfg-local').value},
-            ];
-            const res=await fetch(`${API_BASE}/api/admin/config`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${adminToken}`},body:JSON.stringify({updates})});
-            if(res.ok){ toast('✅ Configurações salvas!'); carregarAdmin(); carregarDados(); }
-            else{ msg.textContent='❌ Erro ao salvar.'; msg.classList.remove('hidden'); }
-          } catch{ msg.textContent='❌ Erro de conexão.'; msg.classList.remove('hidden'); }
-        }
-        
-        
-        // ─── Init ─────────────────────────────────────────────────────────
-        setInterval(carregarDados, 60_000);
-        
-        // ─── DIAGNÓSTICO DE CONEXÃO ──────────────────────────────────────────────────
-        
-        var diagTimerInterval = null;
-        var diagAutoTimer     = null;
-        
-        var CHECKS = [
-          { id:'chk-worker', label:'Worker Cloudflare acessivel', sym:'[W]' },
-          { id:'chk-db',     label:'Banco de dados (Neon) online', sym:'[B]' },
-          { id:'chk-itens',  label:'Lista de itens carregando',    sym:'[I]' },
-          { id:'chk-admin',  label:'Endpoint de login disponivel', sym:'[A]' },
-        ];
-        // FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
-        // function buildDiagList() {
-        //   var html = '';
-        //   for (var i = 0; i < CHECKS.length; i++) {
-        //     var ch = CHECKS[i];
-        //     html += '<div id="' + ch.id + '" style="'
-        //       + 'display:flex;align-items:center;gap:12px;'
-        //       + 'background:#fff;border-radius:12px;padding:12px 14px;'
-        //       + 'box-shadow:0 2px 8px rgba(0,0,0,0.06);'
-        //       + 'border-left:4px solid #E7DDD0;transition:border-color 0.3s;">'
-        //       + '<span id="' + ch.id + '-status" style="font-size:0.9rem;font-weight:900;color:#A8A29E;flex-shrink:0;width:28px;text-align:center;">...</span>'
-        //       + '<span style="flex:1;font-size:0.85rem;font-weight:700;color:#1C1917;">' + ch.label + '</span>'
-        //       + '</div>';
-        //   }
-        //   document.getElementById('diag-list').innerHTML = html;
-        // }
-        // FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
-        // function setDiagStatus(id, state, detail) {
-        //   var el    = document.getElementById(id);
-        //   var badge = document.getElementById(id + '-status');
-        //   if (!el || !badge) return;
-        //   var states = {
-        //     ok:      { txt: 'OK',  color: '#22C55E', border: '#22C55E' },
-        //     fail:    { txt: 'ERR', color: '#EF4444', border: '#EF4444' },
-        //     warn:    { txt: 'AVS', color: '#F59E0B', border: '#F59E0B' },
-        //     loading: { txt: '...', color: '#A8A29E', border: '#E7DDD0' },
-        //   };
-        //   var s = states[state] || states.loading;
-        //   badge.textContent         = s.txt;
-        //   badge.style.color         = s.color;
-        //   el.style.borderLeftColor  = s.border;
-        //   if (detail && (state === 'fail' || state === 'warn')) {
-        //     var box = document.getElementById('diag-detail');
-        //     box.style.display = 'block';
-        //     box.innerHTML += '<p style="margin:5px 0;"><b>' + document.getElementById(id).querySelector('span:last-child').textContent + ':</b> ' + detail + '</p>';
-        //   }
-        // }
-        // FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
-        // function mostrarFalha(msg) {
-        //   document.getElementById('diag-h2').textContent = 'Falha na conexao';
-        //   document.getElementById('diag-p').textContent  = 'Veja o detalhe abaixo.';
-        //   var box = document.getElementById('diag-detail');
-        //   box.style.display = 'block';
-        //   box.innerHTML += '<p style="margin:5px 0;">' + msg + '</p>';
-        //   var acts = document.getElementById('diag-actions');
-        //   acts.style.display = 'flex';
-        //   document.getElementById('diag-proceed').style.display = 'block';
-        //   document.getElementById('diag-timer').textContent = '';
-        //   if (diagTimerInterval) clearInterval(diagTimerInterval);
-        //   if (diagAutoTimer)     clearTimeout(diagAutoTimer);
-        // }
-// FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
-       // function fecharDiagnostico() {
-       //   if (diagTimerInterval) clearInterval(diagTimerInterval);
-       //   if (diagAutoTimer)     clearTimeout(diagAutoTimer);
-       //   document.getElementById('diag-overlay').style.display = 'none';
-       //   carregarDados();
-       // }
-        // FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
-        // function iniciarContagem(segundos, aoFinalizar) {
-        //   var restante = segundos;
-        //   document.getElementById('diag-timer').textContent = 'Timeout em ' + restante + 's...';
-        //   if (diagTimerInterval) clearInterval(diagTimerInterval);
-        //   diagTimerInterval = setInterval(function() {
-        //     restante--;
-        //     if (restante <= 0) {
-        //       clearInterval(diagTimerInterval);
-        //       document.getElementById('diag-timer').textContent = '';
-        //       aoFinalizar();
-        //     } else {
-        //       document.getElementById('diag-timer').textContent = 'Timeout em ' + restante + 's...';
-        //     }
-        //   }, 1000);
-        // }
-// FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
-        // async function fetchComTimeout(url, opcoes, ms) {
-        //   return new Promise(function(resolve, reject) {
-        //     var tid = setTimeout(function() {
-        //       reject(new Error('Timeout de ' + Math.round(ms/1000) + 's — sem resposta do servidor'));
-        //     }, ms);
-        //     fetch(url, opcoes || {}).then(function(r) {
-        //       clearTimeout(tid); resolve(r);
-        //     }).catch(function(e) {
-        //       clearTimeout(tid); reject(e);
-        //     });
-        //   });
-        // }
-// FUNÇÃO DO OVERLAY DE DIAGNÓSTICO
-//        async function runDiagnostic() {
-//          // Limpar estado
-//          if (diagTimerInterval) clearInterval(diagTimerInterval);
-//          if (diagAutoTimer)     clearTimeout(diagAutoTimer);
-//          document.getElementById('diag-h2').textContent      = 'Verificando conexao...';
-//          document.getElementById('diag-p').textContent       = 'Aguarde, testando os servicos';
-//          document.getElementById('diag-timer').textContent   = '';
-//          document.getElementById('diag-detail').style.display = 'none';
-//          document.getElementById('diag-detail').innerHTML     = '';
-//          document.getElementById('diag-actions').style.display = 'none';
-//          document.getElementById('diag-proceed').style.display = 'none';
-//          buildDiagList();
-        
-// Fallback: se ficar mais de 15s sem resposta, permite continuar
-//          diagAutoTimer = setTimeout(function() {
-//            if (document.getElementById('diag-overlay').style.display !== 'none') {
-//              document.getElementById('diag-h2').textContent = 'Demorou demais';
-//              document.getElementById('diag-p').textContent  = 'O servidor nao respondeu a tempo.';
-//              document.getElementById('diag-timer').textContent = '';
-//              document.getElementById('diag-actions').style.display = 'flex';
-//              document.getElementById('diag-proceed').style.display = 'block';
-//              document.getElementById('diag-detail').style.display = 'block';
-//              document.getElementById('diag-detail').innerHTML =
-//                '<p><b>O Worker nao respondeu em 15 segundos.</b></p>' +
-//                '<p>Verifique:<br>' +
-//                '1. A URL em <code>API_BASE</code> esta correta?<br>' +
-//                '2. O Worker foi publicado com <code>npm run deploy</code>?<br>' +
-//                '3. O secret <code>DATABASE_URL</code> foi configurado?</p>';
-//            }
-//          }, 15000);
-        
-// Check 0: API_BASE configurada?
-//          if (API_BASE.indexOf('SEU_USUARIO') !== -1) {
-//            ['chk-worker','chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
-//            mostrarFalha('<b>API_BASE nao foi configurada.</b><br>'
-//              + 'Edite o <code>index.html</code> e troque:<br>'
-//              + '<code>const API_BASE = "https://...SEU_USUARIO..."</code><br>'
-//              + 'pela URL real do seu Worker (aparece apos <code>npm run deploy</code>).');
-//            return;
-//          }
-        
-// Check 1: Worker + Banco
-//          setDiagStatus('chk-worker', 'loading');
-//          iniciarContagem(12, function() {
-//            setDiagStatus('chk-worker','fail','Timeout de 12s sem resposta');
-//            ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
-//            mostrarFalha('<b>O Worker nao respondeu.</b><br>Possiveis causas:<br>'
-//              + '- URL errada em <code>API_BASE</code><br>'
-//              + '- Worker nao publicado (<code>npm run deploy</code>)<br>'
-//              + '- Problema de CORS no Worker');
-//          });
-        
-//          var dadosResp = null;
-//          try {
-//            var res = await fetchComTimeout(API_BASE + '/api/dados', {}, 12000);
-//            if (diagTimerInterval) clearInterval(diagTimerInterval);
-//            document.getElementById('diag-timer').textContent = '';
-        
-//            if (res.ok) {
-//              dadosResp = await res.json();
-//              if (dadosResp.error) {
-//                setDiagStatus('chk-worker', 'ok');
-//                setDiagStatus('chk-db', 'fail', dadosResp.error);
-//                ['chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
-//                mostrarFalha('<b>Erro no banco de dados:</b> ' + dadosResp.error + '<br><br>'
-//                  + 'Verifique se o secret foi configurado:<br>'
-//                  + '<code>wrangler secret put DATABASE_URL</code><br><br>'
-//                  + 'E se o schema.sql foi executado no Neon SQL Editor.');
-//                return;
-//              }
-//              setDiagStatus('chk-worker', 'ok');
-//              setDiagStatus('chk-db', 'ok');
-//            } else {
-//              var txt = '';
-//              try { var j = await res.json(); txt = j.error || ''; } catch(e) {}
-//              setDiagStatus('chk-worker', 'fail', 'HTTP ' + res.status + (txt ? ' — ' + txt : ''));
-//              ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
-//              mostrarFalha('<b>O Worker retornou HTTP ' + res.status + '.</b><br>'
-//                + (txt ? 'Detalhe: ' + txt + '<br>' : '')
-//                + 'Verifique se o deploy foi concluido corretamente.');
-//              return;
-//            }
-//          } catch (err) {
-//            if (diagTimerInterval) clearInterval(diagTimerInterval);
-//            document.getElementById('diag-timer').textContent = '';
-//            setDiagStatus('chk-worker', 'fail', err.message);
-//            ['chk-db','chk-itens','chk-admin'].forEach(function(id){ setDiagStatus(id,'warn','Nao testado'); });
-//            mostrarFalha('<b>Nao foi possivel alcancar o Worker.</b><br><br>'
-//              + 'Erro: ' + err.message + '<br><br>'
-//              + 'Verifique a URL em <code>API_BASE</code> no index.html<br>'
-//              + 'e se o Worker foi publicado com <code>npm run deploy</code>.');
-//            return;
-//          }
-        
-// Check 3: Itens
-//          var itens = dadosResp && dadosResp.itens;
-//          if (!itens || itens.length === 0) {
-//            setDiagStatus('chk-itens', 'warn', 'Nenhum item. Execute o schema.sql no Neon SQL Editor.');
-//          } else {
-//            setDiagStatus('chk-itens', 'ok');
-//          }
 
-// Check 4: Login endpoint
-//          try {
-//            var res2 = await fetchComTimeout(API_BASE + '/api/admin/login', {
-//              method: 'POST',
-//              headers: { 'Content-Type': 'application/json' },
-//              body: JSON.stringify({ senha: '__DIAG__' }),
-//            }, 5000);
-//            if (res2.status === 401) {
-//              setDiagStatus('chk-admin', 'ok');
-//            } else if (res2.status === 500) {
-//              var d2 = await res2.json().catch(function(){ return {}; });
-//              setDiagStatus('chk-admin', 'warn', (d2.error || 'ADMIN_PASSWORD nao configurada') + ' — use: wrangler secret put ADMIN_PASSWORD');
-//            } else {
-//              setDiagStatus('chk-admin', 'ok');
-//            }
-//          } catch(e) {
-//            setDiagStatus('chk-admin', 'warn', 'Nao testado: ' + e.message);
-//          }
-        
-          // Resultado
-//          var badges  = document.querySelectorAll('[id$="-status"]');
-//          var nFalhas = 0, nAvisos = 0;
-//         badges.forEach(function(b) {
-//            if (b.textContent === 'ERR') nFalhas++;
-//            if (b.textContent === 'AVS') nAvisos++;
-//          });
-        
-//          if (diagAutoTimer) clearTimeout(diagAutoTimer);
-        
-//          if (nFalhas === 0 && nAvisos === 0) {
-//            document.getElementById('diag-h2').textContent = 'Tudo funcionando!';
-//            document.getElementById('diag-p').textContent  = 'Abrindo o site...';
-//            setTimeout(fecharDiagnostico, 800);
-//          } else if (nFalhas === 0) {
-//            document.getElementById('diag-h2').textContent = 'Quase la!';
-//            document.getElementById('diag-p').textContent  = 'Ha avisos, mas o site pode funcionar.';
-//            document.getElementById('diag-actions').style.display = 'flex';
-//            document.getElementById('diag-proceed').style.display = 'block';
-//          } else {
-//            document.getElementById('diag-h2').textContent = 'Falha na conexao';
-//            document.getElementById('diag-p').textContent  = 'Resolva os itens abaixo.';
-//            document.getElementById('diag-actions').style.display = 'flex';
-//            document.getElementById('diag-proceed').style.display = 'block';
-//          }
-//        }
-//        
-//        // Iniciar automaticamente
-//        runDiagnostic();
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+        function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function voltarMain() { document.getElementById('page-admin').classList.remove('active'); document.getElementById('page-main').classList.add('active'); }
+        function logout() { localStorage.removeItem('ba_token'); location.reload(); }
+        function copiarPix() { document.getElementById('pix-payload').select(); document.execCommand('copy'); toast('Código copiado!'); }
+
+        // Init
         carregarDados();
         setInterval(carregarDados, 60000);
     </script>
-
 </body>
-
 </html>
