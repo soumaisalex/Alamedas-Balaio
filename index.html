@@ -322,6 +322,16 @@
           </div>
         </div>
         <div class="form-group">
+            <label class="form-label">Quantidade de Cotas (Chances)</label>
+            <select id="f-qtd" class="inp">
+                <option value="1">1 cota (R$ 10,00)</option>
+                <option value="2">2 cotas (R$ 20,00)</option>
+                <option value="3">3 cotas (R$ 30,00)</option>
+                <option value="5">5 cotas (R$ 50,00)</option>
+                <option value="10">10 cotas (R$ 100,00)</option>
+            </select>
+        </div>
+        <div class="form-group">
           <label class="form-label">Telefone</label>
           <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" inputmode="tel">
         </div>
@@ -930,10 +940,24 @@
                 ${p.status_pagamento!=='pago'?`<button class="btn-sm btn-green" onclick="atualizarStatus(${p.id},'pago')">✅ Confirmar Pago</button>`:''}
                 ${p.status_pagamento!=='pendente'?`<button class="btn-sm btn-amber" onclick="atualizarStatus(${p.id},'pendente')">⏳ Pendente</button>`:''}
                 ${p.status_pagamento!=='cancelado'?`<button class="btn-sm btn-red" onclick="atualizarStatus(${p.id},'cancelado')">❌ Cancelar</button>`:''}
+                ${p.status_pagamento!=='excluir'?`<button class="btn-sm btn-red" onclick="excluirParticipante(${p.id})">🗑️ Excluir</button>`:''}
               </div>
             </div>`).join('');
         }
-        
+
+        async function excluirParticipante(id) {
+            if (!confirm('Tem certeza que deseja remover este participante?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/participante/${id}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${adminToken}` }
+                });
+                if (res.ok) {
+                    toast('🗑️ Removido com sucesso');
+                    carregarAdmin();
+                }
+            } catch (err) { toast('❌ Erro ao excluir'); }
+        }
         async function atualizarStatus(id,status){
           try{
             const res=await fetch(`${API_BASE}/api/admin/confirmar`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${adminToken}`},body:JSON.stringify({id,status})});
@@ -966,6 +990,36 @@
           } catch{ msg.textContent='❌ Erro de conexão.'; msg.classList.remove('hidden'); }
         }
         
+        function imprimirListaSorteio() {
+            const confirmados = todosParticipantes.filter(p => p.status_pagamento === 'pago');
+            let html = `
+                <style>
+                    @media print { .no-print { display: none; } }
+                    body { font-family: sans-serif; padding: 20px; }
+                    .sorteio-item { border: 1px solid #000; padding: 10px; margin: 5px; display: inline-block; width: 200px; text-align: center; font-size: 12px; }
+                </style>
+                <h2 class="no-print">Lista de Sorteio (Cotas Pagas)</h2>
+                <button class="no-print" onclick="window.print()">Confirmar Impressão</button>
+                <hr class="no-print">
+                <div id="print-area">`;
+        
+            confirmados.forEach(p => {
+                const qtd = p.quantidade || 1;
+                for (let i = 0; i < qtd; i++) {
+                    html += `
+                        <div class="sorteio-item">
+                            <strong>${p.nome}</strong><br>
+                            Bloco ${p.bloco} - Apto ${p.apartamento}<br>
+                            <small>Cota ${i + 1}/${qtd}</small>
+                        </div>`;
+                }
+            });
+        
+            html += `</div>`;
+            const win = window.open('', '_blank');
+            win.document.write(html);
+            win.document.close();
+        }
         
         // ─── Init ─────────────────────────────────────────────────────────
         setInterval(carregarDados, 60_000);
