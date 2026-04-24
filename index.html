@@ -458,6 +458,20 @@
             <!-- Tab: Itens -->
             <div id="tab-content-itens" class="hidden">
                 <div class="card">
+                    <div class="card" style="margin-bottom: 15px; border-bottom: 4px solid var(--orange);">
+                        <div class="card-body">
+                            <p style="font-weight:800; font-size:0.9rem; margin-bottom:10px;">➕ Adicionar Novo Item</p>
+                            <div class="form-group">
+                                <input id="new-item-nome" class="inp" type="text" placeholder="Nome do item (ex: Arroz 5kg)">
+                            </div>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr 60px; gap:8px; margin-bottom:10px;">
+                                <input id="new-item-preco" class="inp" type="number" step="0.01" placeholder="Preço R$">
+                                <input id="new-item-qtd" class="inp" type="number" placeholder="Qtd" value="1">
+                                <input id="new-item-icon" class="inp" type="text" placeholder="Ícone" value="🎁">
+                            </div>
+                            <button class="btn-primary" onclick="adicionarItem()">Adicionar ao Balaio</button>
+                        </div>
+                    </div>
                     <div id="adm-itens-list">
                         <div class="empty">
                             <div class="empty-text">Carregando…</div>
@@ -772,6 +786,7 @@
                 <span style="font-size:1rem;flex-shrink:0;">${item.icone||'🎉'}</span>
                 <span style="flex:1;font-size:0.88rem;font-weight:600;color:var(--text2);">${item.nome}${+item.quantidade>1?' (×'+item.quantidade+')':''}</span>
                 <span style="font-weight:700;font-size:0.88rem;color:var(--text);flex-shrink:0;">${brl(val)}</span>
+                <button class="btn-sm btn-red" onclick="excluirItem(${item.id})" style="padding:5px 10px; font-size:0.75rem;">🗑️</button>
                 <button class="btn-sm btn-orange" onclick="iniciarEdicaoItem(${item.id},'${nomeSafe}',${item.preco_estimado},${item.quantidade})" style="padding:5px 10px;font-size:0.75rem;flex-shrink:0;">✏️</button>
               </div>
               <div id="item-edit-${item.id}" class="hidden" style="margin:0 14px 12px;background:var(--bg);border-radius:8px;padding:12px;">
@@ -800,7 +815,48 @@
           if(document.getElementById('adm-total-balaio'))
             document.getElementById('adm-total-balaio').textContent = brl(total||0);
         }
+
+        // Adicionar novo item
+        async function adicionarItem() {
+            const nome = document.getElementById('new-item-nome').value;
+            const preco = document.getElementById('new-item-preco').value;
+            const qtd = document.getElementById('new-item-qtd').value;
+            const icone = document.getElementById('new-item-icon').value;
         
+            if (!nome || !preco) return toast('⚠️ Nome e preço são obrigatórios');
+        
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/item`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
+                    body: JSON.stringify({ nome, preco_estimado: preco, quantidade: qtd, icone })
+                });
+                if (res.ok) {
+                    toast('🎁 Item adicionado!');
+                    // Limpa campos
+                    document.getElementById('new-item-nome').value = '';
+                    document.getElementById('new-item-preco').value = '';
+                    carregarDados(); carregarAdmin();
+                }
+            } catch (e) { toast('❌ Erro ao adicionar'); }
+        }
+        
+        // Excluir item (adicione o botão de lixeira na renderização do item admin)
+        async function excluirItem(id) {
+            if (!confirm('Deseja remover este item do balaio?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/item/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                if (res.ok) {
+                    toast('🗑️ Item removido');
+                    carregarDados(); carregarAdmin();
+                }
+            } catch (e) { toast('❌ Erro ao excluir'); }
+        }
+        
+        // Atualizar/Editar Item
         function iniciarEdicaoItem(id, nome, preco, qtd){
           document.querySelectorAll('[id^="item-edit-"]').forEach(el=>{
             if(!el.id.match(/item-edit-(nome|preco|qtd|err)-/)) el.classList.add('hidden');
