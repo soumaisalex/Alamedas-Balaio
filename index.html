@@ -564,163 +564,396 @@
         // ─── Dados públicos ──────────────────────────────────────────────
         let custoBalaioGlobal = 0;
 
-    async function carregarDados(){
-        try {
-            const res = await fetch(`${API_BASE}/api/dados`);
-            const data = await res.json();
-            const {config, itens, stats} = data;
-
-            document.getElementById('hdr-desc').textContent = config.data_evento || 'Festa Junina Alamedas';
-            document.getElementById('stat-inscritos').textContent = stats.total_inscritos;
-            document.getElementById('stat-confirmados').textContent = stats.total_pagos;
-            document.getElementById('stat-pendentes').textContent = stats.total_inscritos - stats.total_pagos;
-
-            // Seletor de Cotas Dinâmico
-            const vCota = parseFloat(config.valor_quota || 10);
-            document.getElementById('f-qtd').innerHTML = [1,2,3,5,10].map(n => 
-                `<option value="${n}">${n} cotas (${brl(n * vCota)})</option>`
-            ).join('');
-
-            const custo = itens.reduce((s,i)=> s + (i.preco_estimado * i.quantidade), 0);
-            const arrec = parseFloat(stats.total_arrecadado);
-            const balaios = Math.floor(arrec / custo);
-            const saldoAtual = arrec % custo;
-            const p = (saldoAtual / custo) * 100;
-
-            document.getElementById('progress-fill').style.width = p + '%';
-            document.getElementById('progress-label').textContent = Math.round(p) + '%';
-            document.getElementById('thermo-val').textContent = brl(saldoAtual);
-            document.getElementById('thermo-meta').textContent = brl(custo);
-            document.getElementById('total-balaio').textContent = brl(custo);
-            document.getElementById('sorteio-total').textContent = brl(arrec);
-            document.getElementById('sorteio-sub').textContent = balaios > 0 ? `${balaios} balaio(s) completo(s)! 🎉` : 'Acumulando para o 1º balaio...';
-
-            document.getElementById('itens-list').innerHTML = itens.map(i => `
-                <div class="item-row"><span>${i.icone} ${i.nome} (x${i.quantidade})</span><span>${brl(i.preco_estimado * i.quantidade)}</span></div>
-            `).join('');
-
-            // Preenche config se no admin
-            if(document.getElementById('cfg-meta')){
-                document.getElementById('cfg-meta').value = config.meta_balaio;
-                document.getElementById('cfg-quota').value = config.valor_quota;
-            }
-        } catch(e) { console.error(e); }
-    }
-
-    document.getElementById('btn-inscrever').onclick = async () => {
-        const btn = document.getElementById('btn-inscrever');
-        const payload = {
-            nome: document.getElementById('f-nome').value.trim(),
-            bloco: document.getElementById('f-bloco').value.trim(),
-            apartamento: document.getElementById('f-apt').value.trim(),
-            quantidade: document.getElementById('f-qtd').value
-        };
-        if(!payload.nome || !payload.bloco || !payload.apartamento) return toast('Preencha os campos obrigatórios!');
-
-        btn.disabled = true; btn.innerHTML = '<span class="spin">⏳</span>';
-        try {
-            const res = await fetch(`${API_BASE}/api/inscricao`, {
-                method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify(payload)
-            });
+        async function carregarDados(){
+          try{
+            const res  = await fetch(`${API_BASE}/api/dados`);
             const data = await res.json();
             if(!res.ok) throw new Error(data.error);
+        
+            const {config, itens, stats} = data;
 
-            document.getElementById('pix-valor').textContent = brl(data.pix.valor);
-            document.getElementById('pix-payload').value = data.pix.payload;
-            const qrb = document.getElementById('qr-box'); qrb.innerHTML='';
-            new QRCode(qrb, {text:data.pix.payload, width:220, height:220});
-            document.getElementById('modal-pix').classList.remove('hidden');
-            carregarDados();
-        } catch(e){ toast(e.message); }
-        finally { btn.disabled=false; btn.innerHTML='🔥 Garantir Minha Participação'; }
-    };
-
-    function abrirAdmin(){ adminToken ? (mostrarPagina('page-admin'), carregarAdmin()) : document.getElementById('modal-login').classList.remove('hidden'); }
-    function mostrarPagina(id){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-    function voltarMain(){ mostrarPagina('page-main'); }
-    function fecharModal(id){ document.getElementById(id).classList.add('hidden'); }
-    function logout(){ localStorage.removeItem('ba_token'); location.reload(); }
-    function copiarPix(){ document.getElementById('pix-payload').select(); document.execCommand('copy'); toast('Código copiado!'); }
-
-    async function fazerLogin(){
-        const senha = document.getElementById('login-senha').value;
-        const res = await fetch(`${API_BASE}/api/admin/login`, { method:'POST', body: JSON.stringify({senha}) });
-        const data = await res.json();
-        if(res.ok){ adminToken=data.token; localStorage.setItem('ba_token', data.token); fecharModal('modal-login'); abrirAdmin(); }
-        else toast('Senha incorreta');
-    }
-
-    async function carregarAdmin(){
-        const res = await fetch(`${API_BASE}/api/admin/participantes`, { headers:{'Authorization':`Bearer ${adminToken}`} });
-        if(res.status===401) return logout();
-        const data = await res.json();
-        todosParticipantes = data.participantes;
-        filtrarParticipantes();
-    }
-
-    function filtrarParticipantes(){
-        const q = document.getElementById('search-input').value.toLowerCase();
-        const html = todosParticipantes.filter(p => p.nome.toLowerCase().includes(q) || p.apartamento.includes(q))
-            .map(p => `
-                <div class="p-card ${p.status_pagamento}">
-                    <strong>${p.nome}</strong> (${p.quantidade} cotas) - Bloco ${p.bloco} Apt ${p.apartamento}
-                    <div style="margin-top:8px; display:flex; gap:5px;">
-                        ${p.status_pagamento!=='pago' ? `<button class="btn-sm btn-green" onclick="confirmar(${p.id})">✅ Pago</button>` : ''}
-                        <button class="btn-sm btn-red" onclick="excluir(${p.id})">🗑️</button>
-                    </div>
+        // USE ESTE PADRÃO PARA CADA LINHA QUE DÁ ERRO:
+            const elDesc = document.getElementById('hdr-desc');
+            if (elDesc && config.descricao) elDesc.textContent = config.descricao;
+        
+            const elValor = document.getElementById('form-valor');
+            if (elValor) elValor.textContent = brl(config.valor_quota || 10);
+        
+            const elInscritos = document.getElementById('stat-inscritos');
+            if (elInscritos) elInscritos.textContent = stats.total_inscritos;
+        
+            const totalI = +stats.total_inscritos, pagos = +stats.total_pagos;
+              
+            document.getElementById('stat-inscritos').textContent    = totalI;
+            document.getElementById('stat-confirmados').textContent  = pagos;
+            document.getElementById('stat-pendentes').textContent    = Math.max(0, totalI - pagos);
+        
+            // Custo do balaio = soma dos itens
+            const custo = itens ? itens.reduce((s,i)=> s + (+i.preco_estimado * +i.quantidade), 0) : 0;
+            custoBalaioGlobal = custo;
+            const arrec = +(stats.total_arrecadado || 0);
+        
+            if(custo > 0){
+              const balaios   = Math.floor(arrec / custo);
+              const acumulado = arrec - (balaios * custo);
+              const faltam    = custo - acumulado;
+              const p         = (acumulado / custo) * 100;
+        
+              document.getElementById('thermo-val').textContent    = brl(acumulado);
+              document.getElementById('thermo-meta').textContent   = brl(custo);
+              document.getElementById('faltam-lbl').textContent    = `${brl(acumulado)} acumulados`;
+              document.getElementById('faltam-val').textContent    = brl(faltam);
+              document.getElementById('sorteio-total').textContent = brl(arrec);
+              document.getElementById('custo-balaio').textContent  = brl(custo);
+        
+              document.getElementById('sorteio-sub').textContent = balaios > 0
+                ? `${balaios} balaio${balaios>1?'s':''} completo${balaios>1?'s':''}! 🎉`
+                : 'Nenhum balaio completo ainda. Continue arrecadando!';
+        
+              setTimeout(()=>{
+                document.getElementById('progress-fill').style.width = p.toFixed(1)+'%';
+                document.getElementById('progress-label').textContent = p.toFixed(1).replace('.',',')+' %';
+              }, 200);
+            }
+            renderizarItens(itens);
+          } catch(err){
+            console.error(err);
+            document.getElementById('itens-list').innerHTML = '<div class="empty"><div class="empty-text" style="color:var(--red);">Erro ao carregar dados.</div></div>';
+          }
+        }
+        
+        // ─── Itens (pública) ───────────────────────────────────────────
+        function renderizarItens(itens){
+          const lista = document.getElementById('itens-list');
+          if(!itens||itens.length===0){
+            lista.innerHTML='<div class="empty"><div class="empty-text">Nenhum item cadastrado.</div></div>';
+            return;
+          }
+          let total=0;
+          const html = itens.map(item=>{
+            const val = +item.preco_estimado * +item.quantidade; total+=val;
+            return `<div class="item-row"><span class="item-name">${item.icone?item.icone+' ':''} ${item.nome}${+item.quantidade>1?' <span style="color:var(--text3);font-size:0.75rem;">(×'+item.quantidade+')</span>':''}</span><span class="item-val">${brl(val)}</span></div>`;
+          }).join('');
+          lista.innerHTML = html;
+          document.getElementById('total-balaio').textContent = brl(total);
+          document.getElementById('custo-balaio').textContent  = brl(total);
+          renderizarItensAdmin(itens, total);
+        }
+        
+        // ─── Itens admin (editáveis) ────────────────────────────────
+        function renderizarItensAdmin(itens, total){
+          const admLista = document.getElementById('adm-itens-list');
+          if(!admLista) return;
+          if(!itens||itens.length===0){
+            admLista.innerHTML='<div class="empty"><div class="empty-text">Nenhum item cadastrado.</div></div>';
+            return;
+          }
+          admLista.innerHTML = itens.map(item => {
+            const val = +item.preco_estimado * +item.quantidade;
+            const nomeSafe = item.nome.replace(/'/g, "\\'");
+            return `
+            <div id="item-row-${item.id}" style="border-bottom:1px solid var(--bg);">
+              <div style="display:flex;align-items:center;gap:8px;padding:11px 14px;">
+                <span style="font-size:1rem;flex-shrink:0;">${item.icone||'🎉'}</span>
+                <span style="flex:1;font-size:0.88rem;font-weight:600;color:var(--text2);">${item.nome}${+item.quantidade>1?' (×'+item.quantidade+')':''}</span>
+                <span style="font-weight:700;font-size:0.88rem;color:var(--text);flex-shrink:0;">${brl(val)}</span>
+                <button class="btn-sm btn-orange" onclick="iniciarEdicaoItem(${item.id},'${nomeSafe}',${item.preco_estimado},${item.quantidade})" style="padding:5px 10px;font-size:0.75rem;flex-shrink:0;">✏️</button>
+              </div>
+              <div id="item-edit-${item.id}" class="hidden" style="margin:0 14px 12px;background:var(--bg);border-radius:8px;padding:12px;">
+                <div class="form-group" style="margin-bottom:8px;">
+                  <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">NOME</label>
+                  <input id="item-edit-nome-${item.id}" class="inp" type="text" placeholder="Nome do item" style="font-size:0.85rem;padding:9px 12px;">
                 </div>
-            `).join('');
-        document.getElementById('lista-participantes').innerHTML = html || 'Ninguém encontrado';
-    }
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+                  <div>
+                    <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">PREÇO UNIT. (R$)</label>
+                    <input id="item-edit-preco-${item.id}" class="inp" type="number" step="0.01" min="0" style="font-size:0.85rem;padding:9px 12px;">
+                  </div>
+                  <div>
+                    <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">QUANTIDADE</label>
+                    <input id="item-edit-qtd-${item.id}" class="inp" type="number" min="1" style="font-size:0.85rem;padding:9px 12px;">
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button class="btn-sm btn-green" style="flex:1;padding:9px;" onclick="salvarEdicaoItem(${item.id})">✅ Salvar</button>
+                  <button class="btn-sm" style="flex:1;padding:9px;background:var(--bg2);color:var(--text2);" onclick="cancelarEdicaoItem(${item.id})">✕ Cancelar</button>
+                </div>
+                <p id="item-edit-err-${item.id}" class="err-msg hidden" style="margin-top:6px;"></p>
+              </div>
+            </div>`;
+          }).join('');
+          if(document.getElementById('adm-total-balaio'))
+            document.getElementById('adm-total-balaio').textContent = brl(total||0);
+        }
+        
+        function iniciarEdicaoItem(id, nome, preco, qtd){
+          document.querySelectorAll('[id^="item-edit-"]').forEach(el=>{
+            if(!el.id.match(/item-edit-(nome|preco|qtd|err)-/)) el.classList.add('hidden');
+          });
+          const edit = document.getElementById(`item-edit-${id}`);
+          edit.classList.remove('hidden');
+          document.getElementById(`item-edit-nome-${id}`).value  = nome;
+          document.getElementById(`item-edit-preco-${id}`).value = preco;
+          document.getElementById(`item-edit-qtd-${id}`).value   = qtd;
+        }
+        
+        function cancelarEdicaoItem(id){
+          document.getElementById(`item-edit-${id}`).classList.add('hidden');
+        }
+        
+        async function salvarEdicaoItem(id){
+          const nome  = document.getElementById(`item-edit-nome-${id}`).value.trim();
+          const preco = parseFloat(document.getElementById(`item-edit-preco-${id}`).value);
+          const qtd   = parseInt(document.getElementById(`item-edit-qtd-${id}`).value) || 1;
+          const errEl = document.getElementById(`item-edit-err-${id}`);
+          errEl.classList.add('hidden');
+          if(!nome || isNaN(preco) || preco < 0){
+            errEl.textContent='⚠️ Preencha nome e preço válido.';
+            errEl.classList.remove('hidden'); return;
+          }
+          try{
+            const res = await fetch(`${API_BASE}/api/admin/item/atualizar`, {
+              method: 'POST',
+              headers: {'Content-Type':'application/json', Authorization:`Bearer ${adminToken}`},
+              body: JSON.stringify({id, nome, preco_estimado: preco, quantidade: qtd}),
+            });
+            if(res.ok){
+              toast('✅ Item atualizado!');
+              cancelarEdicaoItem(id);
+              carregarDados();
+            } else {
+              const d = await res.json();
+              errEl.textContent='❌ '+(d.error||'Erro ao salvar.'); errEl.classList.remove('hidden');
+            }
+          } catch{ errEl.textContent='❌ Erro de conexão.'; errEl.classList.remove('hidden'); }
+        }
+        
+        // ─── Inscrição ────────────────────────────────────────────────────
+        // Localiza o botão
+        const btnInscrever = document.getElementById('btn-inscrever');
+          if (btnInscrever) {
+              btnInscrever.addEventListener('click', async () => {
+                  const nome=document.getElementById('f-nome').value.trim();
+                  const bloco=document.getElementById('f-bloco').value.trim();
+                  const apt=document.getElementById('f-apt').value.trim();
+                  const tel=document.getElementById('f-tel').value.trim();
+                  const obs=document.getElementById('f-obs').value.trim();
+                  const errEl=document.getElementById('form-error');
+                  const btn=document.getElementById('btn-inscrever');
+                
+                  errEl.classList.add('hidden');
+                  if(!nome||!bloco||!apt){ errEl.textContent='⚠️ Preencha nome, bloco e apartamento.'; errEl.classList.remove('hidden'); return; }
+                
+                  btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span> Aguarde…';
+                // ... dentro do click do btn-inscrever ...
+                try {
+                    const res = await fetch(`${API_BASE}/api/inscricao`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nome, bloco, apartamento: apt, telefone: tel, observacao: obs })
+                    });
+                    
+                    const data = await res.json();
+                    console.log("Resposta do Worker:", data); // ADICIONE ISSO PARA DEBUGAR
+                
+                    if (!res.ok) { 
+                        errEl.textContent = '⚠️ ' + (data.error || 'Erro ao realizar inscrição.'); 
+                        errEl.classList.remove('hidden'); 
+                        return; 
+                    }
+                
+                    // Se chegou aqui, o participante foi salvo. Vamos tentar abrir o PIX:
+                    if (data.pix) {
+                        abrirModalPix(data.pix);
+                        toast('🎉 Inscrição realizada!');
+                        // Limpa os campos...
+                    } else {
+                        console.error("Worker não devolveu os dados do PIX:", data);
+                        toast('⚠️ Inscrição salva, mas falha ao gerar PIX.');
+                    }
+                    
+                    carregarDados();
+                } catch (err) {
+                    console.error("Erro detalhado:", err); // ADICIONE ISSO
+                    errEl.textContent = '⚠️ Erro de conexão. Tente novamente.'; 
+                    errEl.classList.remove('hidden'); 
+                }
+              });
+         } else {
+              console.warn("Aviso: Elemento 'btn-inscrever' não encontrado nesta página.");
+          }
+           
+        // ─── PIX ──────────────────────────────────────────────────────────
+        function abrirModalPix({payload,valor,txid}){
+          document.getElementById('pix-valor').textContent=brl(+valor);
+          document.getElementById('pix-payload').value=payload;
+          document.getElementById('pix-txid').textContent='ID: '+txid;
+          const qrBox=document.getElementById('qr-box'); qrBox.innerHTML='';
+          new QRCode(qrBox,{text:payload,width:220,height:220,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
+          abrirModal('modal-pix');
+        }
+        function copiarPix(){
+          const p=document.getElementById('pix-payload').value;
+          navigator.clipboard.writeText(p).then(()=>toast('✅ Código PIX copiado!')).catch(()=>{document.getElementById('pix-payload').select();document.execCommand('copy');toast('✅ Copiado!');});
+        }
+        
+        // ─── Admin ────────────────────────────────────────────────────────
+        function abrirAdmin(){
+          if(adminToken){ mostrarPagina('page-admin'); carregarAdmin(); }
+          else abrirModal('modal-login');
+        }
+        function logout(){
+          adminToken=null; localStorage.removeItem('ba_token');
+          mostrarPagina('page-main'); toast('👋 Sessão encerrada.');
+        }
+        
+        document.getElementById('btn-login').addEventListener('click', fazerLogin);
+        document.getElementById('login-senha').addEventListener('keypress', e=>{ if(e.key==='Enter') fazerLogin(); });
+        
+        async function fazerLogin(){
+          const senha=document.getElementById('login-senha').value;
+          const errEl=document.getElementById('login-error');
+          const btn=document.getElementById('btn-login');
+          errEl.classList.add('hidden');
+          if(!senha){ errEl.textContent='⚠️ Digite a senha.'; errEl.classList.remove('hidden'); return; }
+          btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span>';
+          try{
+            const res=await fetch(`${API_BASE}/api/admin/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({senha})});
+            const data=await res.json();
+            if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Senha incorreta.'); errEl.classList.remove('hidden'); return; }
+            adminToken=data.token; localStorage.setItem('ba_token',adminToken);
+            document.getElementById('login-senha').value='';
+            fecharModal('modal-login'); mostrarPagina('page-admin'); carregarAdmin();
+            toast('🔓 Acesso liberado!');
+          } catch(err) { 
+              errEl.textContent='⚠️ Erro de conexão.'; 
+              errEl.classList.remove('hidden'); 
+            } finally { 
+              btn.disabled=false; 
+              btn.innerHTML='🔓 Entrar'; 
+            }
+          }
 
-    async function confirmar(id){ 
-        await fetch(`${API_BASE}/api/admin/confirmar`, { 
-            method:'POST', headers:{'Authorization':`Bearer ${adminToken}`, 'Content-Type':'application/json'},
-            body: JSON.stringify({id, status:'pago'}) 
-        }); carregarAdmin(); carregarDados();
-    }
-
-    async function excluir(id){ 
-        if(!confirm('Excluir para sempre?')) return;
-        await fetch(`${API_BASE}/api/admin/participante/${id}`, { 
-            method:'DELETE', headers:{'Authorization':`Bearer ${adminToken}`} 
-        }); carregarAdmin(); carregarDados();
-    }
-
-    function imprimirListaSorteio(){
-        const pagantes = todosParticipantes.filter(p => p.status_pagamento === 'pago');
-        const win = window.open('', '_blank');
-        win.document.write(`<html><head><style>
-            body{ font-family:sans-serif; display:flex; flex-wrap:wrap; gap:10px; }
-            .ticket{ border:2px dashed #000; padding:10px; width:200px; text-align:center; }
-        </style></head><body>`);
-        pagantes.forEach(p => {
-            for(let i=0; i<p.quantidade; i++) win.document.write(`
-                <div class="ticket"><strong>${p.nome}</strong><br>B${p.bloco} - Apt${p.apartamento}<br><small>Cota ${i+1}/${p.quantidade}</small></div>
-            `);
-        });
-        win.document.write(`</body></html>`); win.document.close(); win.print();
-    }
-
-    function mudarTab(tab){
-        ['participantes', 'config'].forEach(t => document.getElementById('tab-content-'+t).classList.add('hidden'));
-        document.getElementById('tab-content-'+tab).classList.remove('hidden');
-    }
-
-    async function salvarConfig(){
-        const updates = [
-            {chave:'meta_balaio', valor: document.getElementById('cfg-meta').value},
-            {chave:'valor_quota', valor: document.getElementById('cfg-quota').value}
+        async function configurarAdmin(senha) {
+          try {
+            const res = await fetch(`${API_BASE}/api/admin/setup`, {
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({senha})
+            });
+            // ... restante da lógica ...
+          } catch(e) { console.error(e); }
+        }
+        async function carregarAdmin(){
+          try{
+            const [resP,resD]=await Promise.all([
+              fetch(`${API_BASE}/api/admin/participantes`,{headers:{Authorization:`Bearer ${adminToken}`}}),
+              fetch(`${API_BASE}/api/dados`),
+            ]);
+            if(resP.status===401){ logout(); return; }
+            const {participantes}=await resP.json();
+            const {stats,config,itens}=await resD.json();
+        
+            const total=+stats.total_inscritos, pagos=+stats.total_pagos;
+            document.getElementById('adm-inscritos').textContent   = total;
+            document.getElementById('adm-confirmados').textContent = pagos;
+            document.getElementById('adm-pendentes').textContent   = Math.max(0,total-pagos);
+            document.getElementById('adm-arrecadado').textContent  = brl(stats.total_arrecadado);
+            document.getElementById('adm-meta').textContent        = brl(config.meta_balaio);
+        
+            const p=Math.min(100,(+stats.total_arrecadado/+config.meta_balaio)*100);
+            document.getElementById('adm-progress').style.width=p.toFixed(1)+'%';
+            document.getElementById('adm-pct').textContent=p.toFixed(1).replace('.',',')+' %';
+        
+            document.getElementById('cfg-meta').value  = config.meta_balaio  || '';
+            document.getElementById('cfg-quota').value = config.valor_quota   || '';
+            document.getElementById('cfg-data').value  = config.data_evento   || '';
+            document.getElementById('cfg-local').value = config.local_evento  || '';
+        
+            todosParticipantes = participantes || [];
+            filtrarParticipantes();
+            renderizarItens(itens);
+          } catch(err){ console.error(err); toast('❌ Erro ao carregar painel.'); }
+        }
+        
+        function filtrarParticipantes(){
+          const q=document.getElementById('search-input').value.toLowerCase();
+          const status=document.getElementById('filter-status').value;
+          const filtrados=todosParticipantes.filter(p=>{
+            const mQ=!q||p.nome.toLowerCase().includes(q)||p.bloco.toLowerCase().includes(q)||p.apartamento.toLowerCase().includes(q);
+            const mS=!status||p.status_pagamento===status;
+            return mQ&&mS;
+          });
+          const lista=document.getElementById('lista-participantes');
+          if(!filtrados.length){ lista.innerHTML='<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Nenhum participante encontrado.</div></div>'; return; }
+          lista.innerHTML=filtrados.map(p=>`
+            <div class="p-card ${p.status_pagamento}" style="margin-bottom:10px;">
+              <div class="p-card-header">
+                <div>
+                  <div class="p-card-name">${p.nome}</div>
+                  <div class="p-card-info">🏠 Bloco ${p.bloco} · Apto ${p.apartamento} · ${p.data_inscricao}</div>
+                </div>
+                <span class="badge badge-${p.status_pagamento}">${p.status_pagamento==='pago'?'✅':p.status_pagamento==='cancelado'?'❌':'⏳'} ${p.status_pagamento}</span>
+              </div>
+              <div class="p-card-actions">
+                ${p.status_pagamento!=='pago'?`<button class="btn-sm btn-green" onclick="atualizarStatus(${p.id},'pago')">✅ Confirmar Pago</button>`:''}
+                ${p.status_pagamento!=='pendente'?`<button class="btn-sm btn-amber" onclick="atualizarStatus(${p.id},'pendente')">⏳ Pendente</button>`:''}
+                ${p.status_pagamento!=='cancelado'?`<button class="btn-sm btn-red" onclick="atualizarStatus(${p.id},'cancelado')">❌ Cancelar</button>`:''}
+              </div>
+            </div>`).join('');
+        }
+        
+        async function atualizarStatus(id,status){
+          try{
+            const res=await fetch(`${API_BASE}/api/admin/confirmar`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${adminToken}`},body:JSON.stringify({id,status})});
+            if(res.ok){ toast('✅ Status atualizado!'); carregarAdmin(); carregarDados(); }
+            else toast('❌ Erro ao atualizar.');
+          } catch{ toast('❌ Erro de conexão.'); }
+        }
+        
+        function mudarTab(tab){
+          ['participantes','itens','config'].forEach(t=>{
+            document.getElementById(`tab-content-${t}`).classList.add('hidden');
+            document.getElementById(`tab-${t}`).classList.remove('active');
+          });
+          document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
+          document.getElementById(`tab-${tab}`).classList.add('active');
+        }
+        
+        async function salvarConfig(){
+          const msg=document.getElementById('cfg-msg'); msg.classList.add('hidden');
+          try{
+            const updates=[
+              {chave:'meta_balaio', valor:document.getElementById('cfg-meta').value},
+              {chave:'valor_quota', valor:document.getElementById('cfg-quota').value},
+              {chave:'data_evento', valor:document.getElementById('cfg-data').value},
+              {chave:'local_evento',valor:document.getElementById('cfg-local').value},
+            ];
+            const res=await fetch(`${API_BASE}/api/admin/config`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${adminToken}`},body:JSON.stringify({updates})});
+            if(res.ok){ toast('✅ Configurações salvas!'); carregarAdmin(); carregarDados(); }
+            else{ msg.textContent='❌ Erro ao salvar.'; msg.classList.remove('hidden'); }
+          } catch{ msg.textContent='❌ Erro de conexão.'; msg.classList.remove('hidden'); }
+        }
+        
+        
+        // ─── Init ─────────────────────────────────────────────────────────
+        setInterval(carregarDados, 60_000);
+        
+        // ─── DIAGNÓSTICO DE CONEXÃO ──────────────────────────────────────────────────
+        
+        var diagTimerInterval = null;
+        var diagAutoTimer     = null;
+        
+        var CHECKS = [
+          { id:'chk-worker', label:'Worker Cloudflare acessivel', sym:'[W]' },
+          { id:'chk-db',     label:'Banco de dados (Neon) online', sym:'[B]' },
+          { id:'chk-itens',  label:'Lista de itens carregando',    sym:'[I]' },
+          { id:'chk-admin',  label:'Endpoint de login disponivel', sym:'[A]' },
         ];
-        await fetch(`${API_BASE}/api/admin/config`, { 
-            method:'POST', headers:{'Authorization':`Bearer ${adminToken}`, 'Content-Type':'application/json'},
-            body: JSON.stringify({updates}) 
-        }); toast('Configurações salvas!'); carregarDados();
-    }
+        carregarDados();
+        setInterval(carregarDados, 60000);
+    </script>
 
-    carregarDados();
-    setInterval(carregarDados, 60000);
-</script>
 </body>
+
 </html>
