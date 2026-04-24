@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -191,24 +189,32 @@
 </head>
 
 <body>
+<!-- PAGINA PRINCIPAL -->
 <div id="page-main" class="page active">
-  <div class="bunting"><div class="bunting-flags" id="flags"></div></div>
+ 
+  <div class="bunting">
+    <div class="bunting-rope"></div>
+    <div class="bunting-flags" id="flags"></div>
+  </div>
 
+  <!-- Hero com gradiente -->
   <div style="background:linear-gradient(180deg,#8B5E2C 0%,#C4883A 28%,#E8A84A 55%,#F5EFE0 100%);padding:28px 16px 32px;text-align:center;">
     <div style="font-size:3rem;margin-bottom:8px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">&#127805;</div>
-    <h1 style="font-size:2rem;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);">Balaio Junino</h1>
-    <p style="font-size:1.1rem;font-weight:800;color:#FFE68A;">Alamedas 2026</p>
-    <p style="font-size:0.85rem;color:#3D1A00;font-weight:700;margin-top:10px;max-width:340px;margin-left:auto;margin-right:auto;" id="hdr-desc">Carregando informações...</p>
+    <h1 style="font-size:2rem;font-weight:900;line-height:1.15;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);">Balaio Junino</h1>
+    <p style="font-size:1.1rem;font-weight:800;color:#FFE68A;margin-top:2px;text-shadow:0 1px 4px rgba(0,0,0,0.2);">Alamedas 2026</p>
+    <p style="font-size:0.85rem;color:#3D1A00;font-weight:700;margin-top:10px;line-height:1.55;max-width:340px;margin-left:auto;margin-right:auto;" id="hdr-desc">Participe da nossa festa junina! Inscreva-se e ajude a fazer deste evento um sucesso.</p>
   </div>
  
   <div style="padding:20px 16px 40px; max-width:480px; margin:0 auto;">
+ 
+    <!-- Card: Sorteio -->
     <div class="card" style="margin-bottom:14px;">
       <div class="card-body">
         <div class="sec-header">
           <div class="sec-icon">&#129530;</div>
           <div>
             <div class="sec-title">Balaios para Sorteio</div>
-            <div class="sec-sub" id="sorteio-sub">Calculando...</div>
+            <div class="sec-sub" id="sorteio-sub">Nenhum balaio completo ainda. Continue arrecadando!</div>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--bg);">
@@ -217,96 +223,280 @@
         </div>
       </div>
     </div>
-
+ 
+    <!-- Card: Termometro -->
     <div class="card" style="margin-bottom:14px;">
       <div class="card-body">
-        <div class="sec-header"><div class="sec-icon">&#128293;</div><div class="sec-title">Próximo Balaio</div></div>
+        <div class="sec-header">
+          <div class="sec-icon">&#128293;</div>
+          <div>
+            <div class="sec-title">Proximo Balaio</div>
+            <div class="sec-sub">Acompanhe a arrecadacao</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:0.82rem;color:var(--text3);font-weight:600;">Saldo acumulado</span>
+          <span style="font-weight:800;color:var(--orange);" id="thermo-val">R$ 0,00</span>
+        </div>
         <div class="progress-wrap" style="margin-bottom:8px;">
           <div class="progress-fill" id="progress-fill" style="width:0%"></div>
           <div class="progress-label" id="progress-label">0%</div>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text3);font-weight:600;">
-          <span>Saldo: <strong id="thermo-val">R$ 0,00</strong></span>
-          <span>Meta: <strong id="thermo-meta">R$ --</strong></span>
+        <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text3);font-weight:600;margin-bottom:14px;">
+          <span>R$ 0</span>
+          <span>Meta: <strong style="color:var(--text2);" id="thermo-meta">R$ --</strong></span>
         </div>
+        <div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+          <span style="font-size:0.82rem;color:var(--text3);font-weight:600;" id="faltam-lbl">R$ 0,00 acumulados</span>
+          <span style="font-size:0.82rem;font-weight:800;color:var(--text2);">Faltam <span id="faltam-val" style="color:var(--orange);">R$ --</span></span>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text3);text-align:center;">Cada balaio custa <strong style="color:var(--text2);" id="custo-balaio">R$ --</strong></p>
       </div>
     </div>
-
+ 
+    <!-- Stats -->
     <div class="stat-grid" style="margin-bottom:14px;">
-      <div class="stat-card"><div class="stat-num" id="stat-inscritos">0</div><div class="stat-lbl">Cotas</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:var(--green);" id="stat-confirmados">0</div><div class="stat-lbl">Pagas</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:var(--amber);" id="stat-pendentes">0</div><div class="stat-lbl">Pendentes</div></div>
+      <div class="stat-card">
+        <div class="stat-icon">&#128101;</div>
+        <div class="stat-num" id="stat-inscritos">0</div>
+        <div class="stat-lbl">Inscritos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">&#9989;</div>
+        <div class="stat-num" style="color:var(--green);" id="stat-confirmados">0</div>
+        <div class="stat-lbl">Confirmados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">&#8987;</div>
+        <div class="stat-num" style="color:var(--amber);" id="stat-pendentes">0</div>
+        <div class="stat-lbl">Pendentes</div>
+      </div>
     </div>
-
+ 
+    <!-- Card: Inscricao -->
     <div class="card" style="margin-bottom:14px;">
       <div class="card-body">
-        <div class="sec-header"><div class="sec-icon">&#9997;</div><div class="sec-title">Inscrição</div></div>
-        <div class="form-group"><label class="form-label">Nome Completo *</label><input id="f-nome" class="inp" type="text" placeholder="Seu nome"></div>
-        <div class="form-row form-group">
-          <div><label class="form-label">Bloco *</label><input id="f-bloco" class="inp" type="text" placeholder="A"></div>
-          <div><label class="form-label">Apto *</label><input id="f-apt" class="inp" type="text" placeholder="101"></div>
+        <div class="sec-header">
+          <div class="sec-icon">&#9997;</div>
+          <div>
+            <div class="sec-title">Inscricao</div>
+            <div class="sec-sub">Preencha seus dados para participar</div>
+          </div>
         </div>
+        <div class="form-group">
+          <label class="form-label">Nome Completo <span class="req">*</span></label>
+          <input id="f-nome" class="inp" type="text" placeholder="Seu nome completo" autocomplete="name">
+        </div>
+        <div class="form-row form-group">
+          <div>
+            <label class="form-label">Bloco <span class="req">*</span></label>
+            <input id="f-bloco" class="inp" type="text" placeholder="Ex: A">
+          </div>
+          <div>
+            <label class="form-label">Apto <span class="req">*</span></label>
+            <input id="f-apt" class="inp" type="text" placeholder="Ex: 101">
+          </div>
+        </div>
+        <div class="form-row form-group">
+          <div><label class="form-label">Telefone</label>
+          <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" inputmode="tel"></div>
         <div class="form-group"><label class="form-label">Quantidade de Cotas (Chances)</label><select id="f-qtd" class="inp"></select></div>
-        <button class="btn-primary" id="btn-inscrever">🔥 Garantir Minha Participação</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Observacao</label>
+          <input id="f-obs" class="inp" type="text" placeholder="Alguma observacao? (opcional)">
+        </div>
+        <button class="btn-primary" id="btn-inscrever">Fazer Inscricao</button>
+        <p style="text-align:center;margin-top:10px;font-size:0.82rem;color:var(--text3);">Valor da cota: <strong style="color:var(--orange);" id="form-valor">R$ --</strong></p>
         <p id="form-error" class="err-msg hidden"></p>
       </div>
     </div>
-
+ 
+    <!-- Card: Transparencia -->
     <div class="card" style="margin-bottom:24px;">
-      <div class="card-body"><div class="sec-header"><div class="sec-icon">&#128203;</div><div class="sec-title">Transparência</div></div></div>
-      <div id="itens-list"></div>
-      <div class="item-total-row"><span class="lbl">Custo do Balaio</span><span class="val" id="total-balaio">R$ --</span></div>
+      <div class="card-body" style="padding-bottom:0;">
+        <div class="sec-header">
+          <div class="sec-icon">&#128203;</div>
+          <div>
+            <div class="sec-title">Transparencia</div>
+            <div class="sec-sub">Veja o que sera comprado com a arrecadacao</div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--bg);">
+        <div style="display:flex;justify-content:space-between;padding:8px 18px 4px;font-size:0.75rem;font-weight:700;color:var(--text3);letter-spacing:0.04em;">
+          <span>ITEM</span><span>VALOR EST.</span>
+        </div>
+        <div id="itens-list">
+          <div class="empty"><div class="empty-text">Carregando...</div></div>
+        </div>
+      </div>
+      <div class="item-total-row">
+        <span class="lbl">Custo por Balaio</span>
+        <span class="val" id="total-balaio">R$ --</span>
+      </div>
     </div>
-
+ 
     <button class="footer-link" onclick="abrirAdmin()">Painel Administrativo</button>
-    <div style="text-align:center;margin-top:20px;font-size:0.75rem;color:var(--text3);">Desenvolvido por Alex Passos</div>
+ 
+    <div style="text-align:center;margin-top:20px;">
+      <p style="font-size:0.78rem;color:var(--text3);font-weight:700;">Balaio Alamedas 2026</p>
+      <p style="font-size:0.72rem;color:var(--text3);margin-top:2px;">Desenvolvido por Alex Passos</p>
+    </div>
+ 
   </div>
 </div>
 
-<div id="page-admin" class="page">
-    <div class="admin-nav">
-        <button class="back-btn" onclick="voltarMain()">←</button>
-        <div><h1>Painel Admin</h1><p>Gestão do Balaio</p></div>
-        <div style="flex:1"></div>
-        <button class="btn-ghost" onclick="logout()">Sair</button>
-    </div>
-    <div style="padding:16px;">
-        <div class="tab-bar" style="margin-bottom:14px;">
-            <button class="tab-btn active" onclick="mudarTab('participantes')">👥</button>
-            <button class="tab-btn" onclick="imprimirListaSorteio()">🖨️</button>
-            <button class="tab-btn" onclick="mudarTab('config')">⚙️</button>
-        </div>
-        <div id="tab-content-participantes">
-            <input class="search-inp" id="search-input" type="text" placeholder="🔍 Buscar..." oninput="filtrarParticipantes()" style="margin-bottom:12px; width:100%;">
-            <div id="lista-participantes"></div>
-        </div>
-        <div id="tab-content-config" class="hidden">
-            <div class="card"><div class="card-body">
-                <div class="form-group"><label class="form-label">Meta (R$)</label><input id="cfg-meta" class="inp" type="number"></div>
-                <div class="form-group"><label class="form-label">Valor Cota (R$)</label><input id="cfg-quota" class="inp" type="number"></div>
-                <button class="btn-primary" onclick="salvarConfig()">Salvar</button>
-            </div></div>
-        </div>
-    </div>
-</div>
+    <!-- ── PÁGINA ADMIN ── -->
+    <div id="page-admin" class="page">
 
-<div id="modal-pix" class="modal-bg hidden">
-    <div class="modal-box">
-        <h2 style="text-align:center; margin-bottom:15px;">Pague com PIX 🌵</h2>
-        <div style="text-align:center; margin-bottom:15px;">
-            <p style="font-size:2rem; font-weight:900; color:var(--orange);" id="pix-valor">R$ 0,00</p>
+        <div class="bunting" id="bunting-admin">
+            <div class="bunting-rope"></div>
+            <div class="bunting-flags" id="flags-admin"></div>
         </div>
-        <div id="qr-box"></div>
-        <div class="form-group" style="margin-top:15px;">
-            <label class="form-label">Copia e Cola</label>
-            <div style="display:flex; gap:8px;">
-                <input id="pix-payload" class="inp" readonly style="font-size:0.75rem;">
-                <button class="copy-btn" onclick="copiarPix()" style="background:var(--orange); color:white; border:none; padding:10px; border-radius:8px;">Copiar</button>
+
+        <div class="admin-nav">
+            <button class="back-btn" onclick="voltarMain()">←</button>
+            <div>
+                <h1>Painel Admin</h1>
+                <p>Gerencie o Balaio Junino</p>
             </div>
+            <div style="flex:1"></div>
+            <button class="btn-ghost" style="padding:8px 14px; font-size:0.78rem;" onclick="logout()">Sair</button>
         </div>
-        <button class="btn-primary" onclick="fecharModal('modal-pix')">Fechar</button>
+
+        <div style="padding:16px; max-width:480px; margin:0 auto; padding-bottom:40px;">
+
+            <!-- Termômetro admin -->
+            <div style="text-align:center; margin-bottom:14px;">
+                <p style="font-size:1rem; font-weight:900; margin-bottom:2px;">🔥 Termômetro da Fogueira</p>
+                <p style="font-size:0.78rem; color:var(--text3); margin-bottom:12px;">Acompanhe o progresso da arrecadação</p>
+                <p style="font-size:2rem; font-weight:900; color:var(--orange); margin-bottom:12px;" id="adm-arrecadado">R$ 0,00</p>
+
+                <div class="progress-wrap" style="margin-bottom:8px;">
+                    <div class="progress-fill" id="adm-progress" style="width:0%"></div>
+                    <div class="progress-label" id="adm-pct">0,0%</div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text3); font-weight:600;">
+                    <span>R$ 0</span>
+                    <span>⊙ Meta: <strong style="color:var(--text2);" id="adm-meta">R$ —</strong></span>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stat-grid" style="margin-bottom:14px;">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-num" id="adm-inscritos">0</div>
+                    <div class="stat-lbl">Inscritos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-num" style="color:var(--green);" id="adm-confirmados">0</div>
+                    <div class="stat-lbl">Confirmados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-num" style="color:var(--amber);" id="adm-pendentes">0</div>
+                    <div class="stat-lbl">Pendentes</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tab-bar" style="margin-bottom:14px;">
+                <button class="tab-btn active" id="tab-participantes" onclick="mudarTab('participantes')">👥</button>
+                <button class="tab-btn" id="tab-itens" onclick="mudarTab('itens')">🧺</button>
+                <button class="tab-btn" onclick="imprimirListaSorteio()">🖨️</button>
+                <button class="tab-btn" id="tab-config" onclick="mudarTab('config')">⚙️</button>
+            </div>
+
+            <!-- Tab: Participantes -->
+            <div id="tab-content-participantes">
+                <div class="search-wrap" style="margin-bottom:12px;">
+                    <input class="search-inp" id="search-input" type="text" placeholder="🔍 Buscar por nome, bloco ou apto…" oninput="filtrarParticipantes()">
+                    <select class="filter-sel" id="filter-status" onchange="filtrarParticipantes()">
+                        <option value="">Todos</option>
+                        <option value="pago">Pagos</option>
+                        <option value="pendente">Pendentes</option>
+                        <option value="cancelado">Cancelados</option>
+                    </select>
+                </div>
+                <div id="lista-participantes">
+                    <div class="empty">
+                        <div class="empty-icon">👥</div>
+                        <div class="empty-text">Nenhum participante encontrado.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Itens -->
+            <div id="tab-content-itens" class="hidden">
+                <div class="card">
+                    <div id="adm-itens-list">
+                        <div class="empty">
+                            <div class="empty-text">Carregando…</div>
+                        </div>
+                    </div>
+                    <div class="item-total-row">
+                        <span class="lbl">Total</span>
+                        <span class="val" id="adm-total-balaio">R$ —</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Config -->
+            <div id="tab-content-config" class="hidden">
+                <div class="card" style="margin-bottom:12px;">
+                    <div class="card-body">
+                        <p style="font-weight:800; font-size:0.95rem; margin-bottom:14px;">⚙️ Configurações</p>
+                        <div class="form-group">
+                            <label class="form-label">Meta do Balaio (R$)</label>
+                            <input id="cfg-meta" class="inp" type="number" step="0.01" placeholder="Ex: 500.00">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Valor da Cota (R$)</label>
+                            <input id="cfg-quota" class="inp" type="number" step="0.01" placeholder="Ex: 10.00">
+                        </div>
+                        <button class="btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
+                        <p id="cfg-msg" class="err-msg hidden"></p>
+                    </div>
+                </div>
+
+                <div style="background:var(--orange-l);border:1px solid rgba(232,101,26,0.2);border-radius:var(--radius-sm);padding:14px;font-size:0.82rem;color:var(--text2);">🔑 <strong style="color:var(--orange);">Senha do administrador</strong> é configurada via variável de ambiente <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:0.8rem;">ADMIN_PASSWORD</code> no painel do Cloudflare
+                    Workers. Para alterar, acesse o dashboard da Cloudflare e atualize o secret.</div>
+            </div>
+
+        </div>
     </div>
-</div>
+
+    <!-- ── MODAL PIX ── -->
+
+    <div id="modal-pix" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-pix')">
+        <div class="modal-box">
+            <div class="modal-handle"></div>
+            <div style="text-align:center; margin-bottom:16px;">
+                <p style="font-size:1.1rem; font-weight:900;">🎉 Pague com PIX</p>
+                <p style="font-size:0.82rem; color:var(--text3); margin-top:4px;">Escaneie o QR Code ou copie o código</p>
+            </div>
+            <div style="text-align:center; margin-bottom:14px;">
+                <p style="font-size:0.8rem; color:var(--text3); font-weight:600;">Valor</p>
+                <p style="font-size:2rem; font-weight:900; color:var(--orange);" id="pix-valor">R$ —</p>
+            </div>
+            <div id="qr-box" style="margin-bottom:14px;"></div>
+            <div style="margin-bottom:14px;">
+                <p style="font-size:0.78rem; font-weight:700; color:var(--text3); margin-bottom:6px;">Código Copia e Cola</p>
+                <div class="copy-row">
+                    <input id="pix-payload" type="text" readonly>
+                    <button class="copy-btn" onclick="copiarPix()">Copiar</button>
+                </div>
+            </div>
+            <div class="info-box" style="margin-bottom:14px;">
+                📌 <strong>O administrador confirmará em breve.</strong>
+            </div>
+            <button class="btn-primary" onclick="fecharModal('modal-pix')">Fechar</button>
+            <p style="text-align:center; font-size:0.72rem; color:var(--text3); margin-top:10px;" id="pix-txid"></p>
+        </div>
+    </div>
 
 <div id="modal-login" class="modal-bg hidden">
     <div class="modal-box">
