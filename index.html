@@ -571,14 +571,14 @@
     <div id="modal-confirm" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-confirm')">
         <div class="modal-box" style="text-align:center;">
             <div class="modal-handle"></div>
-            <div style="font-size:3rem; margin-bottom:10px;">🗑️</div>
-            <h3 style="font-size:1.2rem; font-weight:900; margin-bottom:10px;">Excluir Participante?</h3>
-            <p style="font-size:0.85rem; color:var(--text2); margin-bottom:24px; line-height:1.5;">
-                Tem certeza que deseja remover este participante? <br>
-                <strong>Esta ação não pode ser desfeita.</strong>
+            <div id="confirm-icon" style="font-size:3rem; margin-bottom:10px;">🗑️</div>
+            <h3 id="confirm-title" style="font-size:1.2rem; font-weight:900; margin-bottom:10px;">Confirmar Exclusão?</h3>
+            <p id="confirm-desc" style="font-size:0.85rem; color:var(--text2); margin-bottom:24px; line-height:1.5;">
+                Esta ação não pode ser desfeita.
             </p>
+            
             <div style="display:flex; flex-direction:column; gap:10px;">
-                <button id="btn-confirmar-exclusao" class="btn-primary" style="background:var(--red);">🔥 Sim, Excluir</button>
+                <button id="btn-confirm-exec" class="btn-primary" style="background:var(--red);">🔥 Sim, Confirmar</button>
                 <button class="btn-ghost" onclick="fecharModal('modal-confirm')">Cancelar</button>
             </div>
         </div>
@@ -1082,41 +1082,57 @@
         }
 
         let idParaExcluir = null;  
-        function excluirParticipante(id) {
-            idParaExcluir = id;
+        let acaoConfirmacao = null; // Guarda a função que será executada ao confirmar
+        
+        // Função mestre para abrir o modal de confirmação
+        function pedirConfirmacao(titulo, desc, icone, callback) {
+            document.getElementById('confirm-title').textContent = titulo;
+            document.getElementById('confirm-desc').innerHTML = desc;
+            document.getElementById('confirm-icon').textContent = icone;
+            acaoConfirmacao = callback; // Guarda a função de exclusão (participante ou item)
             abrirModal('modal-confirm');
         }
-        document.getElementById('btn-confirmar-exclusao').onclick = async () => {
-            if (!idParaExcluir) return;
-            
-            const btn = document.getElementById('btn-confirmar-exclusao');
-            const originalText = btn.innerHTML;
-            
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spin">⏳</span> Excluindo...';
         
-            try {
-                const res = await fetch(`${API_BASE}/api/admin/participante/${idParaExcluir}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${adminToken}` }
-                });
-        
-                if (res.ok) {
-                    toast('🗑️ Participante removido com sucesso!');
-                    fecharModal('modal-confirm');
-                    carregarAdmin();
-                    carregarDados();
-                } else {
-                    toast('❌ Erro ao excluir do servidor.');
-                }
-            } catch (err) {
-                toast('❌ Erro de conexão.');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-                idParaExcluir = null;
+        // Botão de ação do modal (O "Sim")
+        document.getElementById('btn-confirm-exec').onclick = async () => {
+            if (acaoConfirmacao) {
+                await acaoConfirmacao(); // Executa o que foi guardado
+                fecharModal('modal-confirm');
+                acaoConfirmacao = null;
             }
         };
+                
+        // 1. Excluir Participante
+        function excluirParticipante(id) {
+            pedirConfirmacao(
+                'Excluir Participante?', 
+                'Deseja remover este morador permanentemente? <br><strong>A chance de sorteio será perdida.</strong>', 
+                '👤', 
+                async () => {
+                    const res = await fetch(`${API_BASE}/api/admin/participante/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${adminToken}` }
+                    });
+                    if (res.ok) { toast('🗑️ Participante removido!'); carregarAdmin(); carregarDados(); }
+                }
+            );
+        }
+        
+        // 2. Excluir Item do Balaio
+        function excluirItem(id) {
+            pedirConfirmacao(
+                'Remover Item?', 
+                'Deseja tirar este item da cesta do balaio? <br><strong>Isso afetará o valor total estimado.</strong>', 
+                '🧺', 
+                async () => {
+                    const res = await fetch(`${API_BASE}/api/admin/item/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${adminToken}` }
+                    });
+                    if (res.ok) { toast('✅ Item removido com sucesso!'); carregarAdmin(); carregarDados(); }
+                }
+            );
+        }
         
         function filtrarParticipantes() {
             const q = document.getElementById('search-input').value.toLowerCase();
