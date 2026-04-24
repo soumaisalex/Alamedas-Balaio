@@ -184,37 +184,6 @@
         .hidden { display:none !important; }
         @keyframes spin { to{transform:rotate(360deg)} }
         .spin { display:inline-block; animation:spin 1s linear infinite; }
-
-        /* Impressão */
-        @media print {
-        .cupom-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px dashed #ccc;
-            margin-bottom: 4px;
-            padding-bottom: 2px;
-            font-size: 0.7rem;
-        }
-        
-        .cupom-footer {
-            margin-top: 4px;
-            font-size: 0.6rem;
-            color: #666;
-            text-align: right;
-            border-top: 1px solid #eee;
-        }
-    
-        .cupom {
-            width: 20%; /* Para caber 5 por linha se preferir */
-            border: 2px solid #000;
-            padding: 10px;
-            margin: 4px;
-            display: inline-block;
-            vertical-align: top;
-            page-break-inside: avoid;
-        }
-    }
     </style>
 
 </head>
@@ -1157,84 +1126,99 @@
                 <head>
                     <title>Sorteio Balaio Junino 2026</title>
                     <style>
-                        body { font-family: 'Nunito', sans-serif, Arial; padding: 20px; background: #fff; }
-                        .grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+                        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
                         
-                        /* Estilo do Cupom (Canhoto) */
+                        body { font-family: 'Nunito', sans-serif; padding: 10px; background: #fff; margin: 0; }
+                        
+                        /* Grid configurado para 4 colunas */
+                        .grid { 
+                            display: grid; 
+                            grid-template-columns: repeat(4, 1fr); 
+                            gap: 8px; 
+                        }
+                        
                         .ticket { 
-                            border: 2px solid #000; 
-                            width: 250px; 
-                            padding: 15px; 
-                            position: relative;
+                            border: 1.5px solid #000; 
+                            padding: 8px; 
                             box-sizing: border-box;
                             page-break-inside: avoid;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            height: 140px; /* Altura fixa para manter simetria */
                         }
                         
                         .ticket-header { 
                             display: flex; 
                             justify-content: space-between; 
-                            align-items: center; 
+                            font-size: 0.55rem;
+                            font-weight: 900;
                             border-bottom: 1px dashed #000;
-                            margin-bottom: 10px;
-                            padding-bottom: 5px;
-                            font-size: 0.7rem;
-                            font-weight: 800;
+                            padding-bottom: 4px;
                         }
         
-                        .ticket-body { text-align: center; }
-                        .ticket-nome { font-size: 1.1rem; font-weight: 900; margin: 5px 0; text-transform: uppercase; }
-                        .ticket-info { font-size: 0.9rem; font-weight: 700; margin-bottom: 5px; }
-                        .ticket-cota { font-size: 0.75rem; color: #555; font-style: italic; }
+                        .ticket-body { text-align: center; padding: 5px 0; }
+                        .ticket-nome { 
+                            font-size: 0.85rem; 
+                            font-weight: 900; 
+                            line-height: 1.1;
+                            margin-bottom: 4px;
+                            text-transform: uppercase;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
+                        }
+                        .ticket-info { font-size: 0.75rem; font-weight: 700; }
+                        .ticket-cota { font-size: 0.6rem; color: #444; margin-top: 2px; }
         
                         .ticket-footer {
-                            margin-top: 10px;
-                            padding-top: 5px;
                             border-top: 1px solid #eee;
-                            font-size: 0.6rem;
+                            font-size: 0.5rem;
                             color: #888;
-                            text-align: right;
+                            text-align: center;
+                            padding-top: 4px;
                         }
         
                         @media print {
                             .no-print { display: none; }
                             body { padding: 0; }
+                            .grid { gap: 5px; } /* Reduz espaço na impressão */
                         }
                         
                         .btn-print {
                             background: #E8651A; color: white; border: none; 
-                            padding: 12px 24px; border-radius: 50px; 
-                            font-weight: 800; cursor: pointer; margin-bottom: 20px;
+                            padding: 10px 20px; border-radius: 50px; 
+                            font-weight: 800; cursor: pointer; margin: 20px;
                         }
                     </style>
                 </head>
                 <body>
                     <div style="text-align:center;" class="no-print">
-                        <button class="btn-print" onclick="window.print()">🖨️ Confirmar Impressão</button>
-                        <p style="font-size:0.8rem; color:#666;">Dica: Use papel A4 e recorte nas linhas pretas.</p>
-                        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                        <button class="btn-print" onclick="window.print()">🖨️ Confirmar Impressão (Econômica)</button>
                     </div>
                     
                     <div class="grid">
             `);
         
-            // Gera os cupons repetindo conforme a quantidade de cotas
             pagantes.forEach(p => {
-                const idFormatado = 'BAL' + String(p.id).padStart(8, '0');
+                const idFormatado = 'BAL' + String(p.id).padStart(5, '0'); // Reduzi um pouco os zeros para caber melhor
                 const qtdCotas = parseInt(p.quantidade) || 1;
         
                 for (let i = 1; i <= qtdCotas; i++) {
                     win.document.write(`
                         <div class="ticket">
                             <div class="ticket-header">
-                                <span>2º BALAIO ALAMEDAS 2026</span>
+                                <span>BALAIO 2026</span>
+                                <span>${idFormatado}</span>
                             </div>
                             <div class="ticket-body">
                                 <div class="ticket-nome">${p.nome}</div>
                                 <div class="ticket-info">BL ${p.bloco} - APT ${p.apartamento}</div>
-                                <div class="ticket-cota">COTA ${i} DE ${qtdCotas}</div>
+                                <div class="ticket-cota">COTA ${i}/${qtdCotas}</div>
                             </div>
                             <div class="ticket-footer">
-                                Identificador único para conferência <span>${idFormatado}</span>
+                                Conferência: ${idFormatado}
                             </div>
                         </div>
                     `);
@@ -1248,8 +1232,7 @@
             `);
             
             win.document.close();
-        }
-  
+        }  
         function mudarTab(tab){
           ['participantes','itens','config'].forEach(t=>{
             document.getElementById(`tab-content-${t}`).classList.add('hidden');
