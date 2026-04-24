@@ -155,6 +155,20 @@ export default {
         return fail('Não autorizado', 401);
       }
 
+      // POST /api/admin/item/atualizar - restrito
+      if (pathname === '/api/admin/item/atualizar' && request.method === 'POST') {
+        const { id, nome, preco_estimado, quantidade } = await request.json().catch(() => ({}));
+        if (!id || !nome?.trim() || preco_estimado === undefined)
+          return fail('id, nome e preco_estimado sao obrigatorios.');
+          
+        await sql`UPDATE itens_balaio 
+                  SET nome = ${nome.trim()}, 
+                      preco_estimado = ${+preco_estimado}, 
+                      quantidade = ${+quantidade || 1} 
+                  WHERE id = ${id}`;
+        return respond({ sucesso: true });
+      }
+      
       // GET /api/admin/participantes
       if (pathname === '/api/admin/participantes' && request.method === 'GET') {
         const participantes = await sql`
