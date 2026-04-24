@@ -134,8 +134,8 @@
         .back-btn:hover { color:var(--orange); }
         
         /* Tab bar */
-        .tab-bar { display:grid; grid-template-columns:repeat(3,1fr); background:var(--bg2); border-radius:var(--radius-sm); padding:4px; gap:4px; }
-        .tab-btn { padding:10px; border:none; border-radius:7px; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:20px; transition:background 0.15s; color:var(--text3); }
+        .tab-bar { display:grid; grid-template-columns:repeat(4,1fr); background:var(--bg2); border-radius:var(--radius-sm); padding:4px; gap:4px; }
+        .tab-btn { padding:8px 4px; border:none; border-radius:7px; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; transition:background 0.15s; color:var(--text3); }
         .tab-btn.active { background:var(--card); color:var(--orange); box-shadow:var(--shadow); }
         
         /* Search */
@@ -403,13 +403,12 @@
             </div>
 
             <!-- Tabs -->
-            <div class="tab-bar" style="display:flex; gap:8px; margin-bottom:15px;">
+            <div class="tab-bar" style="margin-bottom:14px;">
                 <button class="tab-btn active" id="tab-participantes" onclick="mudarTab('participantes')">👥</button>
                 <button class="tab-btn" id="tab-itens" onclick="mudarTab('itens')">🧺</button>
-                <button class="tab-btn" onclick="imprimirListaSorteio()">🖨️</button>
+                <button class="tab-btn" id="tab-print" onclick="imprimirListaSorteio()">🖨️</button>
                 <button class="tab-btn" id="tab-config" onclick="mudarTab('config')">⚙️</button>
             </div>
-
             <!-- Tab: Participantes -->
             <div id="tab-content-participantes">
                 <div class="search-wrap" style="margin-bottom:12px;">
@@ -876,31 +875,46 @@
           } catch(err){ console.error(err); toast('❌ Erro ao carregar painel.'); }
         }
         
-        function filtrarParticipantes(){
-          const q=document.getElementById('search-input').value.toLowerCase();
-          const status=document.getElementById('filter-status').value;
-          const filtrados=todosParticipantes.filter(p=>{
-            const mQ=!q||p.nome.toLowerCase().includes(q)||p.bloco.toLowerCase().includes(q)||p.apartamento.toLowerCase().includes(q);
-            const mS=!status||p.status_pagamento===status;
-            return mQ&&mS;
-          });
-          const lista=document.getElementById('lista-participantes');
-          if(!filtrados.length){ lista.innerHTML='<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Nenhum participante encontrado.</div></div>'; return; }
-          lista.innerHTML=filtrados.map(p=>`
-            <div class="p-card ${p.status_pagamento}" style="margin-bottom:10px;">
-              <div class="p-card-header">
-                <div>
-                  <div class="p-card-name">${p.nome}</div>
-                  <div class="p-card-info">🏠 Bloco ${p.bloco} · Apto ${p.apartamento} · ${p.data_inscricao}</div>
+        function filtrarParticipantes() {
+            const q = document.getElementById('search-input').value.toLowerCase();
+            const status = document.getElementById('filter-status').value;
+            
+            const filtrados = todosParticipantes.filter(p => {
+                const matchesQuery = !q || 
+                    p.nome.toLowerCase().includes(q) || 
+                    p.bloco.toLowerCase().includes(q) || 
+                    p.apartamento.toLowerCase().includes(q);
+                const matchesStatus = !status || p.status_pagamento === status;
+                return matchesQuery && matchesStatus;
+            });
+        
+            const lista = document.getElementById('lista-participantes');
+            
+            if (filtrados.length === 0) {
+                lista.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">👥</div>
+                        <div class="empty-text">Nenhum participante encontrado.</div>
+                    </div>`;
+                return;
+            }
+        
+            lista.innerHTML = filtrados.map(p => `
+                <div class="p-card ${p.status_pagamento}" style="margin-bottom:10px;">
+                    <div class="p-card-header">
+                        <div>
+                            <div class="p-card-name">${p.nome} <span style="font-size:0.8rem; color:var(--orange)">(${p.quantidade || 1} cota${(p.quantidade > 1 ? 's' : '')})</span></div>
+                            <div class="p-card-info">🏠 Bloco ${p.bloco} · Apto ${p.apartamento} · ${p.data_inscricao}</div>
+                        </div>
+                        <span class="badge badge-${p.status_pagamento}">${p.status_pagamento === 'pago' ? '✅ pago' : '⏳ pendente'}</span>
+                    </div>
+                    <div class="p-card-actions">
+                        ${p.status_pagamento !== 'pago' ? `<button class="btn-sm btn-green" onclick="atualizarStatus(${p.id},'pago')">✅ Pago</button>` : ''}
+                        ${p.status_pagamento !== 'pendente' ? `<button class="btn-sm btn-amber" onclick="atualizarStatus(${p.id},'pendente')">⏳ Pendente</button>` : ''}
+                        <button class="btn-sm btn-red" onclick="excluirParticipante(${p.id})">🗑️ Excluir</button>
+                    </div>
                 </div>
-                <span class="badge badge-${p.status_pagamento}">${p.status_pagamento==='pago'?'✅':p.status_pagamento==='cancelado'?'❌':'⏳'} ${p.status_pagamento}</span>
-              </div>
-              <div class="p-card-actions">
-                ${p.status_pagamento!=='pago'?`<button class="btn-sm btn-green" onclick="atualizarStatus(${p.id},'pago')">✅ Confirmar Pago</button>`:''}
-                ${p.status_pagamento!=='pendente'?`<button class="btn-sm btn-amber" onclick="atualizarStatus(${p.id},'pendente')">⏳ Pendente</button>`:''}
-                ${p.status_pagamento!=='cancelado'?`<button class="btn-sm btn-red" onclick="atualizarStatus(${p.id},'cancelado')">❌ Cancelar</button>`:''}
-              </div>
-            </div>`).join('');
+            `).join('');
         }
         
         async function atualizarStatus(id,status){
