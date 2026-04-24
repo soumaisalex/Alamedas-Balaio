@@ -588,6 +588,14 @@
             document.getElementById('stat-confirmados').textContent  = pagos;
             document.getElementById('stat-pendentes').textContent    = Math.max(0, totalI - pagos);
         
+            // Seletor de Cotas Dinâmico
+            const vCota = parseFloat(config.valor_quota || 10);
+            document.getElementById('f-qtd').innerHTML = [1,2,3,5,10].map(n => 
+                `<option value="${n}">${n} cotas (${brl(n * vCota)})</option>`
+            ).join('');
+
+            const custo = itens.reduce((s,i)=> s + (i.preco_estimado * i.quantidade), 0);
+            
             // Custo do balaio = soma dos itens
             const custo = itens ? itens.reduce((s,i)=> s + (+i.preco_estimado * +i.quantidade), 0) : 0;
             custoBalaioGlobal = custo;
