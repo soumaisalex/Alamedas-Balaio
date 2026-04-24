@@ -552,6 +552,23 @@
         </div>
     </div>
 
+
+    <!-- ── MODAL EXCLUSAO ── -->
+    <div id="modal-confirm" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-confirm')">
+        <div class="modal-box" style="text-align:center;">
+            <div class="modal-handle"></div>
+            <div style="font-size:3rem; margin-bottom:10px;">🗑️</div>
+            <h3 style="font-size:1.2rem; font-weight:900; margin-bottom:10px;">Excluir Participante?</h3>
+            <p style="font-size:0.85rem; color:var(--text2); margin-bottom:24px; line-height:1.5;">
+                Tem certeza que deseja remover este participante? <br>
+                <strong>Esta ação não pode ser desfeita.</strong>
+            </p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button id="btn-confirmar-exclusao" class="btn-primary" style="background:var(--red);">🔥 Sim, Excluir</button>
+                <button class="btn-ghost" onclick="fecharModal('modal-confirm')">Cancelar</button>
+            </div>
+        </div>
+    </div>
     <div id="toast"></div>
 
     <script>
@@ -1008,24 +1025,42 @@
           }
         }
 
-        async function excluirParticipante(id) { 
-            if(!confirm('Deseja excluir este participante permanentemente?')) return;
-            try {
-                const res = await fetch(`${API_BASE}/api/admin/participante/${id}`, { 
-                    method: 'DELETE', 
-                    headers: { 'Authorization': `Bearer ${adminToken}` } 
-                });
-                if(res.ok) { 
-                    toast('🗑️ Removido com sucesso!'); 
-                    carregarAdmin(); 
-                    carregarDados(); 
-                } else {
-                    toast('❌ Erro ao excluir.');
-                }
-            } catch(err) {
-                toast('❌ Erro de conexão.');
-            }
+        let idParaExcluir = null;  
+        function excluirParticipante(id) {
+            idParaExcluir = id;
+            abrirModal('modal-confirm');
         }
+        document.getElementById('btn-confirmar-exclusao').onclick = async () => {
+            if (!idParaExcluir) return;
+            
+            const btn = document.getElementById('btn-confirmar-exclusao');
+            const originalText = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spin">⏳</span> Excluindo...';
+        
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/participante/${idParaExcluir}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+        
+                if (res.ok) {
+                    toast('🗑️ Participante removido com sucesso!');
+                    fecharModal('modal-confirm');
+                    carregarAdmin();
+                    carregarDados();
+                } else {
+                    toast('❌ Erro ao excluir do servidor.');
+                }
+            } catch (err) {
+                toast('❌ Erro de conexão.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                idParaExcluir = null;
+            }
+        };
         
         function filtrarParticipantes() {
             const q = document.getElementById('search-input').value.toLowerCase();
