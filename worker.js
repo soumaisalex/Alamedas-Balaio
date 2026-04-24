@@ -26,7 +26,7 @@ import { neon } from '@neondatabase/serverless';
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, DELETE',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
@@ -109,9 +109,14 @@ export default {
 
       // POST /api/inscricao - publico
       if (pathname === '/api/inscricao' && request.method === 'POST') {
-
+        
         const { nome, bloco, apartamento, telefone, observacao, quantidade } = await request.json().catch(() => ({}));
-        const qtd = Math.max(1, parseInt(quantidade) || 1); // Garante no mínimo 1
+        const qtd = Math.max(1, parseInt(quantidade) || 1);
+        
+        const cfgR = await sql`SELECT valor FROM configuracoes WHERE chave = 'valor_quota'`;
+        const valorCotaBase = parseFloat(cfgR[0]?.valor || 10); // Usa 10 se não achar nada
+        
+        const valorTotalFormatado = (valorCotaBase * qtd).toFixed(2);
         
         const [ins] = await sql`
           INSERT INTO participantes (nome, bloco, apartamento, telefone, observacao, quantidade)
@@ -120,22 +125,15 @@ export default {
                   ${telefone?.trim() || null}, ${observacao?.trim() || null}, ${qtd})
           RETURNING id`;
         
-        const cfgR = await sql`SELECT valor FROM configuracoes WHERE chave = 'valor_quota'`;
-        const valorUnitario = parseFloat(cfgR[0]?.valor ?? '10.00');
-        const valorTotal = (valorUnitario * qtd).toFixed(2);
-        const txid  = `BAL${String(ins.id).padStart(8, '0')}`;
-
-        if (!env.PIX_KEY)
-          return respond({ sucesso: true, participante_id: ins.id, pix: null,
-            aviso: 'PIX_KEY nao configurada no Worker.' });
-
+        const txid = `BAL${String(ins.id).padStart(8, '0')}`;
+        
         const pixPayload = gerarPix({
-          chave: env.PIX_KEY, nome: env.PIX_NOME ?? 'Alex de Souza Passos',
-          cidade: env.PIX_CIDADE ?? 'Aracaju', valorTotal, txid,
+          chave: env.PIX_KEY, 
+          nome: env.PIX_NOME ?? 'ALEX DE SOUZA PASSOS',
+          cidade: env.PIX_CIDADE ?? 'ARACAJU', 
+          valor: valorTotalFormatado,
+          txid,
         });
-        return respond({ sucesso: true, participante_id: ins.id,
-          pix: { payload: pixPayload, valor, txid } });
-      }
 
       // POST /api/admin/login - publico
       if (pathname === '/api/admin/login' && request.method === 'POST') {
