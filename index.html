@@ -1111,19 +1111,31 @@
             else toast('❌ Erro ao atualizar.');
           } catch{ toast('❌ Erro de conexão.'); }
         }
+        
         function imprimirListaSorteio(){
-          const pagantes = todosParticipantes.filter(p => p.status_pagamento === 'pago');
-          const win = window.open('', '_blank');
-          win.document.write(`<html><head><style>
-            body{ font-family:sans-serif; display:flex; flex-wrap:wrap; gap:10px; }
-            .ticket{ border:2px dashed #000; padding:10px; width:200px; text-align:center; }
-        </style></head><body>`);
-        pagantes.forEach(p => {
-            for(let i=0; i<p.quantidade; i++) win.document.write(`
-                <div class="ticket"><strong>${p.nome}</strong><br>B${p.bloco} - Apt${p.apartamento}<br><small>Cota ${i+1}/${p.quantidade}</small></div>
-            `);
-        });
-          win.document.write(`</body></html>`); win.document.close(); win.print();
+            participantesConfirmados.forEach(p => {
+                const idFormatado = 'BAL' + String(p.id).padStart(8, '0');
+                const qtdCotas = p.quantidade || 1;
+            
+                for (let i = 1; i <= qtdCotas; i++) {
+                    html += `
+                    <div class="cupom">
+                        <div class="cupom-header">
+                            <strong>2º BALAIO JUNINO ALAMEDAS</strong>
+                            <span>${idFormatado}</span> </div>
+                        <div class="cupom-body">
+                            <div class="cupom-nome">${p.nome.toUpperCase()}</div>
+                            <div class="cupom-info">
+                                BL ${p.bloco} - APT ${p.apartamento} 
+                                <span style="float:right">COTA ${i}/${qtdCotas}</span>
+                            </div>
+                        </div>
+                        <div class="cupom-footer">
+                            ${p.pix_txid ? 'TXID: ' + p.pix_txid.substring(0, 10) + '...' : 'Inscrição Manual'}
+                        </div>
+                    </div>`;
+                }
+            });
         }
   
         function mudarTab(tab){
