@@ -612,7 +612,19 @@
             if(!res.ok) throw new Error(data.error);
         
             const {config, itens, stats} = data;
-
+            // ... dentro de carregarDados ...
+            const quotaValue = parseFloat(config.valor_quota || 10);
+            const selectCotas = document.getElementById('f-qtd');
+            
+            if (selectCotas) {
+                selectCotas.innerHTML = `
+                    <option value="1">1 cota (${brl(quotaValue * 1)})</option>
+                    <option value="2">2 cotas (${brl(quotaValue * 2)})</option>
+                    <option value="3">3 cotas (${brl(quotaValue * 3)})</option>
+                    <option value="5">5 cotas (${brl(quotaValue * 5)})</option>
+                    <option value="10">10 cotas (${brl(quotaValue * 10)})</option>
+                `;
+            }
         // USE ESTE PADRÃO PARA CADA LINHA QUE DÁ ERRO:
             const elDesc = document.getElementById('hdr-desc');
             if (elDesc && config.descricao) elDesc.textContent = config.descricao;
