@@ -1112,30 +1112,112 @@
           } catch{ toast('❌ Erro de conexão.'); }
         }
         
-        function imprimirListaSorteio(){
-            participantesConfirmados.forEach(p => {
-                const idFormatado = 'BAL' + String(p.id).padStart(8, '0');
-                const qtdCotas = p.quantidade || 1;
+        function imprimirListaSorteio() {
+            const pagantes = todosParticipantes.filter(p => p.status_pagamento === 'pago');
             
+            if (pagantes.length === 0) {
+                return toast('⚠️ Não há participantes confirmados para imprimir.');
+            }
+        
+            const win = window.open('', '_blank');
+            
+            win.document.write(`
+                <html>
+                <head>
+                    <title>Sorteio Balaio Junino 2026</title>
+                    <style>
+                        body { font-family: 'Nunito', sans-serif, Arial; padding: 20px; background: #fff; }
+                        .grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+                        
+                        /* Estilo do Cupom (Canhoto) */
+                        .ticket { 
+                            border: 2px solid #000; 
+                            width: 250px; 
+                            padding: 15px; 
+                            position: relative;
+                            box-sizing: border-box;
+                            page-break-inside: avoid;
+                        }
+                        
+                        .ticket-header { 
+                            display: flex; 
+                            justify-content: space-between; 
+                            align-items: center; 
+                            border-bottom: 1px dashed #000;
+                            margin-bottom: 10px;
+                            padding-bottom: 5px;
+                            font-size: 0.7rem;
+                            font-weight: 800;
+                        }
+        
+                        .ticket-body { text-align: center; }
+                        .ticket-nome { font-size: 1.1rem; font-weight: 900; margin: 5px 0; text-transform: uppercase; }
+                        .ticket-info { font-size: 0.9rem; font-weight: 700; margin-bottom: 5px; }
+                        .ticket-cota { font-size: 0.75rem; color: #555; font-style: italic; }
+        
+                        .ticket-footer {
+                            margin-top: 10px;
+                            padding-top: 5px;
+                            border-top: 1px solid #eee;
+                            font-size: 0.6rem;
+                            color: #888;
+                            text-align: right;
+                        }
+        
+                        @media print {
+                            .no-print { display: none; }
+                            body { padding: 0; }
+                        }
+                        
+                        .btn-print {
+                            background: #E8651A; color: white; border: none; 
+                            padding: 12px 24px; border-radius: 50px; 
+                            font-weight: 800; cursor: pointer; margin-bottom: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div style="text-align:center;" class="no-print">
+                        <button class="btn-print" onclick="window.print()">🖨️ Confirmar Impressão</button>
+                        <p style="font-size:0.8rem; color:#666;">Dica: Use papel A4 e recorte nas linhas pretas.</p>
+                        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                    </div>
+                    
+                    <div class="grid">
+            `);
+        
+            // Gera os cupons repetindo conforme a quantidade de cotas
+            pagantes.forEach(p => {
+                const idFormatado = 'BAL' + String(p.id).padStart(8, '0');
+                const qtdCotas = parseInt(p.quantidade) || 1;
+        
                 for (let i = 1; i <= qtdCotas; i++) {
-                    html += `
-                    <div class="cupom">
-                        <div class="cupom-header">
-                            <strong>2º BALAIO JUNINO ALAMEDAS</strong>
-                            <span>${idFormatado}</span> </div>
-                        <div class="cupom-body">
-                            <div class="cupom-nome">${p.nome.toUpperCase()}</div>
-                            <div class="cupom-info">
-                                BL ${p.bloco} - APT ${p.apartamento} 
-                                <span style="float:right">COTA ${i}/${qtdCotas}</span>
+                    win.document.write(`
+                        <div class="ticket">
+                            <div class="ticket-header">
+                                <span>2º BALAIO ALAMEDAS 2026</span>
+                                <span>${idFormatado}</span>
+                            </div>
+                            <div class="ticket-body">
+                                <div class="ticket-nome">${p.nome}</div>
+                                <div class="ticket-info">BL ${p.bloco} - APT ${p.apartamento}</div>
+                                <div class="ticket-cota">COTA ${i} DE ${qtdCotas}</div>
+                            </div>
+                            <div class="ticket-footer">
+                                Identificador único para conferência
                             </div>
                         </div>
-                        <div class="cupom-footer">
-                            ${p.pix_txid ? 'TXID: ' + p.pix_txid.substring(0, 10) + '...' : 'Inscrição Manual'}
-                        </div>
-                    </div>`;
+                    `);
                 }
             });
+        
+            win.document.write(`
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            win.document.close();
         }
   
         function mudarTab(tab){
