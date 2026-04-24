@@ -284,30 +284,57 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Nome Completo <span class="req">*</span></label>
-          <input id="f-nome" class="inp" type="text" placeholder="Seu nome completo" autocomplete="name">
+            <label class="form-label">Nome Completo <span class="req">*</span></label>
+            <input id="f-nome" class="inp" type="text" placeholder="Seu nome completo">
         </div>
         <div class="form-row form-group">
-          <div>
-            <label class="form-label">Bloco <span class="req">*</span></label>
-            <input id="f-bloco" class="inp" type="text" placeholder="Ex: A">
-          </div>
-          <div>
-            <label class="form-label">Apto <span class="req">*</span></label>
-            <input id="f-apt" class="inp" type="text" placeholder="Ex: 101">
-          </div>
+            <div>
+                <label class="form-label">Bloco <span class="req">*</span></label>
+                <select id="f-bloco" class="inp" onchange="gerarApartamentos()">
+                    <option value="">Selecione...</option>
+                    </select>
+            </div>
+            <div>
+                <label class="form-label">Apto <span class="req">*</span></label>
+                <select id="f-apt" class="inp" disabled>
+                    <option value="">Bloqueado</option>
+                </select>
+            </div>
         </div>
+        
         <div class="form-row form-group">
-          <div><label class="form-label">Telefone <span class="req">*</span></label>
-          <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" inputmode="tel"></div>
-        <div class="form-group"><label class="form-label">Quantidade de Cotas (Chances)</label><select id="f-qtd" class="inp"></select></div>
+            <div>
+                <label class="form-label">Telefone <span class="req">*</span></label>
+                <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" maxlength="15">
+            </div>
+            <div>
+                <label class="form-label">Qtd. Cotas</label>
+                <select id="f-qtd" class="inp" onchange="atualizarPrecoTotal()">
+                    <option value="1">1 cota</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
         </div>
+        
         <div class="form-group">
-          <label class="form-label">Observacao</label>
-          <input id="f-obs" class="inp" type="text" placeholder="Alguma observacao? (opcional)">
+            <label class="form-label">Observação</label>
+            <input id="f-obs" class="inp" type="text" placeholder="Alguma observação? (opcional)">
         </div>
-        <button class="btn-primary" id="btn-inscrever">Fazer Inscricao</button>
-        <p style="text-align:center;margin-top:10px;font-size:0.82rem;color:var(--text3);">Valor da cota: <strong style="color:var(--orange);" id="form-valor">R$ --</strong></p>
+        
+        <button class="btn-primary" id="btn-inscrever">Fazer Inscrição</button>
+        
+        <div style="text-align:center; margin-top:12px; padding:10px; background:var(--orange-l); border-radius:8px;">
+            <span style="font-size:0.85rem; color:var(--text2); font-weight:700;">Total a pagar: </span>
+            <strong style="color:var(--orange); font-size:1.1rem;" id="total-pagar-display">R$ 0,00</strong>
+        </div>
         <p id="form-error" class="err-msg hidden"></p>
       </div>
     </div>
@@ -318,8 +345,8 @@
         <div class="sec-header">
           <div class="sec-icon">&#128203;</div>
           <div>
-            <div class="sec-title">Transparencia</div>
-            <div class="sec-sub">Veja o que sera comprado com a arrecadacao</div>
+            <div class="sec-title">Transparência</div>
+            <div class="sec-sub">Veja o que será comprado com a arrecadação</div>
           </div>
         </div>
       </div>
@@ -572,6 +599,53 @@
         function abrirModal(id)  { document.getElementById(id).classList.remove('hidden'); }
         function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
         function fecharModalBg(e,id){ if(e.target===e.currentTarget) fecharModal(id); }
+
+        // ─── Máscara de Telefone (00) 00000-0000 ──────────────────────────
+        document.getElementById('f-tel').addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+        
+        // ─── Gera os Apartamentos do 101 ao 410 e Blocos de 1 a 26 ────────
+        function inicializarFormulario() {
+            const selBloco = document.getElementById('f-bloco');
+            for (let i = 1; i <= 26; i++) {
+                let opt = document.createElement('option');
+                opt.value = i; opt.textContent = 'Bloco ' + i;
+                selBloco.appendChild(opt);
+            }
+        }
+        
+        function gerarApartamentos() {
+            const selBloco = document.getElementById('f-bloco');
+            const selApt = document.getElementById('f-apt');
+            
+            if (selBloco.value === "") {
+                selApt.disabled = true;
+                selApt.innerHTML = '<option value="">Bloqueado</option>';
+                return;
+            }
+        
+            selApt.disabled = false;
+            let html = '<option value="">Escolha...</option>';
+            // Lógica pedida: 101-110, 201-210, 301-310, 401-410
+            const andares = [100, 200, 300, 400];
+            andares.forEach(andar => {
+                for (let i = 1; i <= 10; i++) {
+                    let num = andar + i;
+                    html += `<option value="${num}">${num}</option>`;
+                }
+            });
+            selApt.innerHTML = html;
+        }
+        
+        // ─── Atualiza o display de preço antes da inscrição ──────────────
+        function atualizarPrecoTotal() {
+            const valorUnitario = parseFloat(configGlobal.valor_quota || 7.50);
+            const qtd = parseInt(document.getElementById('f-qtd').value);
+            const total = valorUnitario * qtd;
+            document.getElementById('total-pagar-display').textContent = brl(total);
+        }
         
         // ─── Dados públicos ──────────────────────────────────────────────
         let custoBalaioGlobal = 0;
@@ -583,7 +657,9 @@
             if(!res.ok) throw new Error(data.error);
         
             const {config, itens, stats} = data;
-
+            atualizarPrecoTotal();
+            if (document.getElementById('f-bloco').options.length <= 1) inicializarFormulario();
+              
         // USE ESTE PADRÃO PARA CADA LINHA QUE DÁ ERRO:
             const elDesc = document.getElementById('hdr-desc');
             if (elDesc && config.descricao) elDesc.textContent = config.descricao;
@@ -743,57 +819,69 @@
         // ─── Inscrição ────────────────────────────────────────────────────
         // Localiza o botão
         const btnInscrever = document.getElementById('btn-inscrever');
-          if (btnInscrever) {
-              btnInscrever.addEventListener('click', async () => {
-                  const nome=document.getElementById('f-nome').value.trim();
-                  const bloco=document.getElementById('f-bloco').value.trim();
-                  const apt=document.getElementById('f-apt').value.trim();
-                  const tel=document.getElementById('f-tel').value.trim();
-                  const obs=document.getElementById('f-obs').value.trim();
-                  const errEl=document.getElementById('form-error');
-                  const btn=document.getElementById('btn-inscrever');
+        if (btnInscrever) {
+            btnInscrever.addEventListener('click', async () => {
+                const nome = document.getElementById('f-nome').value.trim();
+                const bloco = document.getElementById('f-bloco').value; // Pega do select
+                const apt = document.getElementById('f-apt').value;     // Pega do select
+                const tel = document.getElementById('f-tel').value.trim();
+                const qtd = document.getElementById('f-qtd').value;     // NOVO: Captura a quantidade
+                const obs = document.getElementById('f-obs').value.trim();
+                const errEl = document.getElementById('form-error');
                 
-                  errEl.classList.add('hidden');
-                  if(!nome||!bloco||!apt){ errEl.textContent='⚠️ Preencha nome, bloco, apartamento e telefone.'; errEl.classList.remove('hidden'); return; }
+                errEl.classList.add('hidden');
                 
-                  btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span> Aguarde…';
-                // ... dentro do click do btn-inscrever ...
+                // Validação básica
+                if (!nome || !bloco || !apt || !tel) { 
+                    errEl.textContent = '⚠️ Preencha nome, bloco, apartamento e telefone.'; 
+                    errEl.classList.remove('hidden'); 
+                    return; 
+                }
+        
+                btnInscrever.disabled = true; 
+                btnInscrever.innerHTML = '<span class="spin">⏳</span> Aguardando PIX...';
+        
                 try {
                     const res = await fetch(`${API_BASE}/api/inscricao`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ nome, bloco, apartamento: apt, telefone: tel, observacao: obs })
+                        body: JSON.stringify({ 
+                            nome, 
+                            bloco, 
+                            apartamento: apt, 
+                            telefone: tel, 
+                            quantidade: qtd, // Envia a quantidade para o Worker
+                            observacao: obs 
+                        })
                     });
                     
                     const data = await res.json();
-                    console.log("Resposta do Worker:", data); // ADICIONE ISSO PARA DEBUGAR
-                
+                    
                     if (!res.ok) { 
                         errEl.textContent = '⚠️ ' + (data.error || 'Erro ao realizar inscrição.'); 
                         errEl.classList.remove('hidden'); 
                         return; 
                     }
-                
-                    // Se chegou aqui, o participante foi salvo. Vamos tentar abrir o PIX:
+        
                     if (data.pix) {
                         abrirModalPix(data.pix);
                         toast('🎉 Inscrição realizada!');
-                        // Limpa os campos...
-                    } else {
-                        console.error("Worker não devolveu os dados do PIX:", data);
-                        toast('⚠️ Inscrição salva, mas falha ao gerar PIX.');
+                        // Limpa apenas o nome e telefone, mantém bloco/apto se quiser facilitar
+                        document.getElementById('f-nome').value = '';
+                        document.getElementById('f-tel').value = '';
                     }
                     
                     carregarDados();
                 } catch (err) {
-                    console.error("Erro detalhado:", err); // ADICIONE ISSO
+                    console.error("Erro:", err);
                     errEl.textContent = '⚠️ Erro de conexão. Tente novamente.'; 
                     errEl.classList.remove('hidden'); 
+                } finally {
+                    btnInscrever.disabled = false; 
+                    btnInscrever.innerHTML = 'Fazer Inscrição';
                 }
-              });
-         } else {
-              console.warn("Aviso: Elemento 'btn-inscrever' não encontrado nesta página.");
-          }
+            });
+        }
            
         // ─── PIX ──────────────────────────────────────────────────────────
         function abrirModalPix({payload,valor,txid}){
