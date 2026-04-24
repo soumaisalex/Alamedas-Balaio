@@ -601,26 +601,31 @@
         function fecharModalBg(e,id){ if(e.target===e.currentTarget) fecharModal(id); }
 
         // ─── Máscara de Telefone (00) 00000-0000 ──────────────────────────
-        document.getElementById('f-tel').addEventListener('input', function (e) {
-            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-        });
+        if (document.getElementById('f-tel')) {
+            document.getElementById('f-tel').addEventListener('input', function (e) {
+                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+                e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+            });
+        }
         
-        // ─── Gera os Apartamentos do 101 ao 410 e Blocos de 1 a 26 ────────
-        function inicializarFormulario() {
+        // ─── Gera os Blocos de 1 a 26 ─────────────────────────────────────
+        function inicializarSeletores() {
             const selBloco = document.getElementById('f-bloco');
-            for (let i = 1; i <= 26; i++) {
-                let opt = document.createElement('option');
-                opt.value = i; opt.textContent = 'Bloco ' + i;
-                selBloco.appendChild(opt);
+            if (selBloco && selBloco.options.length <= 1) {
+                for (let i = 1; i <= 26; i++) {
+                    let opt = document.createElement('option');
+                    opt.value = i; opt.textContent = 'Bloco ' + i;
+                    selBloco.appendChild(opt);
+                }
             }
         }
         
+        // ─── Gera os Apartamentos do 101 ao 410 ────────────────────────────
         function gerarApartamentos() {
             const selBloco = document.getElementById('f-bloco');
             const selApt = document.getElementById('f-apt');
             
-            if (selBloco.value === "") {
+            if (!selBloco.value) {
                 selApt.disabled = true;
                 selApt.innerHTML = '<option value="">Bloqueado</option>';
                 return;
@@ -628,7 +633,6 @@
         
             selApt.disabled = false;
             let html = '<option value="">Escolha...</option>';
-            // Lógica pedida: 101-110, 201-210, 301-310, 401-410
             const andares = [100, 200, 300, 400];
             andares.forEach(andar => {
                 for (let i = 1; i <= 10; i++) {
@@ -641,10 +645,13 @@
         
         // ─── Atualiza o display de preço antes da inscrição ──────────────
         function atualizarPrecoTotal() {
-            const valorUnitario = parseFloat(configGlobal.valor_quota || 7.50);
-            const qtd = parseInt(document.getElementById('f-qtd').value);
-            const total = valorUnitario * qtd;
-            document.getElementById('total-pagar-display').textContent = brl(total);
+            // Busca o valor da cota que veio do servidor ou usa 7.50 como padrão
+            const valorUnit = parseFloat(window.configuracaoCotaAtual || 7.50);
+            const qtd = parseInt(document.getElementById('f-qtd').value) || 1;
+            const display = document.getElementById('total-pagar-display');
+            if (display) {
+                display.textContent = brl(valorUnit * qtd);
+            }
         }
         
         // ─── Dados públicos ──────────────────────────────────────────────
@@ -655,9 +662,12 @@
             const res  = await fetch(`${API_BASE}/api/dados`);
             const data = await res.json();
             if(!res.ok) throw new Error(data.error);
-        
+
             const {config, itens, stats} = data;
-            atualizarPrecoTotal();
+                window.configuracaoCotaAtual = config.valor_quota; 
+                inicializarSeletores();
+                atualizarPrecoTotal();
+              
             if (document.getElementById('f-bloco').options.length <= 1) inicializarFormulario();
               
         // USE ESTE PADRÃO PARA CADA LINHA QUE DÁ ERRO:
@@ -882,7 +892,7 @@
                 }
             });
         }
-           
+        
         // ─── PIX ──────────────────────────────────────────────────────────
         function abrirModalPix({payload,valor,txid}){
           document.getElementById('pix-valor').textContent=brl(+valor);
