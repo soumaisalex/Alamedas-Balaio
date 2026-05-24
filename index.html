@@ -1164,6 +1164,7 @@
                         <div>
                             <div class="p-card-name">${p.nome} <span style="font-size:0.8rem; color:var(--orange)">(${p.quantidade || 1} cota${(p.quantidade > 1 ? 's' : '')})</span></div>
                             <div class="p-card-info">🏠 Bloco ${p.bloco} · Apto ${p.apartamento} · ${p.data_inscricao}</div>
+                            <div class="p-card-info">📞 Telefone: ${p.telefone}</div>
                         </div>
                         <span class="badge badge-${p.status_pagamento}">${p.status_pagamento === 'pago' ? '✅ pago' : '⏳ pendente'}</span>
                     </div>
