@@ -872,7 +872,9 @@
         // ─── Dados públicos ──────────────────────────────────────────────
         let custoBalaioGlobal = 0;
 
-        async function carregarDados(aplicarStatusInscricoes(config.inscricoes_abertas, config.data_evento)){
+        async function carregarDados(){
+        
+        aplicarStatusInscricoes(config.inscricoes_abertas, config.data_evento)
           try{
             const res  = await fetch(`${API_BASE}/api/dados`);
             const data = await res.json();
@@ -1212,7 +1214,8 @@
           } catch(e) { console.error(e); }
         }
         
-        async function carregarAdmin(aplicarStatusInscricoes(config.inscricoes_abertas, config.data_evento)){
+        async function carregarAdmin(){
+            aplicarStatusInscricoes(config.inscricoes_abertas, config.data_evento)
           try {
             const [resP, resD] = await Promise.all([
               fetch(`${API_BASE}/api/admin/participantes`, { headers: { Authorization: `Bearer ${adminToken}` } }),
