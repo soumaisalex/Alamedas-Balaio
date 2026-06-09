@@ -274,71 +274,84 @@
     </div>
  
     <!-- Card: Inscricao -->
-    <div class="card" style="margin-bottom:14px;">
-      <div class="card-body">
-        <div class="sec-header">
-          <div class="sec-icon">&#9997;</div>
-          <div>
-            <div class="sec-title">Inscrição</div>
-            <div class="sec-sub">Preencha seus dados para participar</div>
+    <div id="container-formulario-inscricao">
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-body">
+            <div class="sec-header">
+              <div class="sec-icon">&#9997;</div>
+              <div>
+                <div class="sec-title">Inscrição</div>
+                <div class="sec-sub">Preencha seus dados para participar</div>
+              </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nome <span class="req">*</span></label>
+                <input id="f-nome" class="inp" type="text" placeholder="Seu nome ou apelido">
+            </div>
+            <div class="form-row form-group">
+                <div>
+                    <label class="form-label">Bloco <span class="req">*</span></label>
+                    <select id="f-bloco" class="inp" onchange="gerarApartamentos()">
+                        <option value="">Selecione...</option>
+                        </select>
+                </div>
+                <div>
+                    <label class="form-label">Apto <span class="req">*</span></label>
+                    <select id="f-apt" class="inp" disabled>
+                        <option value="">Bloqueado</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row form-group">
+                <div>
+                    <label class="form-label">Telefone <span class="req">*</span></label>
+                    <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" maxlength="15">
+                </div>
+                <div>
+                    <label class="form-label">Qtd. Cotas</label>
+                    <select id="f-qtd" class="inp" onchange="atualizarPrecoTotal()">
+                        <option value="1">1 cota</option>
+                        <option value="2" selected>2 cotas</option>
+                        <option value="3">3 cotas</option>
+                        <option value="4">4 cotas</option>
+                        <option value="5">5 cotas</option>
+                        <option value="6">6 cotas</option>
+                        <option value="7">7 cotas</option>
+                        <option value="8">8 cotas</option>
+                        <option value="9">9 cotas</option>
+                        <option value="10">10 cotas</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Observação</label>
+                <input id="f-obs" class="inp" type="text" placeholder="Alguma observação? (opcional)">
+            </div>
+            
+            <button class="btn-primary" id="btn-inscrever">Fazer Inscrição</button>
+            
+            <div style="text-align:center; margin-top:12px; padding:10px; background:var(--orange-l); border-radius:8px;">
+                <span style="font-size:0.85rem; color:var(--text2); font-weight:700;">Total a pagar: </span>
+                <strong style="color:var(--orange); font-size:1.1rem;" id="total-pagar-display">R$ 0,00</strong>
+            </div>
+            <p id="form-error" class="err-msg hidden"></p>
           </div>
         </div>
-        <div class="form-group">
-            <label class="form-label">Nome <span class="req">*</span></label>
-            <input id="f-nome" class="inp" type="text" placeholder="Seu nome ou apelido">
-        </div>
-        <div class="form-row form-group">
-            <div>
-                <label class="form-label">Bloco <span class="req">*</span></label>
-                <select id="f-bloco" class="inp" onchange="gerarApartamentos()">
-                    <option value="">Selecione...</option>
-                    </select>
-            </div>
-            <div>
-                <label class="form-label">Apto <span class="req">*</span></label>
-                <select id="f-apt" class="inp" disabled>
-                    <option value="">Bloqueado</option>
-                </select>
-            </div>
-        </div>
-        
-        <div class="form-row form-group">
-            <div>
-                <label class="form-label">Telefone <span class="req">*</span></label>
-                <input id="f-tel" class="inp" type="tel" placeholder="(00) 00000-0000" maxlength="15">
-            </div>
-            <div>
-                <label class="form-label">Qtd. Cotas</label>
-                <select id="f-qtd" class="inp" onchange="atualizarPrecoTotal()">
-                    <option value="1">1 cota</option>
-                    <option value="2" selected>2 cotas</option>
-                    <option value="3">3 cotas</option>
-                    <option value="4">4 cotas</option>
-                    <option value="5">5 cotas</option>
-                    <option value="6">6 cotas</option>
-                    <option value="7">7 cotas</option>
-                    <option value="8">8 cotas</option>
-                    <option value="9">9 cotas</option>
-                    <option value="10">10 cotas</option>
-                </select>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label class="form-label">Observação</label>
-            <input id="f-obs" class="inp" type="text" placeholder="Alguma observação? (opcional)">
-        </div>
-        
-        <button class="btn-primary" id="btn-inscrever">Fazer Inscrição</button>
-        
-        <div style="text-align:center; margin-top:12px; padding:10px; background:var(--orange-l); border-radius:8px;">
-            <span style="font-size:0.85rem; color:var(--text2); font-weight:700;">Total a pagar: </span>
-            <strong style="color:var(--orange); font-size:1.1rem;" id="total-pagar-display">R$ 0,00</strong>
-        </div>
-        <p id="form-error" class="err-msg hidden"></p>
-      </div>
+     </div>
+ <!-- Card: FIM das Inscrições -->
+    <div id="container-inscricoes-encerradas" class="hidden" style="text-align:center; padding: 30px 10px;">
+       <div style="font-size:4rem; margin-bottom:15px;">🔒</div>
+       <h3 style="font-size:1.4rem; font-weight:900; color:var(--orange); margin-bottom:10px;">Inscrições Encerradas!</h3>
+       <p style="font-size:0.9rem; color:var(--text2); line-height:1.5;">
+           O prazo para participar terminou. <br>
+           O grande sorteio será realizado no dia <strong id="data-sorteio-encerrado" style="color:var(--text1)">--/--/----</strong> durante o nosso Arraiá! 🌽🔥
+       </p>
+       <div style="margin-top:20px; padding:10px; background:var(--bg2); border-radius:8px; font-size:0.8rem; font-weight:700;">
+           Boa sorte a todos os participantes!
+       </div>
     </div>
- 
     <!-- Card: Transparencia -->
     <div class="card" style="margin-bottom:24px;">
       <div class="card-body" style="padding-bottom:0;">
@@ -438,6 +451,19 @@
             </div>
             <!-- Tab: Participantes -->
             <div id="tab-content-participantes">
+                <div class="card" style="margin-top:20px;">
+                    <div class="card-body">
+                        <p style="font-weight:800; margin-bottom:5px;">📊 Resumo de Ocupação Real</p>
+                        <div style="font-size:0.8rem; color:var(--text2); margin-bottom:15px;" id="totalizador-apartamentos-unicos">
+                            Participações individuais: <strong>0 apartamentos</strong>
+                        </div>
+                        
+                        <!-- Tabela/Lista consolidada -->
+                        <div id="lista-agrupada-apartamentos" style="max-height: 300px; overflow-y: auto; font-size:0.85rem;">
+                            <!-- Preenchido via JS -->
+                        </div>
+                    </div>
+                </div>
                 <div class="search-wrap" style="margin-bottom:12px;">
                     <input class="search-inp" id="search-input" type="text" placeholder="🔍 Buscar por nome, bloco ou apto…" oninput="filtrarParticipantes()">
                     <select class="filter-sel" id="filter-status" onchange="filtrarParticipantes()">
@@ -489,6 +515,18 @@
                 <div class="card">
                     <div class="card-body">
                         <p style="font-weight:800; margin-bottom:14px;">⚙️ Configurações</p>
+                        <div class="form-group" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc;">
+                            <label class="form-label">Controle de Acesso ao Balaio</label>
+                            <div style="display:flex; flex-direction:column; gap:10px;">
+                                <!-- Botão Único que vai alternar -->
+                                <button id="btn-status-balaio" class="btn-primary" onclick="alternarStatusBalaio()" style="background: var(--red);">
+                                    🔒 Encerrar Inscrições
+                                </button>
+                                <div style="font-size:0.8rem; font-weight:800; text-align:center;">
+                                    Status Atual: <span id="txt-status-balaio" style="color:var(--green);">Aberto para inscrições</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="form-label">Meta do Balaio (R$)</label>
                             <input id="cfg-meta" class="inp" type="number" step="0.01">
@@ -618,6 +656,61 @@
           el.textContent = msg; el.classList.add('show');
           setTimeout(()=>el.classList.remove('show'), d);
         }
+
+        // ─── Agrupamento de Participantes ──────────────────────────────────
+        function renderizarListaAgrupada() {
+            // Filtramos apenas quem está com pagamento "pago"
+            const confirmados = todosParticipantes.filter(p => p.status_pagamento === 'pago');
+            
+            const mapaAgrupado = {};
+        
+            confirmados.forEach(p => {
+                // Criamos uma chave baseada em Bloco e Apartamento
+                const chave = `B${p.bloco}-AP${p.apartamento}`;
+                
+                if (!mapaAgrupado[chave]) {
+                    mapaAgrupado[chave] = {
+                        bloco: p.bloco,
+                        apartamento: p.apartamento,
+                        nome: p.nome, // Considera o primeiro nome que encontrar no banco
+                        totalCotas: 0
+                    };
+                }
+                // Soma as cotas adquiridas nas compras daquele mesmo apartamento
+                mapaAgrupado[chave].totalCotas += parseInt(p.quantidade || 1);
+            });
+        
+            const listaArray = Object.values(mapaAgrupado);
+            
+            // Atualiza o totalizador acima da lista
+            document.getElementById('totalizador-apartamentos-unicos').innerHTML = `
+                Apartamentos participando: <strong style="color:var(--orange); font-size:1rem;">${listaArray.length}</strong>
+            `;
+        
+            const container = document.getElementById('lista-agrupada-apartamentos');
+            if (!container) return;
+        
+            if (listaArray.length === 0) {
+                container.innerHTML = '<p style="color:var(--text3); text-align:center;">Nenhum pagamento confirmado.</p>';
+                return;
+            }
+        
+            // Ordena por Bloco e depois Apartamento para ficar bonito
+            listaArray.sort((a, b) => a.bloco - b.bloco || a.apartamento - b.apartamento);
+        
+            container.innerHTML = listaArray.map(ap => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--bg2);">
+                    <div>
+                        <span style="font-weight: 800; color: var(--text1); margin-right: 8px;">B${ap.bloco} - Apto ${ap.apartamento}</span>
+                        <span style="color: var(--text2); font-size:0.8rem;">(${ap.nome})</span>
+                    </div>
+                    <span style="background: var(--orange-l); color: var(--orange); font-weight: 900; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">
+                        ${ap.totalCotas} cota${ap.totalCotas > 1 ? 's' : ''}
+                    </span>
+                </div>
+            `).join('');
+        }
+
         
         // ─── Navegação ────────────────────────────────────────────────────
         function mostrarPagina(id){
@@ -636,6 +729,97 @@
             document.getElementById('f-tel').addEventListener('input', function (e) {
                 let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
                 e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+            });
+        }
+        
+        // ─── Status do Balaio ──────────────────────────
+        // Variável de controle global que o sistema lê ao carregar os dados do servidor
+        let balaioAbertoGlobal = true; 
+        
+        // 1. Função que desenha o estado atual na tela (atualizada ao carregar a página)
+        function aplicarStatusInscricoes(abertas, dataEvento) {
+            balaioAbertoGlobal = abertas;
+            
+            const form = document.getElementById('container-formulario-inscricao');
+            const encerrado = document.getElementById('container-inscricoes-encerradas');
+            const txtData = document.getElementById('data-sorteio-encerrado');
+            
+            const btnStatus = document.getElementById('btn-status-balaio');
+            const txtStatus = document.getElementById('txt-status-balaio');
+        
+            if (txtData) txtData.textContent = dataEvento || '12/06/2026';
+        
+            if (!abertas) {
+                // Se as inscrições estiverem FECHADAS
+                if (form) form.classList.add('hidden');
+                if (encerrado) encerrado.classList.remove('hidden');
+                
+                if (btnStatus) {
+                    btnStatus.innerHTML = '🔓 Reabrir Inscrições';
+                    btnStatus.style.background = 'var(--green)'; // Muda para verde
+                }
+                if (txtStatus) {
+                    txtStatus.textContent = 'Fechado / Encerrado';
+                    txtStatus.style.color = 'var(--red)';
+                }
+            } else {
+                // Se as inscrições estiverem ABERTAS
+                if (form) form.classList.remove('hidden');
+                if (encerrado) encerrado.classList.add('hidden');
+                
+                if (btnStatus) {
+                    btnStatus.innerHTML = '🔒 Encerrar Inscrições';
+                    btnStatus.style.background = 'var(--red)'; // Muda para vermelho
+                }
+                if (txtStatus) {
+                    txtStatus.textContent = 'Aberto para inscrições';
+                    txtStatus.style.color = 'var(--green)';
+                }
+            }
+        }
+        
+        // 2. Função do clique do botão (Dispara o Modal Bonitinho)
+        function alternarStatusBalaio() {
+            const novoStatus = !balaioAbertoGlobal;
+            
+            const tituloModal = novoStatus ? 'Reabrir Inscrições?' : 'Encerrar Inscrições?';
+            const textoModal = novoStatus 
+                ? 'Os moradores **poderão voltar a se inscrever** e adquirir cotas normalmente através do formulário principal.' 
+                : 'O formulário será travado. **Ninguém mais poderá se inscrever** ou gerar códigos PIX para este balaio.';
+            const iconeModal = novoStatus ? '🔓' : '🔒';
+        
+            // Chama o nosso modal customizado que substituiu o confirm()
+            pedirConfirmacao(tituloModal, textoModal, iconeModal, async () => {
+                const btnStatus = document.getElementById('btn-status-balaio');
+                const txtOriginal = btnStatus.innerHTML;
+                
+                btnStatus.disabled = true;
+                btnStatus.innerHTML = '<span class="spin">⏳</span> Atualizando...';
+        
+                try {
+                    const res = await fetch(`${API_BASE}/api/admin/config/status`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json', 
+                            'Authorization': `Bearer ${adminToken}` 
+                        },
+                        body: JSON.stringify({ abertas: novoStatus })
+                    });
+                    
+                    if (res.ok) {
+                        toast(`👍 Inscrições ${novoStatus ? 'reabertas' : 'encerradas'} com sucesso!`);
+                        // Força a recarga dos dados para sincronizar o painel e a página do usuário
+                        await carregarDados();
+                        await carregarAdmin();
+                    } else {
+                        toast('❌ Erro ao salvar alteração no servidor.');
+                    }
+                } catch (e) {
+                    console.error(e);
+                    toast('❌ Erro de conexão ao mudar status.');
+                } finally {
+                    btnStatus.disabled = false;
+                }
             });
         }
         
@@ -688,7 +872,7 @@
         // ─── Dados públicos ──────────────────────────────────────────────
         let custoBalaioGlobal = 0;
 
-        async function carregarDados(){
+        async function carregarDados(aplicarStatusInscricoes(config.inscricoes_abertas, config.data_evento)){
           try{
             const res  = await fetch(`${API_BASE}/api/dados`);
             const data = await res.json();
@@ -1028,7 +1212,7 @@
           } catch(e) { console.error(e); }
         }
         
-        async function carregarAdmin(){
+        async function carregarAdmin(aplicarStatusInscricoes(config.inscricoes_abertas, config.data_evento)){
           try {
             const [resP, resD] = await Promise.all([
               fetch(`${API_BASE}/api/admin/participantes`, { headers: { Authorization: `Bearer ${adminToken}` } }),
