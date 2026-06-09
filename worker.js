@@ -111,6 +111,12 @@ export default {
 
       // POST /api/inscricao - Público
       if (pathname === '/api/inscricao' && request.method === 'POST') {
+
+        const statusConfig = await sql`SELECT valor FROM configuracoes WHERE chave = 'inscricoes_abertas'`;
+        if (statusConfig[0]?.valor === 'false') {
+          return fail('As inscrições para este balaio já foram encerradas!');
+        }
+       
         const { nome, bloco, apartamento, telefone, observacao, quantidade } = await request.json().catch(() => ({}));
         
         if (!nome?.trim() || !bloco?.trim() || !apartamento?.trim())
@@ -220,6 +226,19 @@ export default {
         }
         return respond({ sucesso: true });
       }
+
+      // POST /api/admin/config/status - Alterar status das inscrições
+      if (pathname === '/api/admin/config/status' && request.method === 'POST') {
+        const { abertas } = await request.json().catch(() => ({}));
+        if (abertas === undefined) return fail('Status inválido.');
+        
+        // Atualiza no banco de dados usando a chave correspondente
+        await sql`UPDATE configuracoes SET valor = ${abertas ? 'true' : 'false'} WHERE chave = 'inscricoes_abertas'`;
+        return respond({ sucesso: true });
+      }
+      
+      // Na rota pública GET /api/dados, garanta que a propriedade chegue ao frontend:
+      // Dentro do objeto 'config' que você retorna do banco, passe o status de 'inscricoes_abertas'.
 
       return fail('Rota não encontrada', 404);
     } catch (err) {
