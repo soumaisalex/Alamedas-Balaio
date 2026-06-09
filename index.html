@@ -51,7 +51,6 @@
         .bunting-flags { display:flex; position:absolute; top:4px; left:-10px; gap:0; }
         .flag { width:28px; height:38px; clip-path:polygon(0 0,100% 0,50% 100%); flex-shrink:0; margin:0 2px; animation:sway 2.8s ease-in-out infinite alternate; transform-origin:top center; }
         .flag:nth-child(even) { animation-duration:3.4s; animation-direction:alternate-reverse; }
-        /*.flag { width: 28px; height: 40px; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 75%, 0% 100%); flex-shrink: 0; margin: 0 2px; animation: sway 1.5s ease-in-out infinite alternate; transform-origin: top center; */
         @keyframes sway { from{transform:rotate(-5deg)} to{transform:rotate(5deg)} }
         
         /* Pages */
@@ -96,11 +95,13 @@
         .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
         .btn-ghost { background:transparent; border:1.5px solid var(--border); color:var(--text2); font-family:'Nunito',sans-serif; font-weight:700; font-size:0.85rem; padding:10px 16px; border-radius:100px; cursor:pointer; transition:background 0.15s; }
         .btn-ghost:hover { background:var(--bg2); }
+        .btn-ghost:active { transform:scale(0.97); }
         .btn-sm { padding:8px 14px; font-size:0.8rem; border-radius:100px; font-family:'Nunito',sans-serif; font-weight:700; cursor:pointer; border:none; transition:opacity 0.15s, transform 0.1s; }
         .btn-sm:active { transform:scale(0.96); }
         .btn-green  { background:var(--green-l);  color:#16A34A; }
         .btn-red    { background:var(--red-l);    color:#DC2626; }
         .btn-amber  { background:var(--amber-l);  color:#D97706; }
+        .btn-orange { background:var(--orange-l); color:var(--orange); }
         
         /* Table rows */
         .item-row { display:flex; align-items:center; justify-content:space-between; padding:12px 18px; border-bottom:1px solid var(--bg); gap:12px; font-size:0.9rem; }
@@ -185,11 +186,9 @@
         @keyframes spin { to{transform:rotate(360deg)} }
         .spin { display:inline-block; animation:spin 1s linear infinite; }
     </style>
-
 </head>
 
 <body>
-<!-- PAGINA PRINCIPAL -->
 <div id="page-main" class="page active">
  
   <div class="bunting">
@@ -197,7 +196,6 @@
     <div class="bunting-flags" id="flags"></div>
   </div>
 
-  <!-- Hero com gradiente -->
   <div style="background:linear-gradient(180deg,#8B5E2C 0%,#C4883A 28%,#E8A84A 55%,#F5EFE0 100%);padding:28px 16px 32px;text-align:center;">
     <div style="font-size:3rem;margin-bottom:8px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">&#127805;</div>
     <h1 style="font-size:2rem;font-weight:900;line-height:1.15;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);">Balaio Junino</h1>
@@ -207,7 +205,6 @@
  
   <div style="padding:20px 16px 40px; max-width:480px; margin:0 auto;">
  
-    <!-- Card: Sorteio -->
     <div class="card" style="margin-bottom:14px;">
       <div class="card-body">
         <div class="sec-header">
@@ -224,7 +221,6 @@
       </div>
     </div>
  
-    <!-- Card: Termometro -->
     <div class="card" style="margin-bottom:14px;">
       <div class="card-body">
         <div class="sec-header">
@@ -254,7 +250,6 @@
       </div>
     </div>
  
-    <!-- Stats -->
     <div class="stat-grid" style="margin-bottom:14px;">
       <div class="stat-card">
         <div class="stat-icon">&#128101;</div>
@@ -273,7 +268,6 @@
       </div>
     </div>
  
-    <!-- Card: Inscricao -->
     <div id="container-formulario-inscricao">
         <div class="card" style="margin-bottom:14px;">
           <div class="card-body">
@@ -293,7 +287,7 @@
                     <label class="form-label">Bloco <span class="req">*</span></label>
                     <select id="f-bloco" class="inp" onchange="gerarApartamentos()">
                         <option value="">Selecione...</option>
-                        </select>
+                    </select>
                 </div>
                 <div>
                     <label class="form-label">Apto <span class="req">*</span></label>
@@ -340,19 +334,19 @@
           </div>
         </div>
      </div>
- <!-- Card: FIM das Inscrições -->
-    <div id="container-inscricoes-encerradas" class="hidden" style="text-align:center; padding: 30px 10px;">
-       <div style="font-size:4rem; margin-bottom:15px;">🔒</div>
-       <h3 style="font-size:1.4rem; font-weight:900; color:var(--orange); margin-bottom:10px;">Inscrições Encerradas!</h3>
-       <p style="font-size:0.9rem; color:var(--text2); line-height:1.5;">
-           O prazo para participar terminou. <br>
-           O grande sorteio será realizado no dia <strong id="data-sorteio-encerrado" style="color:var(--text1)">--/--/----</strong> durante o nosso Arraiá! 🌽🔥
-       </p>
-       <div style="margin-top:20px; padding:10px; background:var(--bg2); border-radius:8px; font-size:0.8rem; font-weight:700;">
-           Boa sorte a todos os participantes!
-       </div>
-    </div>
-    <!-- Card: Transparencia -->
+
+     <div id="container-inscricoes-encerradas" class="hidden" style="text-align:center; padding: 30px 10px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 14px;">
+        <div style="font-size:4rem; margin-bottom:15px;">🔒</div>
+        <h3 style="font-size:1.4rem; font-weight:900; color:var(--orange); margin-bottom:10px;">Inscrições Encerradas!</h3>
+        <p style="font-size:0.9rem; color:var(--text2); line-height:1.5;">
+            O prazo para participar terminou. <br>
+            O grande sorteio será realizado no dia <strong id="data-sorteio-encerrado" style="color:var(--text1)">--/--/----</strong> durante o nosso Arraiá! 🌽🔥
+        </p>
+        <div style="margin-top:20px; padding:10px; background:var(--bg2); border-radius:8px; font-size:0.8rem; font-weight:700;">
+            Boa sorte a todos os participantes!
+        </div>
+     </div>
+
     <div class="card" style="margin-bottom:24px;">
       <div class="card-body" style="padding-bottom:0;">
         <div class="sec-header">
@@ -387,1185 +381,1079 @@
   </div>
 </div>
 
-    <!-- ── PÁGINA ADMIN ── -->
-    <div id="page-admin" class="page">
+<div id="page-admin" class="page">
 
-        <div class="bunting" id="bunting-admin">
-            <div class="bunting-rope"></div>
-            <div class="bunting-flags" id="flags-admin"></div>
+    <div class="bunting" id="bunting-admin">
+        <div class="bunting-rope"></div>
+        <div class="bunting-flags" id="flags-admin"></div>
+    </div>
+
+    <div class="admin-nav">
+        <button class="back-btn" onclick="voltarMain()">←</button>
+        <div>
+            <h1>Painel Admin</h1>
+            <p>Gerencie o Balaio Junino</p>
+        </div>
+        <div style="flex:1"></div>
+        <button class="btn-ghost" style="padding:8px 14px; font-size:0.78rem;" onclick="logout()">Sair</button>
+    </div>
+
+    <div style="padding:16px; max-width:480px; margin:0 auto; padding-bottom:40px;">
+
+        <div style="text-align:center; margin-bottom:14px;">
+            <p style="font-size:1rem; font-weight:900; margin-bottom:2px;">🔥 Termômetro da Fogueira</p>
+            <p style="font-size:0.78rem; color:var(--text3); margin-bottom:12px;">Acompanhe o progresso da arrecadação</p>
+            <p style="font-size:2rem; font-weight:900; color:var(--orange); margin-bottom:12px;" id="adm-arrecadado">R$ 0,00</p>
+
+            <div class="progress-wrap" style="margin-bottom:8px;">
+                <div class="progress-fill" id="adm-progress" style="width:0%"></div>
+                <div class="progress-label" id="adm-pct">0,0%</div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text3); font-weight:600;">
+                <span>R$ 0</span>
+                <span>⊙ Meta: <strong style="color:var(--text2);" id="adm-meta">R$ —</strong></span>
+            </div>
         </div>
 
-        <div class="admin-nav">
-            <button class="back-btn" onclick="voltarMain()">←</button>
-            <div>
-                <h1>Painel Admin</h1>
-                <p>Gerencie o Balaio Junino</p>
+        <div class="stat-grid" style="margin-bottom:14px;">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-num" id="adm-inscritos">0</div>
+                <div class="stat-lbl">Inscritos</div>
             </div>
-            <div style="flex:1"></div>
-            <button class="btn-ghost" style="padding:8px 14px; font-size:0.78rem;" onclick="logout()">Sair</button>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-num" style="color:var(--green);" id="adm-confirmados">0</div>
+                <div class="stat-lbl">Confirmados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-num" style="color:var(--amber);" id="adm-pendentes">0</div>
+                <div class="stat-lbl">Pendentes</div>
+            </div>
         </div>
 
-        <div style="padding:16px; max-width:480px; margin:0 auto; padding-bottom:40px;">
-
-            <!-- Termômetro admin -->
-            <div style="text-align:center; margin-bottom:14px;">
-                <p style="font-size:1rem; font-weight:900; margin-bottom:2px;">🔥 Termômetro da Fogueira</p>
-                <p style="font-size:0.78rem; color:var(--text3); margin-bottom:12px;">Acompanhe o progresso da arrecadação</p>
-                <p style="font-size:2rem; font-weight:900; color:var(--orange); margin-bottom:12px;" id="adm-arrecadado">R$ 0,00</p>
-
-                <div class="progress-wrap" style="margin-bottom:8px;">
-                    <div class="progress-fill" id="adm-progress" style="width:0%"></div>
-                    <div class="progress-label" id="adm-pct">0,0%</div>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text3); font-weight:600;">
-                    <span>R$ 0</span>
-                    <span>⊙ Meta: <strong style="color:var(--text2);" id="adm-meta">R$ —</strong></span>
-                </div>
-            </div>
-
-            <!-- Stats -->
-            <div class="stat-grid" style="margin-bottom:14px;">
-                <div class="stat-card">
-                    <div class="stat-icon">👥</div>
-                    <div class="stat-num" id="adm-inscritos">0</div>
-                    <div class="stat-lbl">Inscritos</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">✅</div>
-                    <div class="stat-num" style="color:var(--green);" id="adm-confirmados">0</div>
-                    <div class="stat-lbl">Confirmados</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⏳</div>
-                    <div class="stat-num" style="color:var(--amber);" id="adm-pendentes">0</div>
-                    <div class="stat-lbl">Pendentes</div>
-                </div>
-            </div>
-
-            <!-- Tabs -->
-            <div class="tab-bar" style="margin-bottom:14px;">
-                <button class="tab-btn active" id="tab-participantes" onclick="mudarTab('participantes')">👥</button>
-                <button class="tab-btn" id="tab-itens" onclick="mudarTab('itens')">🧺</button>
-                <button class="tab-btn" id="tab-print" onclick="imprimirListaSorteio()">🖨️</button>
-                <button class="tab-btn" id="tab-config" onclick="mudarTab('config')">⚙️</button>
-            </div>
-            <!-- Tab: Participantes -->
-            <div id="tab-content-participantes">
-                <div class="card" style="margin-top:20px;">
-                    <div class="card-body">
-                        <p style="font-weight:800; margin-bottom:5px;">📊 Resumo de Ocupação Real</p>
-                        <div style="font-size:0.8rem; color:var(--text2); margin-bottom:15px;" id="totalizador-apartamentos-unicos">
-                            Participações individuais: <strong>0 apartamentos</strong>
-                        </div>
-                        
-                        <!-- Tabela/Lista consolidada -->
-                        <div id="lista-agrupada-apartamentos" style="max-height: 300px; overflow-y: auto; font-size:0.85rem;">
-                            <!-- Preenchido via JS -->
-                        </div>
+        <div class="tab-bar" style="margin-bottom:14px;">
+            <button class="tab-btn active" id="tab-participantes" onclick="mudarTab('participantes')">👥</button>
+            <button class="tab-btn" id="tab-itens" onclick="mudarTab('itens')">🧺</button>
+            <button class="tab-btn" id="tab-print" onclick="imprimirListaSorteio()">🖨️</button>
+            <button class="tab-btn" id="tab-config" onclick="mudarTab('config')">⚙️</button>
+        </div>
+        
+        <div id="tab-content-participantes">
+            <div class="card" style="margin-bottom:20px;">
+                <div class="card-body">
+                    <p style="font-weight:800; margin-bottom:5px;">📊 Resumo de Ocupação Real</p>
+                    <div style="font-size:0.8rem; color:var(--text2); margin-bottom:15px;" id="totalizador-apartamentos-unicos">
+                        Participações individuais: <strong>0 apartamentos</strong>
                     </div>
+                    
+                    <div id="lista-agrupada-apartamentos" style="max-height: 250px; overflow-y: auto; font-size:0.85rem;">
+                        </div>
                 </div>
-                <div class="search-wrap" style="margin-bottom:12px;">
-                    <input class="search-inp" id="search-input" type="text" placeholder="🔍 Buscar por nome, bloco ou apto…" oninput="filtrarParticipantes()">
-                    <select class="filter-sel" id="filter-status" onchange="filtrarParticipantes()">
-                        <option value="">Todos</option>
-                        <option value="pago">Pagos</option>
-                        <option value="pendente">Pendentes</option>
-                        <option value="cancelado">Cancelados</option>
-                    </select>
+            </div>
+            <div class="search-wrap" style="margin-bottom:12px;">
+                <input class="search-inp" id="search-input" type="text" placeholder="🔍 Buscar por nome, bloco ou apto…" oninput="filtrarParticipantes()">
+                <select class="filter-sel" id="filter-status" onchange="filtrarParticipantes()">
+                    <option value="">Todos</option>
+                    <option value="pago">Pagos</option>
+                    <option value="pendente">Pendentes</option>
+                    <option value="cancelado">Cancelados</option>
+                </select>
+            </div>
+            <div id="lista-participantes">
+                <div class="empty">
+                    <div class="empty-icon">👥</div>
+                    <div class="empty-text">Nenhum participante encontrado.</div>
                 </div>
-                <div id="lista-participantes">
+            </div>
+        </div>
+
+        <div id="tab-content-itens" class="hidden">
+            <div class="card" style="margin-bottom: 15px; border-bottom: 4px solid var(--orange);">
+                <div class="card-body">
+                    <p style="font-weight:800; font-size:0.9rem; margin-bottom:10px;">➕ Adicionar Novo Item</p>
+                    <div class="form-group">
+                        <input id="new-item-nome" class="inp" type="text" placeholder="Nome do item (ex: Arroz 5kg)">
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 60px; gap:8px; margin-bottom:10px;">
+                        <input id="new-item-preco" class="inp" type="number" step="0.01" placeholder="Preço R$">
+                        <input id="new-item-qtd" class="inp" type="number" placeholder="Qtd" value="1">
+                        <input id="new-item-icon" class="inp" type="text" placeholder="Ícone" value="🎁">
+                    </div>
+                    <button class="btn-primary" onclick="adicionarItem()">Adicionar ao Balaio</button>
+                </div>
+            </div>
+            <div class="card">
+                <div id="adm-itens-list">
                     <div class="empty">
-                        <div class="empty-icon">👥</div>
-                        <div class="empty-text">Nenhum participante encontrado.</div>
+                        <div class="empty-text">Carregando…</div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Tab: Itens -->
-            <div id="tab-content-itens" class="hidden">
-                <div class="card">
-                    <div class="card" style="margin-bottom: 15px; border-bottom: 4px solid var(--orange);">
-                        <div class="card-body">
-                            <p style="font-weight:800; font-size:0.9rem; margin-bottom:10px;">➕ Adicionar Novo Item</p>
-                            <div class="form-group">
-                                <input id="new-item-nome" class="inp" type="text" placeholder="Nome do item (ex: Arroz 5kg)">
-                            </div>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr 60px; gap:8px; margin-bottom:10px;">
-                                <input id="new-item-preco" class="inp" type="number" step="0.01" placeholder="Preço R$">
-                                <input id="new-item-qtd" class="inp" type="number" placeholder="Qtd" value="1">
-                                <input id="new-item-icon" class="inp" type="text" placeholder="Ícone" value="🎁">
-                            </div>
-                            <button class="btn-primary" onclick="adicionarItem()">Adicionar ao Balaio</button>
-                        </div>
-                    </div>
-                    <div id="adm-itens-list">
-                        <div class="empty">
-                            <div class="empty-text">Carregando…</div>
-                        </div>
-                    </div>
-                    <div class="item-total-row">
-                        <span class="lbl">Total</span>
-                        <span class="val" id="adm-total-balaio">R$ —</span>
-                    </div>
+                <div class="item-total-row">
+                    <span class="lbl">Total</span>
+                    <span class="val" id="adm-total-balaio">R$ —</span>
                 </div>
             </div>
+        </div>
 
-            <!-- Tab: Config -->
-            <div id="tab-content-config" class="hidden">
-                <div class="card">
-                    <div class="card-body">
-                        <p style="font-weight:800; margin-bottom:14px;">⚙️ Configurações</p>
-                        <div class="form-group" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc;">
-                            <label class="form-label">Controle de Acesso ao Balaio</label>
-                            <div style="display:flex; flex-direction:column; gap:10px;">
-                                <!-- Botão Único que vai alternar -->
-                                <button id="btn-status-balaio" class="btn-primary" onclick="alternarStatusBalaio()" style="background: var(--red);">
-                                    🔒 Encerrar Inscrições
-                                </button>
-                                <div style="font-size:0.8rem; font-weight:800; text-align:center;">
-                                    Status Atual: <span id="txt-status-balaio" style="color:var(--green);">Aberto para inscrições</span>
-                                </div>
+        <div id="tab-content-config" class="hidden">
+            <div class="card">
+                <div class="card-body">
+                    <p style="font-weight:800; margin-bottom:14px;">⚙️ Configurações</p>
+                    <div class="form-group" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc; margin-bottom:20px;">
+                        <label class="form-label">Controle de Acesso ao Balaio</label>
+                        <div style="display:flex; flex-direction:column; gap:10px;">
+                            <button id="btn-status-balaio" class="btn-primary" onclick="alternarStatusBalaio()" style="background: var(--red);">
+                                🔒 Encerrar Inscrições
+                            </button>
+                            <div style="font-size:0.8rem; font-weight:800; text-align:center;">
+                                Status Atual: <span id="txt-status-balaio" style="color:var(--green);">Aberto para inscrições</span>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Meta do Balaio (R$)</label>
-                            <input id="cfg-meta" class="inp" type="number" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Valor da Cota (R$)</label>
-                            <input id="cfg-quota" class="inp" type="number" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Data do Evento</label>
-                            <input id="cfg-data" class="inp" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Local</label>
-                            <input id="cfg-local" class="inp" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Descrição</label>
-                            <input id="cfg-descricao" class="inp" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Nome do Evento</label>
-                            <input id="cfg-nome" class="inp" type="text">
-                        </div>
-                        <button class="btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
-                        <p id="cfg-msg" class="err-msg hidden" style="margin-top:10px;"></p>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Meta do Balaio (R$)</label>
+                        <input id="cfg-meta" class="inp" type="number" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Valor da Cota (R$)</label>
+                        <input id="cfg-quota" class="inp" type="number" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data do Evento</label>
+                        <input id="cfg-data" class="inp" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Local</label>
+                        <input id="cfg-local" class="inp" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descrição</label>
+                        <input id="cfg-descricao" class="inp" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nome do Evento</label>
+                        <input id="cfg-nome" class="inp" type="text">
+                    </div>
+                    <button class="btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
+                    <p id="cfg-msg" class="err-msg hidden" style="margin-top:10px;"></p>
                 </div>
-            </div><br />
-            <div style="background:var(--orange-l);border:1px solid rgba(232,101,26,0.2);border-radius:var(--radius-sm);padding:14px;font-size:0.82rem;color:var(--text2);">🔑 <strong style="color:var(--orange);">Senha do administrador</strong> é configurada via variável de ambiente <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:0.8rem;">ADMIN_PASSWORD</code> no painel do Cloudflare Workers. Para alterar, acesse o dashboard da Cloudflare e atualize o secret.</div>
-        </div>
+            </div>
+        </div><br />
+        <div style="background:var(--orange-l);border:1px solid rgba(232,101,26,0.2);border-radius:var(--radius-sm);padding:14px;font-size:0.82rem;color:var(--text2);">🔑 <strong style="color:var(--orange);">Senha do administrador</strong> é configurada via variável de ambiente <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:0.8rem;">ADMIN_PASSWORD</code> no painel do Cloudflare Workers. Para alterar, acesse o dashboard da Cloudflare e atualize o secret.</div>
     </div>
+</div>
 
-    <!-- ── MODAL PIX ── -->
-
-    <div id="modal-pix" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-pix')">
-        <div class="modal-box">
-            <div class="modal-handle"></div>
-            <div style="text-align:center; margin-bottom:16px;">
-                <p style="font-size:1.1rem; font-weight:900;">🎉 Pague com PIX</p>
-                <p style="font-size:0.82rem; color:var(--text3); margin-top:4px;">Escaneie o QR Code ou copie o código</p>
-            </div>
-            <div style="text-align:center; margin-bottom:14px;">
-                <p style="font-size:0.8rem; color:var(--text3); font-weight:600;">Valor</p>
-                <p style="font-size:2rem; font-weight:900; color:var(--orange);" id="pix-valor">R$ —</p>
-            </div>
-            <div id="qr-box" style="margin-bottom:14px;"></div>
-            <div style="margin-bottom:14px;">
-                <p style="font-size:0.78rem; font-weight:700; color:var(--text3); margin-bottom:6px;">Código Copia e Cola</p>
-                <div class="copy-row">
-                    <input id="pix-payload" type="text" readonly>
-                    <button class="copy-btn" onclick="copiarPix()">Copiar</button>
-                </div>
-            </div>
-            <div class="info-box" style="margin-bottom:14px;">
-                📌 <strong>O administrador confirmará em breve.</strong>
-            </div>
-            <button class="btn-primary" onclick="fecharModal('modal-pix')">Fechar</button>
-            <p style="text-align:center; font-size:0.72rem; color:var(--text3); margin-top:10px;" id="pix-txid"></p>
+<div id="modal-pix" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-pix')">
+    <div class="modal-box">
+        <div class="modal-handle"></div>
+        <div style="text-align:center; margin-bottom:16px;">
+            <p style="font-size:1.1rem; font-weight:900;">🎉 Pague com PIX</p>
+            <p style="font-size:0.82rem; color:var(--text3); margin-top:4px;">Escaneie o QR Code ou copie o código</p>
         </div>
-    </div>
-
-    <!-- ── MODAL LOGIN ── -->
-    <div id="modal-login" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-login')">
-        <div class="modal-box">
-            <div class="modal-handle"></div>
-            <p style="font-size:1.1rem; font-weight:900; margin-bottom:16px;">🔐 Área Administrativa</p>
-            <div class="form-group">
-                <label class="form-label">Senha</label>
-                <input id="login-senha" class="inp" type="password" placeholder="Digite a senha" autocomplete="current-password">
-            </div>
-            <button class="btn-primary" id="btn-login">🔓 Entrar</button>
-            <p id="login-error" class="err-msg hidden"></p>
-
+        <div style="text-align:center; margin-bottom:14px;">
+            <p style="font-size:0.8rem; color:var(--text3); font-weight:600;">Valor</p>
+            <p style="font-size:2rem; font-weight:900; color:var(--orange);" id="pix-valor">R$ —</p>
         </div>
-    </div>
-
-
-    <!-- ── MODAL EXCLUSAO ── -->
-    <div id="modal-confirm" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-confirm')">
-        <div class="modal-box" style="text-align:center;">
-            <div class="modal-handle"></div>
-            <div id="confirm-icon" style="font-size:3rem; margin-bottom:10px;">🗑️</div>
-            <h3 id="confirm-title" style="font-size:1.2rem; font-weight:900; margin-bottom:10px;">Confirmar Exclusão?</h3>
-            <p id="confirm-desc" style="font-size:0.85rem; color:var(--text2); margin-bottom:24px; line-height:1.5;">
-                Esta ação não pode ser desfeita.
-            </p>
-            
-            <div style="display:flex; flex-direction:column; gap:10px;">
-                <button id="btn-confirm-exec" class="btn-primary" style="background:var(--red);">🔥 Sim, Confirmar</button>
-                <button class="btn-ghost" onclick="fecharModal('modal-confirm')">Cancelar</button>
+        <div id="qr-box" style="margin-bottom:14px;"></div>
+        <div style="margin-bottom:14px;">
+            <p style="font-size:0.78rem; font-weight:700; color:var(--text3); margin-bottom:6px;">Código Copia e Cola</p>
+            <div class="copy-row">
+                <input id="pix-payload" type="text" readonly>
+                <button class="copy-btn" onclick="copiarPix()">Copiar</button>
             </div>
         </div>
+        <div class="info-box" style="margin-bottom:14px;">
+            📌 <strong>O administrador confirmará em breve.</strong>
+        </div>
+        <button class="btn-primary" onclick="fecharModal('modal-pix')">Fechar</button>
+        <p style="text-align:center; font-size:0.72rem; color:var(--text3); margin-top:10px;" id="pix-txid"></p>
     </div>
-    <div id="toast"></div>
+</div>
 
-    <script>
-        // ─── Configuração ─────────────────────────────────────────────────
-        // ⚠️ Altere para a URL do seu Worker após o deploy:
-        const API_BASE = 'https://alamedas-balaio.alexdesouzapassos.workers.dev';
-        
-        let adminToken = localStorage.getItem('ba_token') || null;
-        let todosParticipantes = [];
-        
-        // ─── Bandeirolas ──────────────────────────────────────────────────
-        (function(){
-          const cores = ['#FF4136','#FF851B','#FFD700','#2ECC40','#0074D9','#B10DC9','#FF69B4','#7FDBFF','#FFDC00','#FF4136'];
-          function popularBandeiras(id){
-            const container = document.getElementById(id);
-            if(!container) return;
-            const n = Math.ceil((window.innerWidth + 60) / 32);
-            for(let i=0; i<n; i++){
-              const el = document.createElement('div');
-              el.className = 'flag';
-              el.style.background = cores[i % cores.length];
-              container.appendChild(el);
+<div id="modal-login" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-login')">
+    <div class="modal-box">
+        <div class="modal-handle"></div>
+        <p style="font-size:1.1rem; font-weight:900; margin-bottom:16px;">🔐 Área Administrativa</p>
+        <div class="form-group">
+            <label class="form-label">Senha</label>
+            <input id="login-senha" class="inp" type="password" placeholder="Digite a senha" autocomplete="current-password">
+        </div>
+        <button class="btn-primary" id="btn-login">🔓 Entrar</button>
+        <p id="login-error" class="err-msg hidden"></p>
+    </div>
+</div>
+
+<div id="modal-confirm" class="modal-bg hidden" onclick="fecharModalBg(event,'modal-confirm')">
+    <div class="modal-box" style="text-align:center;">
+        <div class="modal-handle"></div>
+        <div id="confirm-icon" style="font-size:3rem; margin-bottom:10px;">🗑️</div>
+        <h3 id="confirm-title" style="font-size:1.2rem; font-weight:900; margin-bottom:10px;">Confirmar Exclusão?</h3>
+        <p id="confirm-desc" style="font-size:0.85rem; color:var(--text2); margin-bottom:24px; line-height:1.5;">
+            Esta ação não pode ser desfeita.
+        </p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            <button id="btn-confirm-exec" class="btn-primary" style="background:var(--red);">🔥 Sim, Confirmar</button>
+            <button class="btn-ghost" onclick="fecharModal('modal-confirm')">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+    // ─── Configuração ─────────────────────────────────────────────────
+    const API_BASE = 'https://alamedas-balaio.alexdesouzapassos.workers.dev';
+    
+    let adminToken = localStorage.getItem('ba_token') || null;
+    let todosParticipantes = [];
+    let balaioAbertoGlobal = true; 
+    let custoBalaioGlobal = 0;
+    
+    // ─── Bandeirolas ──────────────────────────────────────────────────
+    (function(){
+      const cores = ['#FF4136','#FF851B','#FFD700','#2ECC40','#0074D9','#B10DC9','#FF69B4','#7FDBFF','#FFDC00','#FF4136'];
+      function popularBandeiras(id){
+        const container = document.getElementById(id);
+        if(!container) return;
+        const n = Math.ceil((window.innerWidth + 60) / 32);
+        for(let i=0; i<n; i++){
+          const el = document.createElement('div');
+          el.className = 'flag';
+          el.style.background = cores[i % cores.length];
+          container.appendChild(el);
+        }
+      }
+      popularBandeiras('flags');
+      popularBandeiras('flags-admin');
+    })();
+    
+    // ─── Helpers ──────────────────────────────────────────────────────
+    function brl(v){ return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(+v); }
+    function toast(msg, d=2800){
+      const el = document.getElementById('toast');
+      if(el) {
+        el.textContent = msg; el.classList.add('show');
+        setTimeout(()=>el.classList.remove('show'), d);
+      }
+    }
+
+    // ─── Agrupamento de Participantes ──────────────────────────────────
+    function renderizarListaAgrupada() {
+        const confirmados = todosParticipantes.filter(p => p.status_pagamento === 'pago');
+        const mapaAgrupado = {};
+    
+        confirmados.forEach(p => {
+            const chave = `B${p.bloco}-AP${p.apartamento}`;
+            if (!mapaAgrupado[chave]) {
+                mapaAgrupado[chave] = {
+                    bloco: p.bloco,
+                    apartamento: p.apartamento,
+                    nome: p.nome,
+                    totalCotas: 0
+                };
             }
-          }
-          popularBandeiras('flags');
-          popularBandeiras('flags-admin');
-        })();
-        
-        // ─── Helpers ──────────────────────────────────────────────────────
-        function brl(v){ return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(+v); }
-        function toast(msg, d=2800){
-          const el = document.getElementById('toast');
-          el.textContent = msg; el.classList.add('show');
-          setTimeout(()=>el.classList.remove('show'), d);
+            mapaAgrupado[chave].totalCotas += parseInt(p.quantidade || 1);
+        });
+    
+        const listaArray = Object.values(mapaAgrupado);
+        const elTotalizador = document.getElementById('totalizador-apartamentos-unicos');
+        if (elTotalizador) {
+            elTotalizador.innerHTML = `Apartamentos participando: <strong style="color:var(--orange); font-size:1rem;">${listaArray.length}</strong>`;
         }
-
-        // ─── Agrupamento de Participantes ──────────────────────────────────
-        function renderizarListaAgrupada() {
-            // Filtramos apenas quem está com pagamento "pago"
-            const confirmados = todosParticipantes.filter(p => p.status_pagamento === 'pago');
-            
-            const mapaAgrupado = {};
-        
-            confirmados.forEach(p => {
-                // Criamos uma chave baseada em Bloco e Apartamento
-                const chave = `B${p.bloco}-AP${p.apartamento}`;
-                
-                if (!mapaAgrupado[chave]) {
-                    mapaAgrupado[chave] = {
-                        bloco: p.bloco,
-                        apartamento: p.apartamento,
-                        nome: p.nome, // Considera o primeiro nome que encontrar no banco
-                        totalCotas: 0
-                    };
-                }
-                // Soma as cotas adquiridas nas compras daquele mesmo apartamento
-                mapaAgrupado[chave].totalCotas += parseInt(p.quantidade || 1);
-            });
-        
-            const listaArray = Object.values(mapaAgrupado);
-            
-            // Atualiza o totalizador acima da lista
-            document.getElementById('totalizador-apartamentos-unicos').innerHTML = `
-                Apartamentos participando: <strong style="color:var(--orange); font-size:1rem;">${listaArray.length}</strong>
-            `;
-        
-            const container = document.getElementById('lista-agrupada-apartamentos');
-            if (!container) return;
-        
-            if (listaArray.length === 0) {
-                container.innerHTML = '<p style="color:var(--text3); text-align:center;">Nenhum pagamento confirmado.</p>';
-                return;
-            }
-        
-            // Ordena por Bloco e depois Apartamento para ficar bonito
-            listaArray.sort((a, b) => a.bloco - b.bloco || a.apartamento - b.apartamento);
-        
-            container.innerHTML = listaArray.map(ap => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--bg2);">
-                    <div>
-                        <span style="font-weight: 800; color: var(--text1); margin-right: 8px;">B${ap.bloco} - Apto ${ap.apartamento}</span>
-                        <span style="color: var(--text2); font-size:0.8rem;">(${ap.nome})</span>
-                    </div>
-                    <span style="background: var(--orange-l); color: var(--orange); font-weight: 900; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">
-                        ${ap.totalCotas} cota${ap.totalCotas > 1 ? 's' : ''}
-                    </span>
+    
+        const container = document.getElementById('lista-agrupada-apartamentos');
+        if (!container) return;
+    
+        if (listaArray.length === 0) {
+            container.innerHTML = '<p style="color:var(--text3); text-align:center; padding:10px;">Nenhum pagamento confirmado.</p>';
+            return;
+        }
+    
+        listaArray.sort((a, b) => a.bloco - b.bloco || a.apartamento - b.apartamento);
+    
+        container.innerHTML = listaArray.map(ap => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--bg2);">
+                <div>
+                    <span style="font-weight: 800; color: var(--text1); margin-right: 8px;">B${ap.bloco} - Apto ${ap.apartamento}</span>
+                    <span style="color: var(--text2); font-size:0.8rem;">(${ap.nome})</span>
                 </div>
-            `).join('');
-        }
+                <span style="background: var(--orange-l); color: var(--orange); font-weight: 900; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">
+                    ${ap.totalCotas} cota${ap.totalCotas > 1 ? 's' : ''}
+                </span>
+            </div>
+        `).join('');
+    }
+    
+    // ─── Navegação ────────────────────────────────────────────────────
+    function mostrarPagina(id){
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo(0,0);
+    }
+    function voltarMain(){ mostrarPagina('page-main'); }
+    
+    function abrirModal(id)  { document.getElementById(id).classList.remove('hidden'); }
+    function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function fecharModalBg(e,id){ if(e.target===e.currentTarget) fecharModal(id); }
 
+    // ─── Máscara de Telefone ──────────────────────────────────────────
+    if (document.getElementById('f-tel')) {
+        document.getElementById('f-tel').addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    }
+    
+    // ─── Status do Balaio (Trava/Destrava) ──────────────────────────
+    function aplicarStatusInscricoes(abertas, dataEvento) {
+        balaioAbertoGlobal = abertas;
         
-        // ─── Navegação ────────────────────────────────────────────────────
-        function mostrarPagina(id){
-          document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-          document.getElementById(id).classList.add('active');
-          window.scrollTo(0,0);
+        const form = document.getElementById('container-formulario-inscricao');
+        const encerrado = document.getElementById('container-inscricoes-encerradas');
+        const txtData = document.getElementById('data-sorteio-encerrado');
+        
+        const btnStatus = document.getElementById('btn-status-balaio');
+        const txtStatus = document.getElementById('txt-status-balaio');
+    
+        if (txtData) txtData.textContent = dataEvento || '12/06/2026';
+    
+        if (!abertas) {
+            if (form) form.classList.add('hidden');
+            if (encerrado) encerrado.classList.remove('hidden');
+            if (btnStatus) {
+                btnStatus.innerHTML = '🔓 Reabrir Inscrições';
+                btnStatus.style.background = 'var(--green)';
+            }
+            if (txtStatus) {
+                txtStatus.textContent = 'Fechado / Encerrado';
+                txtStatus.style.color = 'var(--red)';
+            }
+        } else {
+            if (form) form.classList.remove('hidden');
+            if (encerrado) encerrado.classList.add('hidden');
+            if (btnStatus) {
+                btnStatus.innerHTML = '🔒 Encerrar Inscrições';
+                btnStatus.style.background = 'var(--red)';
+            }
+            if (txtStatus) {
+                txtStatus.textContent = 'Aberto para inscrições';
+                txtStatus.style.color = 'var(--green)';
+            }
         }
-        function voltarMain(){ mostrarPagina('page-main'); }
-        
-        function abrirModal(id)  { document.getElementById(id).classList.remove('hidden'); }
-        function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function fecharModalBg(e,id){ if(e.target===e.currentTarget) fecharModal(id); }
-
-        // ─── Máscara de Telefone (00) 00000-0000 ──────────────────────────
-        if (document.getElementById('f-tel')) {
-            document.getElementById('f-tel').addEventListener('input', function (e) {
-                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-                e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-            });
-        }
-        
-        // ─── Status do Balaio ──────────────────────────
-        // Variável de controle global que o sistema lê ao carregar os dados do servidor
-        let balaioAbertoGlobal = true; 
-        
-        // 1. Função que desenha o estado atual na tela (atualizada ao carregar a página)
-        function aplicarStatusInscricoes(abertas, dataEvento) {
-            balaioAbertoGlobal = abertas;
-            
-            const form = document.getElementById('container-formulario-inscricao');
-            const encerrado = document.getElementById('container-inscricoes-encerradas');
-            const txtData = document.getElementById('data-sorteio-encerrado');
-            
+    }
+    
+    function alternarStatusBalaio() {
+        const novoStatus = !balaioAbertoGlobal;
+        const tituloModal = novoStatus ? 'Reabrir Inscrições?' : 'Encerrar Inscrições?';
+        const textoModal = novoStatus 
+            ? 'Os moradores **poderão voltar a se inscrever** e adquirir cotas normalmente através do formulário principal.' 
+            : 'O formulário será travado. **Ninguém mais poderá se inscrever** ou gerar códigos PIX para este balaio.';
+        const iconeModal = novoStatus ? '🔓' : '🔒';
+    
+        pedirConfirmacao(tituloModal, textoModal, iconeModal, async () => {
             const btnStatus = document.getElementById('btn-status-balaio');
-            const txtStatus = document.getElementById('txt-status-balaio');
-        
-            if (txtData) txtData.textContent = dataEvento || '12/06/2026';
-        
-            if (!abertas) {
-                // Se as inscrições estiverem FECHADAS
-                if (form) form.classList.add('hidden');
-                if (encerrado) encerrado.classList.remove('hidden');
-                
-                if (btnStatus) {
-                    btnStatus.innerHTML = '🔓 Reabrir Inscrições';
-                    btnStatus.style.background = 'var(--green)'; // Muda para verde
-                }
-                if (txtStatus) {
-                    txtStatus.textContent = 'Fechado / Encerrado';
-                    txtStatus.style.color = 'var(--red)';
-                }
-            } else {
-                // Se as inscrições estiverem ABERTAS
-                if (form) form.classList.remove('hidden');
-                if (encerrado) encerrado.classList.add('hidden');
-                
-                if (btnStatus) {
-                    btnStatus.innerHTML = '🔒 Encerrar Inscrições';
-                    btnStatus.style.background = 'var(--red)'; // Muda para vermelho
-                }
-                if (txtStatus) {
-                    txtStatus.textContent = 'Aberto para inscrições';
-                    txtStatus.style.color = 'var(--green)';
-                }
-            }
-        }
-        
-        // 2. Função do clique do botão (Dispara o Modal Bonitinho)
-        function alternarStatusBalaio() {
-            const novoStatus = !balaioAbertoGlobal;
+            if(!btnStatus) return;
             
-            const tituloModal = novoStatus ? 'Reabrir Inscrições?' : 'Encerrar Inscrições?';
-            const textoModal = novoStatus 
-                ? 'Os moradores **poderão voltar a se inscrever** e adquirir cotas normalmente através do formulário principal.' 
-                : 'O formulário será travado. **Ninguém mais poderá se inscrever** ou gerar códigos PIX para este balaio.';
-            const iconeModal = novoStatus ? '🔓' : '🔒';
-        
-            // Chama o nosso modal customizado que substituiu o confirm()
-            pedirConfirmacao(tituloModal, textoModal, iconeModal, async () => {
-                const btnStatus = document.getElementById('btn-status-balaio');
-                const txtOriginal = btnStatus.innerHTML;
-                
-                btnStatus.disabled = true;
-                btnStatus.innerHTML = '<span class="spin">⏳</span> Atualizando...';
-        
-                try {
-                    const res = await fetch(`${API_BASE}/api/admin/config/status`, {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json', 
-                            'Authorization': `Bearer ${adminToken}` 
-                        },
-                        body: JSON.stringify({ abertas: novoStatus })
-                    });
-                    
-                    if (res.ok) {
-                        toast(`👍 Inscrições ${novoStatus ? 'reabertas' : 'encerradas'} com sucesso!`);
-                        // Força a recarga dos dados para sincronizar o painel e a página do usuário
-                        await carregarDados();
-                        await carregarAdmin();
-                    } else {
-                        toast('❌ Erro ao salvar alteração no servidor.');
-                    }
-                } catch (e) {
-                    console.error(e);
-                    toast('❌ Erro de conexão ao mudar status.');
-                } finally {
-                    btnStatus.disabled = false;
-                }
-            });
-        }
-        
-        // ─── Gera os Blocos de 1 a 26 ─────────────────────────────────────
-        function inicializarSeletores() {
-            const selBloco = document.getElementById('f-bloco');
-            if (selBloco && selBloco.options.length <= 1) {
-                for (let i = 1; i <= 26; i++) {
-                    let opt = document.createElement('option');
-                    opt.value = i; opt.textContent = 'Bloco ' + i;
-                    selBloco.appendChild(opt);
-                }
-            }
-        }
-        
-        // ─── Gera os Apartamentos do 101 ao 410 ────────────────────────────
-        function gerarApartamentos() {
-            const selBloco = document.getElementById('f-bloco');
-            const selApt = document.getElementById('f-apt');
-            
-            if (!selBloco.value) {
-                selApt.disabled = true;
-                selApt.innerHTML = '<option value="">Bloqueado</option>';
-                return;
-            }
-        
-            selApt.disabled = false;
-            let html = '<option value="">Escolha...</option>';
-            const andares = [100, 200, 300, 400];
-            andares.forEach(andar => {
-                for (let i = 1; i <= 10; i++) {
-                    let num = andar + i;
-                    html += `<option value="${num}">${num}</option>`;
-                }
-            });
-            selApt.innerHTML = html;
-        }
-        
-        // ─── Atualiza o display de preço antes da inscrição ──────────────
-        function atualizarPrecoTotal() {
-            // Busca o valor da cota que veio do servidor ou usa 7.50 como padrão
-            const valorUnit = parseFloat(window.configuracaoCotaAtual || 7.50);
-            const qtd = parseInt(document.getElementById('f-qtd').value) || 1;
-            const display = document.getElementById('total-pagar-display');
-            if (display) {
-                display.textContent = brl(valorUnit * qtd);
-            }
-        }
-        
-        // ─── Dados públicos ──────────────────────────────────────────────
-        let custoBalaioGlobal = 0;
-
-        async function carregarDados(){
-        
-        aplicarStatusInscricoes(config.inscricoes_abertas, config.data_evento)
-          try{
-            const res  = await fetch(`${API_BASE}/api/dados`);
-            const data = await res.json();
-            if(!res.ok) throw new Error(data.error);
-
-            const {config, itens, stats} = data;
-                window.configuracaoCotaAtual = config.valor_quota; 
-                inicializarSeletores();
-                atualizarPrecoTotal();
-              
-            if (document.getElementById('f-bloco').options.length <= 1) inicializarFormulario();
-              
-        // USE ESTE PADRÃO PARA CADA LINHA QUE DÁ ERRO:
-            const elDesc = document.getElementById('hdr-desc');
-            if (elDesc && config.descricao) elDesc.textContent = config.descricao;
-        
-            const elValor = document.getElementById('form-valor');
-            if (elValor) elValor.textContent = brl(config.valor_quota || 10);
-        
-            const elInscritos = document.getElementById('stat-inscritos');
-            if (elInscritos) elInscritos.textContent = stats.total_inscritos;
-        
-            const totalI = +stats.total_inscritos, pagos = +stats.total_pagos;
-              
-            document.getElementById('stat-inscritos').textContent    = totalI;
-            document.getElementById('stat-confirmados').textContent  = pagos;
-            document.getElementById('stat-pendentes').textContent    = Math.max(0, totalI - pagos);
-        
-            // Custo do balaio = soma dos itens
-            const custo = itens ? itens.reduce((s,i)=> s + (+i.preco_estimado * +i.quantidade), 0) : 0;
-            custoBalaioGlobal = custo;
-            const arrec = +(stats.total_arrecadado || 0);
-        
-            if(custo > 0){
-              const balaios   = Math.floor(arrec / custo);
-              const acumulado = arrec - (balaios * custo);
-              const faltam    = custo - acumulado;
-              const p         = (acumulado / custo) * 100;
-        
-              document.getElementById('thermo-val').textContent    = brl(acumulado);
-              document.getElementById('thermo-meta').textContent   = brl(custo);
-              document.getElementById('faltam-lbl').textContent    = `${brl(acumulado)} acumulados`;
-              document.getElementById('faltam-val').textContent    = brl(faltam);
-              document.getElementById('sorteio-total').textContent = brl(arrec);
-              document.getElementById('custo-balaio').textContent  = brl(custo);
-        
-              document.getElementById('sorteio-sub').textContent = balaios > 0
-                ? `${balaios} balaio${balaios>1?'s':''} completo${balaios>1?'s':''}! 🎉`
-                : 'Nenhum balaio completo ainda. Continue arrecadando!';
-        
-              setTimeout(()=>{
-                document.getElementById('progress-fill').style.width = p.toFixed(1)+'%';
-                document.getElementById('progress-label').textContent = p.toFixed(1).replace('.',',')+' %';
-              }, 200);
-            }
-            renderizarItens(itens);
-          } catch(err){
-            console.error(err);
-            document.getElementById('itens-list').innerHTML = '<div class="empty"><div class="empty-text" style="color:var(--red);">Erro ao carregar dados.</div></div>';
-          }
-        }
-        
-        // ─── Itens (pública) ───────────────────────────────────────────
-        function renderizarItens(itens){
-          const lista = document.getElementById('itens-list');
-          if(!itens||itens.length===0){
-            lista.innerHTML='<div class="empty"><div class="empty-text">Nenhum item cadastrado.</div></div>';
-            return;
-          }
-          let total=0;
-          const html = itens.map(item=>{
-            const val = +item.preco_estimado * +item.quantidade; total+=val;
-            return `<div class="item-row"><span class="item-name">${item.icone?item.icone+' ':''} ${item.nome}${+item.quantidade>1?' <span style="color:var(--text3);font-size:0.75rem;">(×'+item.quantidade+')</span>':''}</span><span class="item-val">${brl(val)}</span></div>`;
-          }).join('');
-          lista.innerHTML = html;
-          document.getElementById('total-balaio').textContent = brl(total);
-          document.getElementById('custo-balaio').textContent  = brl(total);
-          renderizarItensAdmin(itens, total);
-        }
-        
-        // ─── Itens admin (editáveis) ────────────────────────────────
-        function renderizarItensAdmin(itens, total){
-          const admLista = document.getElementById('adm-itens-list');
-          if(!admLista) return;
-          if(!itens||itens.length===0){
-            admLista.innerHTML='<div class="empty"><div class="empty-text">Nenhum item cadastrado.</div></div>';
-            return;
-          }
-          admLista.innerHTML = itens.map(item => {
-            const val = +item.preco_estimado * +item.quantidade;
-            const nomeSafe = item.nome.replace(/'/g, "\\'");
-            return `
-            <div id="item-row-${item.id}" style="border-bottom:1px solid var(--bg);">
-              <div style="display:flex;align-items:center;gap:8px;padding:11px 14px;">
-                <span style="font-size:1rem;flex-shrink:0;">${item.icone||'🎉'}</span>
-                <span style="flex:1;font-size:0.88rem;font-weight:600;color:var(--text2);">${item.nome}${+item.quantidade>1?' (×'+item.quantidade+')':''}</span>
-                <span style="font-weight:700;font-size:0.88rem;color:var(--text);flex-shrink:0;">${brl(val)}</span>
-                <button class="btn-sm btn-red" onclick="excluirItem(${item.id})" style="padding:5px 10px; font-size:0.75rem;">🗑️</button>
-                <button class="btn-sm btn-orange" onclick="iniciarEdicaoItem(${item.id},'${nomeSafe}',${item.preco_estimado},${item.quantidade})" style="padding:5px 10px;font-size:0.75rem;flex-shrink:0;">✏️</button>
-              </div>
-              <div id="item-edit-${item.id}" class="hidden" style="margin:0 14px 12px;background:var(--bg);border-radius:8px;padding:12px;">
-                <div class="form-group" style="margin-bottom:8px;">
-                  <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">NOME</label>
-                  <input id="item-edit-nome-${item.id}" class="inp" type="text" placeholder="Nome do item" style="font-size:0.85rem;padding:9px 12px;">
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-                  <div>
-                    <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">PREÇO UNIT. (R$)</label>
-                    <input id="item-edit-preco-${item.id}" class="inp" type="number" step="0.01" min="0" style="font-size:0.85rem;padding:9px 12px;">
-                  </div>
-                  <div>
-                    <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">QUANTIDADE</label>
-                    <input id="item-edit-qtd-${item.id}" class="inp" type="number" min="1" style="font-size:0.85rem;padding:9px 12px;">
-                  </div>
-                </div>
-                <div style="display:flex;gap:8px;">
-                  <button class="btn-sm btn-green" style="flex:1;padding:9px;" onclick="salvarEdicaoItem(${item.id})">✅ Salvar</button>
-                  <button class="btn-sm" style="flex:1;padding:9px;background:var(--bg2);color:var(--text2);" onclick="cancelarEdicaoItem(${item.id})">✕ Cancelar</button>
-                </div>
-                <p id="item-edit-err-${item.id}" class="err-msg hidden" style="margin-top:6px;"></p>
-              </div>
-            </div>`;
-          }).join('');
-          if(document.getElementById('adm-total-balaio'))
-            document.getElementById('adm-total-balaio').textContent = brl(total||0);
-        }
-
-        // Adicionar novo item
-        async function adicionarItem() {
-            const nome = document.getElementById('new-item-nome').value;
-            const preco = document.getElementById('new-item-preco').value;
-            const qtd = document.getElementById('new-item-qtd').value;
-            const icone = document.getElementById('new-item-icon').value;
-        
-            if (!nome || !preco) return toast('⚠️ Nome e preço são obrigatórios');
-        
+            btnStatus.disabled = true;
+            btnStatus.innerHTML = '<span class="spin">⏳</span> Atualizando...';
+    
             try {
-                const res = await fetch(`${API_BASE}/api/admin/item`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
-                    body: JSON.stringify({ nome, preco_estimado: preco, quantidade: qtd, icone })
-                });
-                if (res.ok) {
-                    toast('🎁 Item adicionado!');
-                    // Limpa campos
-                    document.getElementById('new-item-nome').value = '';
-                    document.getElementById('new-item-preco').value = '';
-                    carregarDados(); carregarAdmin();
-                }
-            } catch (e) { toast('❌ Erro ao adicionar'); }
-        }
-        
-        // Excluir item (adicione o botão de lixeira na renderização do item admin)
-        async function excluirItem(id) {
-            if (!confirm('Deseja remover este item do balaio?')) return;
-            try {
-                const res = await fetch(`${API_BASE}/api/admin/item/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${adminToken}` }
-                });
-                if (res.ok) {
-                    toast('🗑️ Item removido');
-                    carregarDados(); carregarAdmin();
-                }
-            } catch (e) { toast('❌ Erro ao excluir'); }
-        }
-        
-        // Atualizar/Editar Item
-        function iniciarEdicaoItem(id, nome, preco, qtd){
-          document.querySelectorAll('[id^="item-edit-"]').forEach(el=>{
-            if(!el.id.match(/item-edit-(nome|preco|qtd|err)-/)) el.classList.add('hidden');
-          });
-          const edit = document.getElementById(`item-edit-${id}`);
-          edit.classList.remove('hidden');
-          document.getElementById(`item-edit-nome-${id}`).value  = nome;
-          document.getElementById(`item-edit-preco-${id}`).value = preco;
-          document.getElementById(`item-edit-qtd-${id}`).value   = qtd;
-        }
-        
-        function cancelarEdicaoItem(id){
-          document.getElementById(`item-edit-${id}`).classList.add('hidden');
-        }
-        
-        async function salvarEdicaoItem(id){
-          const nome  = document.getElementById(`item-edit-nome-${id}`).value.trim();
-          const preco = parseFloat(document.getElementById(`item-edit-preco-${id}`).value);
-          const qtd   = parseInt(document.getElementById(`item-edit-qtd-${id}`).value) || 1;
-          const errEl = document.getElementById(`item-edit-err-${id}`);
-          errEl.classList.add('hidden');
-          if(!nome || isNaN(preco) || preco < 0){
-            errEl.textContent='⚠️ Preencha nome e preço válido.';
-            errEl.classList.remove('hidden'); return;
-          }
-          try{
-            const res = await fetch(`${API_BASE}/api/admin/item/atualizar`, {
-              method: 'POST',
-              headers: {'Content-Type':'application/json', Authorization:`Bearer ${adminToken}`},
-              body: JSON.stringify({id, nome, preco_estimado: preco, quantidade: qtd}),
-            });
-            if(res.ok){
-              toast('✅ Item atualizado!');
-              cancelarEdicaoItem(id);
-              carregarDados();
-            } else {
-              const d = await res.json();
-              errEl.textContent='❌ '+(d.error||'Erro ao salvar.'); errEl.classList.remove('hidden');
-            }
-          } catch{ errEl.textContent='❌ Erro de conexão.'; errEl.classList.remove('hidden'); }
-        }
-        
-        // ─── Inscrição ────────────────────────────────────────────────────
-        // Localiza o botão
-        const btnInscrever = document.getElementById('btn-inscrever');
-        if (btnInscrever) {
-            btnInscrever.addEventListener('click', async () => {
-                const nome = document.getElementById('f-nome').value.trim();
-                const bloco = document.getElementById('f-bloco').value; // Pega do select
-                const apt = document.getElementById('f-apt').value;     // Pega do select
-                const tel = document.getElementById('f-tel').value.trim();
-                const qtd = document.getElementById('f-qtd').value;     // NOVO: Captura a quantidade
-                const obs = document.getElementById('f-obs').value.trim();
-                const errEl = document.getElementById('form-error');
-                
-                errEl.classList.add('hidden');
-                
-                // Validação básica
-                if (!nome || !bloco || !apt || !tel) { 
-                    errEl.textContent = '⚠️ Preencha nome, bloco, apartamento e telefone.'; 
-                    errEl.classList.remove('hidden'); 
-                    return; 
-                }
-        
-                btnInscrever.disabled = true; 
-                btnInscrever.innerHTML = '<span class="spin">⏳</span> Aguardando PIX...';
-        
-                try {
-                    const res = await fetch(`${API_BASE}/api/inscricao`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            nome, 
-                            bloco, 
-                            apartamento: apt, 
-                            telefone: tel, 
-                            quantidade: qtd, // Envia a quantidade para o Worker
-                            observacao: obs 
-                        })
-                    });
-                    
-                    const data = await res.json();
-                    
-                    if (!res.ok) { 
-                        errEl.textContent = '⚠️ ' + (data.error || 'Erro ao realizar inscrição.'); 
-                        errEl.classList.remove('hidden'); 
-                        return; 
-                    }
-        
-                    if (data.pix) {
-                        abrirModalPix(data.pix);
-                        toast('🎉 Inscrição realizada!');
-                        // Limpa apenas o nome e telefone, mantém bloco/apto se quiser facilitar
-                        document.getElementById('f-nome').value = '';
-                        document.getElementById('f-tel').value = '';
-                    }
-                    
-                    carregarDados();
-                } catch (err) {
-                    console.error("Erro:", err);
-                    errEl.textContent = '⚠️ Erro de conexão. Tente novamente.'; 
-                    errEl.classList.remove('hidden'); 
-                } finally {
-                    btnInscrever.disabled = false; 
-                    btnInscrever.innerHTML = 'Fazer Inscrição';
-                }
-            });
-        }
-        
-        // ─── PIX ──────────────────────────────────────────────────────────
-        function abrirModalPix({payload,valor,txid}){
-          document.getElementById('pix-valor').textContent=brl(+valor);
-          document.getElementById('pix-payload').value=payload;
-          document.getElementById('pix-txid').textContent='ID: '+txid;
-          const qrBox=document.getElementById('qr-box'); qrBox.innerHTML='';
-          new QRCode(qrBox,{text:payload,width:220,height:220,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
-          abrirModal('modal-pix');
-        }
-        function copiarPix(){
-          const p=document.getElementById('pix-payload').value;
-          navigator.clipboard.writeText(p).then(()=>toast('✅ Código PIX copiado!')).catch(()=>{document.getElementById('pix-payload').select();document.execCommand('copy');toast('✅ Copiado!');});
-        }
-        
-        // ─── Admin ────────────────────────────────────────────────────────
-        function abrirAdmin(){
-          if(adminToken){ mostrarPagina('page-admin'); carregarAdmin(); }
-          else abrirModal('modal-login');
-        }
-        function logout(){
-          adminToken=null; localStorage.removeItem('ba_token');
-          mostrarPagina('page-main'); toast('👋 Sessão encerrada.');
-        }
-        
-        document.getElementById('btn-login').addEventListener('click', fazerLogin);
-        document.getElementById('login-senha').addEventListener('keypress', e=>{ if(e.key==='Enter') fazerLogin(); });
-        
-        async function fazerLogin(){
-          const senha=document.getElementById('login-senha').value;
-          const errEl=document.getElementById('login-error');
-          const btn=document.getElementById('btn-login');
-          errEl.classList.add('hidden');
-          if(!senha){ errEl.textContent='⚠️ Digite a senha.'; errEl.classList.remove('hidden'); return; }
-          btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span>';
-          try{
-            const res=await fetch(`${API_BASE}/api/admin/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({senha})});
-            const data=await res.json();
-            if(!res.ok){ errEl.textContent='⚠️'+(data.error||'Senha incorreta.'); errEl.classList.remove('hidden'); return; }
-            adminToken=data.token; localStorage.setItem('ba_token',adminToken);
-            document.getElementById('login-senha').value='';
-            fecharModal('modal-login'); mostrarPagina('page-admin'); carregarAdmin();
-            toast('🔓 Acesso liberado!');
-          } catch(err) { 
-              errEl.textContent='⚠️ Erro de conexão.'; 
-              errEl.classList.remove('hidden'); 
-            } finally { 
-              btn.disabled=false; 
-              btn.innerHTML='🔓 Entrar'; 
-            }
-          }
-
-        async function configurarAdmin(senha) {
-          try {
-            const res = await fetch(`${API_BASE}/api/admin/setup`, {
-              method:'POST',
-              headers:{'Content-Type':'application/json'},
-              body:JSON.stringify({senha})
-            });
-            // ... restante da lógica ...
-          } catch(e) { console.error(e); }
-        }
-        
-        async function carregarAdmin(){
-            aplicarStatusInscricoes(config.inscricoes_abertas, config.data_evento)
-          try {
-            const [resP, resD] = await Promise.all([
-              fetch(`${API_BASE}/api/admin/participantes`, { headers: { Authorization: `Bearer ${adminToken}` } }),
-              fetch(`${API_BASE}/api/dados`)
-            ]);
-        
-            if (resP.status === 401) { logout(); return; }
-            
-            const { participantes } = await resP.json();
-            const { stats, config, itens } = await resD.json();
-        
-            const setTxt = (id, txt) => { const el = document.getElementById(id); if(el) el.textContent = txt; };
-        
-            setTxt('adm-inscritos', stats.total_inscritos || 0);
-            setTxt('adm-confirmados', stats.total_pagos || 0);
-            setTxt('adm-pendentes', Math.max(0, (stats.total_inscritos || 0) - (stats.total_pagos || 0)));
-            setTxt('adm-arrecadado', brl(stats.total_arrecadado));
-            setTxt('adm-meta', brl(config.meta_balaio));
-        
-            const pFill = document.getElementById('adm-progress');
-            const pPct = document.getElementById('adm-pct');
-            const pVal = Math.min(100, (+stats.total_arrecadado / +config.meta_balaio) * 100);
-            
-            if(pFill) pFill.style.width = pVal.toFixed(1) + '%';
-            if(pPct) pPct.textContent = pVal.toFixed(1).replace('.', ',') + ' %';
-        
-            const campos = {
-              'cfg-meta': config.meta_balaio,
-              'cfg-quota': config.valor_quota,
-              'cfg-data': config.data_evento,
-              'cfg-descricao': config.descricao,
-              'cfg-nome': config.nome_evento,
-              'cfg-local': config.local_evento
-            };
-        
-            for (const [id, valor] of Object.entries(campos)) {
-              const el = document.getElementById(id);
-              if(el) el.value = valor || '';
-            }
-        
-            todosParticipantes = participantes || [];
-            
-            // AGORA SIM: chama a renderização da lista
-            filtrarParticipantes(); 
-            renderizarItens(itens);
-            
-          } catch(err) { 
-            console.error("Erro fatal no carregarAdmin:", err);
-            toast('❌ Erro ao carregar painel.'); 
-          }
-        }
-
-        let idParaExcluir = null;  
-        let acaoConfirmacao = null; // Guarda a função que será executada ao confirmar
-        
-        // Função mestre para abrir o modal de confirmação
-        function pedirConfirmacao(titulo, desc, icone, callback) {
-            document.getElementById('confirm-title').textContent = titulo;
-            document.getElementById('confirm-desc').innerHTML = desc;
-            document.getElementById('confirm-icon').textContent = icone;
-            acaoConfirmacao = callback; // Guarda a função de exclusão (participante ou item)
-            abrirModal('modal-confirm');
-        }
-        
-        // Botão de ação do modal (O "Sim")
-        document.getElementById('btn-confirm-exec').onclick = async () => {
-            if (acaoConfirmacao) {
-                await acaoConfirmacao(); // Executa o que foi guardado
-                fecharModal('modal-confirm');
-                acaoConfirmacao = null;
-            }
-        };
-                
-        // 1. Excluir Participante
-        function excluirParticipante(id) {
-            pedirConfirmacao(
-                'Excluir Participante?', 
-                'Deseja remover este morador permanentemente? <br><strong>A chance de sorteio será perdida.</strong>', 
-                '👤', 
-                async () => {
-                    const res = await fetch(`${API_BASE}/api/admin/participante/${id}`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${adminToken}` }
-                    });
-                    if (res.ok) { toast('🗑️ Participante removido!'); carregarAdmin(); carregarDados(); }
-                }
-            );
-        }
-        
-        // 2. Excluir Item do Balaio
-        function excluirItem(id) {
-            pedirConfirmacao(
-                'Remover Item?', 
-                'Deseja tirar este item da cesta do balaio? <br><strong>Isso afetará o valor total estimado.</strong>', 
-                '🧺', 
-                async () => {
-                    const res = await fetch(`${API_BASE}/api/admin/item/${id}`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${adminToken}` }
-                    });
-                    if (res.ok) { toast('✅ Item removido com sucesso!'); carregarAdmin(); carregarDados(); }
-                }
-            );
-        }
-        
-        function filtrarParticipantes() {
-            const q = document.getElementById('search-input').value.toLowerCase();
-            const status = document.getElementById('filter-status').value;
-            
-            const filtrados = todosParticipantes.filter(p => {
-                const matchesQuery = !q || 
-                    p.nome.toLowerCase().includes(q) || 
-                    p.bloco.toLowerCase().includes(q) || 
-                    p.apartamento.toLowerCase().includes(q);
-                const matchesStatus = !status || p.status_pagamento === status;
-                return matchesQuery && matchesStatus;
-            });
-        
-            const lista = document.getElementById('lista-participantes');
-            
-            if (filtrados.length === 0) {
-                lista.innerHTML = `
-                    <div class="empty">
-                        <div class="empty-icon">👥</div>
-                        <div class="empty-text">Nenhum participante encontrado.</div>
-                    </div>`;
-                return;
-            }
-        
-            lista.innerHTML = filtrados.map(p => `
-                <div class="p-card ${p.status_pagamento}" style="margin-bottom:10px;">
-                    <div class="p-card-header">
-                        <div>
-                            <div class="p-card-name">${p.nome} <span style="font-size:0.8rem; color:var(--orange)">(${p.quantidade || 1} cota${(p.quantidade > 1 ? 's' : '')})</span></div>
-                            <div class="p-card-info">🏠 Bloco ${p.bloco} · Apto ${p.apartamento} · ${p.data_inscricao}</div>
-                            <div class="p-card-info">📞 Telefone: ${p.telefone}</div>
-                        </div>
-                        <span class="badge badge-${p.status_pagamento}">${p.status_pagamento === 'pago' ? '✅ pago' : '⏳ pendente'}</span>
-                    </div>
-                    <div class="p-card-actions">
-                        ${p.status_pagamento !== 'pago' ? `<button class="btn-sm btn-green" onclick="atualizarStatus(${p.id},'pago')">✅ Pago</button>` : ''}
-                        ${p.status_pagamento !== 'pendente' ? `<button class="btn-sm btn-amber" onclick="atualizarStatus(${p.id},'pendente')">⏳ Pendente</button>` : ''}
-                        <button class="btn-sm btn-red" onclick="excluirParticipante(${p.id})">🗑️ Excluir</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        async function atualizarStatus(id,status){
-          try{
-            const res=await fetch(`${API_BASE}/api/admin/confirmar`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${adminToken}`},body:JSON.stringify({id,status})});
-            if(res.ok){ toast('✅ Status atualizado!'); carregarAdmin(); carregarDados(); }
-            else toast('❌ Erro ao atualizar.');
-          } catch{ toast('❌ Erro de conexão.'); }
-        }
-        
-        function imprimirListaSorteio() {
-            const pagantes = todosParticipantes.filter(p => p.status_pagamento === 'pago');
-            
-            if (pagantes.length === 0) {
-                return toast('⚠️ Não há participantes confirmados para imprimir.');
-            }
-        
-            const win = window.open('', '_blank');
-            
-            win.document.write(`
-                <html>
-                <head>
-                    <title>Sorteio Balaio Junino 2026</title>
-                    <style>
-                        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
-                        
-                        body { font-family: 'Nunito', sans-serif; padding: 6px; background: #fff; margin: 0; }
-                        
-                        /* Grid configurado para 4 colunas */
-                        .grid { 
-                            display: grid; 
-                            grid-template-columns: repeat(4, 1fr); 
-                            gap: 8px; 
-                        }
-                        
-                        .ticket { 
-                            border: 1.5px solid #000; 
-                            padding: 6px; 
-                            box-sizing: border-box;
-                            page-break-inside: avoid;
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: space-between;
-                            height: 140px; /* Altura fixa para manter simetria */
-                        }
-                        
-                        .ticket-header { 
-                            display: flex; 
-                            justify-content: space-between; 
-                            font-size: 0.55rem;
-                            font-weight: 900;
-                            border-bottom: 1px dashed #000;
-                            padding-bottom: 2px;
-                        }
-        
-                        .ticket-body { text-align: center; padding: 3px 0; }
-                        .ticket-nome { 
-                            font-size: 0.85rem; 
-                            font-weight: 900; 
-                            line-height: 1.1;
-                            margin-bottom: 4px;
-                            text-transform: uppercase;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical;
-                            overflow: hidden;
-                        }
-                        .ticket-info { font-size: 0.75rem; font-weight: 700; }
-                        .ticket-cota { font-size: 0.6rem; color: #444; margin-top: 2px; }
-        
-                        .ticket-footer {
-                            border-top: 1px solid #eee;
-                            font-size: 0.5rem;
-                            color: #888;
-                            text-align: center;
-                            padding-top: 2px;
-                        }
-        
-                        @media print {
-                            .no-print { display: none; }
-                            body { padding: 0; }
-                            .grid { gap: 5px; } /* Reduz espaço na impressão */
-                        }
-                        
-                        .btn-print {
-                            background: #E8651A; color: white; border: none; 
-                            padding: 10px 20px; border-radius: 50px; 
-                            font-weight: 800; cursor: pointer; margin: 20px;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div style="text-align:center;" class="no-print">
-                        <button class="btn-print" onclick="window.print()">🖨️ Confirmar Impressão (Econômica)</button>
-                    </div>
-                    
-                    <div class="grid">
-            `);
-        
-            pagantes.forEach(p => {
-                const idFormatado = 'BAL' + String(p.id).padStart(5, '0'); // Reduzi um pouco os zeros para caber melhor
-                const qtdCotas = parseInt(p.quantidade) || 1;
-        
-                for (let i = 1; i <= qtdCotas; i++) {
-                    win.document.write(`
-                        <div class="ticket">
-                            <div class="ticket-header">
-                                <span>BALAIO 2026</span>
-                                <span>${idFormatado}</span>
-                            </div>
-                            <div class="ticket-body">
-                                <div class="ticket-nome">${p.nome}</div>
-                                <div class="ticket-info">BL ${p.bloco} - APT ${p.apartamento}</div>
-                                <div class="ticket-info">${p.telefone}</div>
-                                <div class="ticket-cota">COTA ${i}/${qtdCotas}</div>
-                            </div>
-                            <div class="ticket-footer">
-                                Conferência: ${idFormatado}
-                            </div>
-                        </div>
-                    `);
-                }
-            });
-        
-            win.document.write(`
-                    </div>
-                </body>
-                </html>
-            `);
-            
-            win.document.close();
-        }  
-        
-        function mudarTab(tab){
-          ['participantes','itens','config'].forEach(t=>{
-            document.getElementById(`tab-content-${t}`).classList.add('hidden');
-            document.getElementById(`tab-${t}`).classList.remove('active');
-          });
-          document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
-          document.getElementById(`tab-${tab}`).classList.add('active');
-        }
-        
-        async function salvarConfig() {
-            const msg = document.getElementById('cfg-msg');
-            if (msg) msg.classList.add('hidden'); // Só tenta esconder se o elemento existir
-        
-            try {
-                const updates = [
-                    { chave: 'meta_balaio', valor: document.getElementById('cfg-meta').value },
-                    { chave: 'valor_quota', valor: document.getElementById('cfg-quota').value },
-                    { chave: 'nome_evento', valor: document.getElementById('cfg-nome').value },
-                    { chave: 'descricao', valor: document.getElementById('cfg-descricao').value },                    
-                    { chave: 'data_evento', valor: document.getElementById('cfg-data').value },
-                    { chave: 'local_evento', valor: document.getElementById('cfg-local').value },
-                ];
-        
-                const res = await fetch(`${API_BASE}/api/admin/config`, {
+                const res = await fetch(`${API_BASE}/api/admin/config/status`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json', 
                         'Authorization': `Bearer ${adminToken}` 
                     },
-                    body: JSON.stringify({ updates })
+                    body: JSON.stringify({ abertas: novoStatus })
                 });
-        
+                
                 if (res.ok) {
-                    toast('✅ Configurações salvas com sucesso!');
-                    carregarAdmin();
-                    carregarDados();
+                    toast(`👍 Inscrições ${novoStatus ? 'reabertas' : 'encerradas'}!`);
+                    await carregarDados();
+                    await carregarAdmin();
                 } else {
-                    const data = await res.json();
-                    if (msg) {
-                        msg.textContent = '❌ Erro ao salvar: ' + (data.error || 'Erro desconhecido');
-                        msg.classList.remove('hidden');
-                    }
+                    toast('❌ Erro ao salvar alteração no servidor.');
                 }
+            } catch (e) {
+                console.error(e);
+                toast('❌ Erro de conexão ao mudar status.');
+            } finally {
+                btnStatus.disabled = false;
+            }
+        });
+    }
+    
+    // ─── Gera os Blocos de 1 a 26 ─────────────────────────────────────
+    function inicializarSeletores() {
+        const selBloco = document.getElementById('f-bloco');
+        if (selBloco && selBloco.options.length <= 1) {
+            for (let i = 1; i <= 26; i++) {
+                let opt = document.createElement('option');
+                opt.value = i; opt.textContent = 'Bloco ' + i;
+                selBloco.appendChild(opt);
+            }
+        }
+    }
+    
+    // ─── Gera os Apartamentos do 101 ao 410 ────────────────────────────
+    function gerarApartamentos() {
+        const selBloco = document.getElementById('f-bloco');
+        const selApt = document.getElementById('f-apt');
+        
+        if (!selBloco.value) {
+            selApt.disabled = true;
+            selApt.innerHTML = '<option value="">Bloqueado</option>';
+            return;
+        }
+    
+        selApt.disabled = false;
+        let html = '<option value="">Escolha...</option>';
+        const andares = [100, 200, 300, 400];
+        andares.forEach(andar => {
+            for (let i = 1; i <= 10; i++) {
+                let num = andar + i;
+                html += `<option value="${num}">${num}</option>`;
+            }
+        });
+        selApt.innerHTML = html;
+    }
+    
+    // ─── Atualiza o display de preço antes da inscrição ──────────────
+    function atualizarPrecoTotal() {
+        const valorUnit = parseFloat(window.configuracaoCotaAtual || 7.50);
+        const qtd = parseInt(document.getElementById('f-qtd').value) || 1;
+        const display = document.getElementById('total-pagar-display');
+        if (display) {
+            display.textContent = brl(valorUnit * qtd);
+        }
+    }
+    
+    // ─── Dados públicos ──────────────────────────────────────────────
+    async function carregarDados(){
+      try{
+        const res  = await fetch(`${API_BASE}/api/dados`);
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error);
+
+        const {config, itens, stats} = data;
+        window.configuracaoCotaAtual = config.valor_quota; 
+        
+        inicializarSeletores();
+        atualizarPrecoTotal();
+        
+        // Aplica o status de trava/destrava coletado do banco
+        aplicarStatusInscricoes(config.inscricoes_abertas === 'true' || config.inscricoes_abertas === true, config.data_evento);
+          
+        const elDesc = document.getElementById('hdr-desc');
+        if (elDesc && config.descricao) elDesc.textContent = config.descricao;
+    
+        const elInscritos = document.getElementById('stat-inscritos');
+        if (elInscritos) elInscritos.textContent = stats.total_inscritos;
+    
+        const totalI = +stats.total_inscritos, pagos = +stats.total_pagos;
+          
+        const elSInscritos = document.getElementById('stat-inscritos');
+        const elSConfirmados = document.getElementById('stat-confirmados');
+        const elSPendentes = document.getElementById('stat-pendentes');
+        
+        if(elSInscritos) elSInscritos.textContent = totalI;
+        if(elSConfirmados) elSConfirmados.textContent = pagos;
+        if(elSPendentes) elSPendentes.textContent = Math.max(0, totalI - pagos);
+    
+        const custo = itens ? itens.reduce((s,i)=> s + (+i.preco_estimado * +i.quantidade), 0) : 0;
+        custoBalaioGlobal = custo;
+        const arrec = +(stats.total_arrecadado || 0);
+    
+        if(custo > 0){
+          const balaios   = Math.floor(arrec / custo);
+          const acumulado = arrec - (balaios * custo);
+          const faltam    = custo - acumulado;
+          const p         = (acumulado / custo) * 100;
+    
+          const setTxt = (id, txt) => { const el = document.getElementById(id); if(el) el.textContent = txt; };
+          
+          setTxt('thermo-val', brl(acumulado));
+          setTxt('thermo-meta', brl(custo));
+          setTxt('faltam-lbl', `${brl(acumulado)} acumulados`);
+          setTxt('faltam-val', brl(faltam));
+          setTxt('sorteio-total', brl(arrec));
+          setTxt('custo-balaio', brl(custo));
+    
+          const elSorteioSub = document.getElementById('sorteio-sub');
+          if(elSorteioSub) {
+             elSorteioSub.textContent = balaios > 0
+                ? `${balaios} balaio${balaios>1?'s':''} completo${balaios>1?'s':''}! 🎉`
+                : 'Nenhum balaio completo ainda. Continue arrecadando!';
+          }
+    
+          setTimeout(()=>{
+            const elPFill = document.getElementById('progress-fill');
+            const elPLbl = document.getElementById('progress-label');
+            if(elPFill) elPFill.style.width = p.toFixed(1)+'%';
+            if(elPLbl) elPLbl.textContent = p.toFixed(1).replace('.',',')+' %';
+          }, 200);
+        }
+        renderizarItens(itens);
+      } catch(err){
+        console.error(err);
+        const elList = document.getElementById('itens-list');
+        if(elList) elList.innerHTML = '<div class="empty"><div class="empty-text" style="color:var(--red);">Erro ao carregar dados.</div></div>';
+      }
+    }
+    
+    // ─── Itens (pública) ───────────────────────────────────────────
+    function renderizarItens(itens){
+      const lista = document.getElementById('itens-list');
+      if(!lista) return;
+      if(!itens||itens.length===0){
+        lista.innerHTML='<div class="empty"><div class="empty-text">Nenhum item cadastrado.</div></div>';
+        return;
+      }
+      let total=0;
+      const html = itens.map(item=>{
+        const val = +item.preco_estimado * +item.quantidade; total+=val;
+        return `<div class="item-row"><span class="item-name">${item.icone?item.icone+' ':''} ${item.nome}${+item.quantidade>1?' <span style="color:var(--text3);font-size:0.75rem;">(×'+item.quantidade+')</span>':''}</span><span class="item-val">${brl(val)}</span></div>`;
+      }).join('');
+      lista.innerHTML = html;
+      
+      const elTotalBalaio = document.getElementById('total-balaio');
+      const elCustoBalaio = document.getElementById('custo-balaio');
+      if(elTotalBalaio) elTotalBalaio.textContent = brl(total);
+      if(elCustoBalaio) elCustoBalaio.textContent = brl(total);
+      
+      renderizarItensAdmin(itens, total);
+    }
+    
+    // ─── Itens admin (editáveis) ────────────────────────────────
+    function renderizarItensAdmin(itens, total){
+      const admLista = document.getElementById('adm-itens-list');
+      if(!admLista) return;
+      if(!itens||itens.length===0){
+        admLista.innerHTML='<div class="empty"><div class="empty-text">Nenhum item cadastrado.</div></div>';
+        return;
+      }
+      admLista.innerHTML = itens.map(item => {
+        const val = +item.preco_estimado * +item.quantidade;
+        const nomeSafe = item.nome.replace(/'/g, "\\'");
+        return `
+        <div id="item-row-${item.id}" style="border-bottom:1px solid var(--bg);">
+          <div style="display:flex;align-items:center;gap:8px;padding:11px 14px;">
+            <span style="font-size:1rem;flex-shrink:0;">${item.icone||'🎉'}</span>
+            <span style="flex:1;font-size:0.88rem;font-weight:600;color:var(--text2);">${item.nome}${+item.quantidade>1?' (×'+item.quantidade+')':''}</span>
+            <span style="font-weight:700;font-size:0.88rem;color:var(--text);flex-shrink:0;">${brl(val)}</span>
+            <button class="btn-sm btn-red" onclick="excluirItem(${item.id})" style="padding:5px 10px; font-size:0.75rem;">🗑️</button>
+            <button class="btn-sm btn-orange" onclick="iniciarEdicaoItem(${item.id},'${nomeSafe}',${item.preco_estimado},${item.quantidade})" style="padding:5px 10px;font-size:0.75rem;flex-shrink:0;">✏️</button>
+          </div>
+          <div id="item-edit-${item.id}" class="hidden" style="margin:0 14px 12px;background:var(--bg);border-radius:8px;padding:12px;">
+            <div class="form-group" style="margin-bottom:8px;">
+              <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">NOME</label>
+              <input id="item-edit-nome-${item.id}" class="inp" type="text" placeholder="Nome do item" style="font-size:0.85rem;padding:9px 12px;">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+              <div>
+                <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">PREÇO UNIT. (R$)</label>
+                <input id="item-edit-preco-${item.id}" class="inp" type="number" step="0.01" min="0" style="font-size:0.85rem;padding:9px 12px;">
+              </div>
+              <div>
+                <label style="font-size:0.72rem;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">QUANTIDADE</label>
+                <input id="item-edit-qtd-${item.id}" class="inp" type="number" min="1" style="font-size:0.85rem;padding:9px 12px;">
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-sm btn-green" style="flex:1;padding:9px;" onclick="salvarEdicaoItem(${item.id})">✅ Salvar</button>
+              <button class="btn-sm" style="flex:1;padding:9px;background:var(--bg2);color:var(--text2);" onclick="cancelarEdicaoItem(${item.id})">✕ Cancelar</button>
+            </div>
+            <p id="item-edit-err-${item.id}" class="err-msg hidden" style="margin-top:6px;"></p>
+          </div>
+        </div>`;
+      }).join('');
+      
+      const elAdmTotal = document.getElementById('adm-total-balaio');
+      if(elAdmTotal) elAdmTotal.textContent = brl(total||0);
+    }
+
+    // Adicionar novo item
+    async function adicionarItem() {
+        const nome = document.getElementById('new-item-nome').value;
+        const preco = document.getElementById('new-item-preco').value;
+        const qtd = document.getElementById('new-item-qtd').value;
+        const icone = document.getElementById('new-item-icon').value;
+    
+        if (!nome || !preco) return toast('⚠️ Nome e preço são obrigatórios');
+    
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/item`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
+                body: JSON.stringify({ nome, preco_estimado: preco, quantidade: qtd, icone })
+            });
+            if (res.ok) {
+                toast('🎁 Item adicionado!');
+                document.getElementById('new-item-nome').value = '';
+                document.getElementById('new-item-preco').value = '';
+                await carregarDados(); await carregarAdmin();
+            }
+        } catch (e) { toast('❌ Erro ao adicionar'); }
+    }
+    
+    // Atualizar/Editar Item
+    function iniciarEdicaoItem(id, nome, preco, qtd){
+      document.querySelectorAll('[id^="item-edit-"]').forEach(el=>{
+        if(!el.id.match(/item-edit-(nome|preco|qtd|err)-/)) el.classList.add('hidden');
+      });
+      const edit = document.getElementById(`item-edit-${id}`);
+      if(edit) edit.classList.remove('hidden');
+      
+      const elN = document.getElementById(`item-edit-nome-${id}`);
+      const elP = document.getElementById(`item-edit-preco-${id}`);
+      const elQ = document.getElementById(`item-edit-qtd-${id}`);
+      
+      if(elN) elN.value = nome;
+      if(elP) elP.value = preco;
+      if(elQ) elQ.value = qtd;
+    }
+    
+    function cancelarEdicaoItem(id){
+      const edit = document.getElementById(`item-edit-${id}`);
+      if(edit) edit.classList.add('hidden');
+    }
+    
+    async function salvarEdicaoItem(id){
+      const nome  = document.getElementById(`item-edit-nome-${id}`).value.trim();
+      const preco = parseFloat(document.getElementById(`item-edit-preco-${id}`).value);
+      const qtd   = parseInt(document.getElementById(`item-edit-qtd-${id}`).value) || 1;
+      const errEl = document.getElementById(`item-edit-err-${id}`);
+      
+      if(errEl) errEl.classList.add('hidden');
+      if(!nome || isNaN(preco) || preco < 0){
+        if(errEl) {
+            errEl.textContent='⚠️ Preencha nome e preço válido.';
+            errEl.classList.remove('hidden'); 
+        }
+        return;
+      }
+      try{
+        const res = await fetch(`${API_BASE}/api/admin/item/atualizar`, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json', Authorization:`Bearer ${adminToken}`},
+          body: JSON.stringify({id, nome, preco_estimado: preco, quantidade: qtd}),
+        });
+        if(res.ok){
+          toast('✅ Item updated!');
+          cancelarEdicaoItem(id);
+          await carregarDados();
+          await carregarAdmin();
+        } else {
+          const d = await res.json();
+          if(errEl) {
+              errEl.textContent='❌ '+(d.error||'Erro ao salvar.'); 
+              errEl.classList.remove('hidden');
+          }
+        }
+      } catch{ 
+         if(errEl) { errEl.textContent='❌ Erro de conexão.'; errEl.classList.remove('hidden'); }
+      }
+    }
+    
+    // ─── Inscrição ────────────────────────────────────────────────────
+    const btnInscrever = document.getElementById('btn-inscrever');
+    if (btnInscrever) {
+        btnInscrever.addEventListener('click', async () => {
+            const nome = document.getElementById('f-nome').value.trim();
+            const bloco = document.getElementById('f-bloco').value; 
+            const apt = document.getElementById('f-apt').value;     
+            const tel = document.getElementById('f-tel').value.trim();
+            const qtd = document.getElementById('f-qtd').value;     
+            const obs = document.getElementById('f-obs').value.trim();
+            const errEl = document.getElementById('form-error');
+            
+            if(errEl) errEl.classList.add('hidden');
+            
+            if (!nome || !bloco || !apt || !tel) { 
+                if(errEl) {
+                    errEl.textContent = '⚠️ Preencha nome, bloco, apartamento e telefone.'; 
+                    errEl.classList.remove('hidden'); 
+                }
+                return; 
+            }
+    
+            btnInscrever.disabled = true; 
+            btnInscrever.innerHTML = '<span class="spin">⏳</span> Aguardando PIX...';
+    
+            try {
+                const res = await fetch(`${API_BASE}/api/inscricao`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, bloco, apartamento: apt, telefone: tel, quantidade: qtd, observacao: obs })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) { 
+                    if(errEl) {
+                        errEl.textContent = '⚠️ ' + (data.error || 'Erro ao realizar inscrição.'); 
+                        errEl.classList.remove('hidden'); 
+                    }
+                    return; 
+                }
+    
+                if (data.pix) {
+                    abrirModalPix(data.pix);
+                    toast('🎉 Inscrição realizada!');
+                    document.getElementById('f-nome').value = '';
+                    document.getElementById('f-tel').value = '';
+                }
+                
+                await carregarDados();
             } catch (err) {
-                console.error("Erro ao salvar config:", err);
+                console.error("Erro:", err);
+                if(errEl) {
+                    errEl.textContent = '⚠️ Erro de conexão. Tente novamente.'; 
+                    errEl.classList.remove('hidden'); 
+                }
+            } finally {
+                btnInscrever.disabled = false; 
+                btnInscrever.innerHTML = 'Fazer Inscrição';
+            }
+        });
+    }
+    
+    // ─── PIX ──────────────────────────────────────────────────────────
+    function abrirModalPix({payload,valor,txid}){
+      document.getElementById('pix-valor').textContent=brl(+valor);
+      document.getElementById('pix-payload').value=payload;
+      document.getElementById('pix-txid').textContent='ID: '+txid;
+      const qrBox=document.getElementById('qr-box'); qrBox.innerHTML='';
+      new QRCode(qrBox,{text:payload,width:220,height:220,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
+      abrirModal('modal-pix');
+    }
+    function copiarPix(){
+      const p=document.getElementById('pix-payload').value;
+      navigator.clipboard.writeText(p).then(()=>toast('✅ Código PIX copiado!')).catch(()=>{document.getElementById('pix-payload').select();document.execCommand('copy');toast('✅ Copiado!');});
+    }
+    
+    // ─── Admin ────────────────────────────────────────────────────────
+    function abrirAdmin(){
+      if(adminToken){ mostrarPagina('page-admin'); carregarAdmin(); }
+      else abrirModal('modal-login');
+    }
+    function logout(){
+      adminToken=null; localStorage.removeItem('ba_token');
+      mostrarPagina('page-main'); toast('👋 Sessão encerrada.');
+    }
+    
+    document.getElementById('btn-login').addEventListener('click', fazerLogin);
+    document.getElementById('login-senha').addEventListener('keypress', e=>{ if(e.key==='Enter') fazerLogin(); });
+    
+    async function fazerLogin(){
+      const senha=document.getElementById('login-senha').value;
+      const errEl=document.getElementById('login-error');
+      const btn=document.getElementById('btn-login');
+      if(errEl) errEl.classList.add('hidden');
+      if(!senha){ if(errEl) { errEl.textContent='⚠️ Digite a senha.'; errEl.classList.remove('hidden'); } return; }
+      btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span>';
+      try{
+        const res=await fetch(`${API_BASE}/api/admin/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({senha})});
+        const data=await res.json();
+        if(!res.ok){ if(errEl) { errEl.textContent='⚠️ '+(data.error||'Senha incorreta.'); errEl.classList.remove('hidden'); } return; }
+        adminToken=data.token; localStorage.setItem('ba_token',adminToken);
+        document.getElementById('login-senha').value='';
+        fecharModal('modal-login'); mostrarPagina('page-admin'); carregarAdmin();
+        toast('🔓 Acesso liberado!');
+      } catch(err) { 
+          if(errEl) { errEl.textContent='⚠️ Erro de conexão.'; errEl.classList.remove('hidden'); }
+        } finally { 
+          btn.disabled=false; 
+          btn.innerHTML='🔓 Entrar'; 
+        }
+    }
+
+    async function carregarAdmin(){
+      try {
+        const [resP, resD] = await Promise.all([
+          fetch(`${API_BASE}/api/admin/participantes`, { headers: { Authorization: `Bearer ${adminToken}` } }),
+          fetch(`${API_BASE}/api/dados`)
+        ]);
+    
+        if (resP.status === 401) { logout(); return; }
+        
+        const { participantes } = await resP.json();
+        const { stats, config, itens } = await resD.json();
+    
+        const setTxt = (id, txt) => { const el = document.getElementById(id); if(el) el.textContent = txt; };
+    
+        setTxt('adm-inscritos', stats.total_inscritos || 0);
+        setTxt('adm-confirmados', stats.total_pagos || 0);
+        setTxt('adm-pendentes', Math.max(0, (stats.total_inscritos || 0) - (stats.total_pagos || 0)));
+        setTxt('adm-arrecadado', brl(stats.total_arrecadado));
+        setTxt('adm-meta', brl(config.meta_balaio));
+    
+        const pFill = document.getElementById('adm-progress');
+        const pPct = document.getElementById('adm-pct');
+        const pVal = Math.min(100, (+stats.total_arrecadado / +config.meta_balaio) * 100);
+        
+        if(pFill) pFill.style.width = pVal.toFixed(1) + '%';
+        if(pPct) pPct.textContent = pVal.toFixed(1).replace('.', ',') + ' %';
+    
+        const campos = {
+          'cfg-meta': config.meta_balaio,
+          'cfg-quota': config.valor_quota,
+          'cfg-data': config.data_evento,
+          'cfg-descricao': config.descricao,
+          'cfg-nome': config.nome_evento,
+          'cfg-local': config.local_evento
+        };
+    
+        for (const [id, valor] of Object.entries(campos)) {
+          const el = document.getElementById(id);
+          if(el) el.value = valor || '';
+        }
+    
+        todosParticipantes = participantes || [];
+        
+        // Sincroniza o status do botão administrativo de trava/destrava
+        aplicarStatusInscricoes(config.inscricoes_abertas === 'true' || config.inscricoes_abertas === true, config.data_evento);
+        
+        filtrarParticipantes(); 
+        renderizarItens(itens);
+        
+      } catch(err) { 
+        console.error("Erro fatal no carregarAdmin:", err);
+        toast('❌ Erro ao carregar painel.'); 
+      }
+    }
+
+    let acaoConfirmacao = null; 
+    
+    function pedirConfirmacao(titulo, desc, icone, callback) {
+        document.getElementById('confirm-title').textContent = titulo;
+        document.getElementById('confirm-desc').innerHTML = desc;
+        document.getElementById('confirm-icon').textContent = icone;
+        acaoConfirmacao = callback; 
+        abrirModal('modal-confirm');
+    }
+    
+    document.getElementById('btn-confirm-exec').onclick = async () => {
+        if (acaoConfirmacao) {
+            await acaoConfirmacao(); 
+            fecharModal('modal-confirm');
+            acaoConfirmacao = null;
+        }
+    };
+            
+    function excluirParticipante(id) {
+        pedirConfirmacao(
+            'Excluir Participante?', 
+            'Deseja remover este morador permanentemente? <br><strong>A chance de sorteio será perdida.</strong>', 
+            '👤', 
+            async () => {
+                const res = await fetch(`${API_BASE}/api/admin/participante/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                if (res.ok) { toast('🗑️ Participante removido!'); await carregarAdmin(); await carregarDados(); }
+            }
+        );
+    }
+    
+    function excluirItem(id) {
+        pedirConfirmacao(
+            'Remover Item?', 
+            'Deseja tirar este item da cesta do balaio? <br><strong>Isso afetará o valor total estimado.</strong>', 
+            '🧺', 
+            async () => {
+                const res = await fetch(`${API_BASE}/api/admin/item/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                if (res.ok) { toast('✅ Item removido com sucesso!'); await carregarAdmin(); await carregarDados(); }
+            }
+        );
+    }
+    
+    function filtrarParticipantes() {
+        const q = document.getElementById('search-input').value.toLowerCase();
+        const status = document.getElementById('filter-status').value;
+        
+        const filtrados = todosParticipantes.filter(p => {
+            const matchesQuery = !q || 
+                p.nome.toLowerCase().includes(q) || 
+                String(p.bloco).toLowerCase().includes(q) || 
+                String(p.apartamento).toLowerCase().includes(q);
+            const matchesStatus = !status || p.status_pagamento === status;
+            return matchesQuery && matchesStatus;
+        });
+    
+        const lista = document.getElementById('lista-participantes');
+        if(!lista) return;
+        
+        if (filtrados.length === 0) {
+            lista.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">👥</div>
+                    <div class="empty-text">Nenhum participante encontrado.</div>
+                </div>`;
+            renderizarListaAgrupada(); // Atualiza mesmo se a busca for vazia
+            return;
+        }
+    
+        lista.innerHTML = filtrados.map(p => `
+            <div class="p-card ${p.status_pagamento}" style="margin-bottom:10px;">
+                <div class="p-card-header">
+                    <div>
+                        <div class="p-card-name">${p.nome} <span style="font-size:0.8rem; color:var(--orange)">(${p.quantidade || 1} cota${(p.quantidade > 1 ? 's' : '')})</span></div>
+                        <div class="p-card-info">🏠 Bloco ${p.bloco} · Apto ${p.apartamento} · ${p.data_inscricao}</div>
+                        <div class="p-card-info">📞 Telefone: ${p.telefone}</div>
+                    </div>
+                    <span class="badge badge-${p.status_pagamento}">${p.status_pagamento === 'pago' ? '✅ pago' : '⏳ pendente'}</span>
+                </div>
+                <div class="p-card-actions">
+                    ${p.status_pagamento !== 'pago' ? `<button class="btn-sm btn-green" onclick="atualizarStatus(${p.id},'pago')">✅ Pago</button>` : ''}
+                    ${p.status_pagamento !== 'pendente' ? `<button class="btn-sm btn-amber" onclick="atualizarStatus(${p.id},'pendente')">⏳ Pendente</button>` : ''}
+                    <button class="btn-sm btn-red" onclick="excluirParticipante(${p.id})">🗑️ Excluir</button>
+                </div>
+            </div>
+        `).join('');
+        
+        // Renderiza a lista por apartamento consolidada
+        renderizarListaAgrupada();
+    }
+    
+    async function atualizarStatus(id,status){
+      try{
+        const res=await fetch(`${API_BASE}/api/admin/confirmar`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${adminToken}`},body:JSON.stringify({id,status})});
+        if(res.ok){ toast('✅ Status atualizado!'); await carregarAdmin(); await carregarDados(); }
+        else toast('❌ Erro ao atualizar.');
+      } catch{ toast('❌ Erro de conexão.'); }
+    }
+    
+    function imprimirListaSorteio() {
+        const pagantes = todosParticipantes.filter(p => p.status_pagamento === 'pago');
+        if (pagantes.length === 0) {
+            return toast('⚠️ Não há participantes confirmados para imprimir.');
+        }
+    
+        const win = window.open('', '_blank');
+        win.document.write(`
+            <html>
+            <head>
+                <title>Sorteio Balaio Junino 2026</title>
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
+                    body { font-family: 'Nunito', sans-serif; padding: 6px; background: #fff; margin: 0; }
+                    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+                    .ticket { 
+                        border: 1.5px solid #000; padding: 6px; box-sizing: border-box; page-break-inside: avoid;
+                        display: flex; flex-direction: column; justify-content: space-between; height: 140px; 
+                    }
+                    .ticket-header { display: flex; justify-content: space-between; font-size: 0.55rem; font-weight: 900; border-bottom: 1px dashed #000; padding-bottom: 2px; }
+                    .ticket-body { text-align: center; padding: 3px 0; }
+                    .ticket-nome { 
+                        font-size: 0.85rem; font-weight: 900; line-height: 1.1; margin-bottom: 4px; text-transform: uppercase;
+                        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+                    }
+                    .ticket-info { font-size: 0.75rem; font-weight: 700; }
+                    .ticket-cota { font-size: 0.6rem; color: #444; margin-top: 2px; }
+                    .ticket-footer { border-top: 1px solid #eee; font-size: 0.5rem; color: #888; text-align: center; padding-top: 2px; }
+                    @media print { .no-print { display: none; } body { padding: 0; } .grid { gap: 5px; } }
+                    .btn-print { background: #E8651A; color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 800; cursor: pointer; margin: 20px; }
+                </style>
+            </head>
+            <body>
+                <div style="text-align:center;" class="no-print">
+                    <button class="btn-print" onclick="window.print()">🖨️ Confirmar Impressão (Econômica)</button>
+                </div>
+                <div class="grid">
+        `);
+    
+        pagantes.forEach(p => {
+            const idFormatado = 'BAL' + String(p.id).padStart(5, '0');
+            const qtdCotas = parseInt(p.quantidade) || 1;
+    
+            for (let i = 1; i <= qtdCotas; i++) {
+                win.document.write(`
+                    <div class="ticket">
+                        <div class="ticket-header">
+                            <span>BALAIO 2026</span>
+                            <span>${idFormatado}</span>
+                        </div>
+                        <div class="ticket-body">
+                            <div class="ticket-nome">${p.nome}</div>
+                            <div class="ticket-info">BL ${p.bloco} - APT ${p.apartamento}</div>
+                            <div class="ticket-info">${p.telefone}</div>
+                            <div class="ticket-cota">COTA ${i}/${qtdCotas}</div>
+                        </div>
+                        <div class="ticket-footer">Conferência: ${idFormatado}</div>
+                    </div>
+                `);
+            }
+        });
+    
+        win.document.write(`</div></body></html>`);
+        win.document.close();
+    }  
+    
+    function mudarTab(tab){
+      ['participantes','itens','config'].forEach(t=>{
+        const elC = document.getElementById(`tab-content-${t}`);
+        const elT = document.getElementById(`tab-${t}`);
+        if(elC) elC.classList.add('hidden');
+        if(elT) elT.classList.remove('active');
+      });
+      const elActC = document.getElementById(`tab-content-${tab}`);
+      const elActT = document.getElementById(`tab-${tab}`);
+      if(elActC) elActC.classList.remove('hidden');
+      if(elActT) elActT.classList.add('active');
+    }
+    
+    async function salvarConfig() {
+        const msg = document.getElementById('cfg-msg');
+        if (msg) msg.classList.add('hidden'); 
+    
+        try {
+            const updates = [
+                { chave: 'meta_balaio', valor: document.getElementById('cfg-meta').value },
+                { chave: 'valor_quota', valor: document.getElementById('cfg-quota').value },
+                { chave: 'nome_evento', valor: document.getElementById('cfg-nome').value },
+                { chave: 'descricao', valor: document.getElementById('cfg-descricao').value },                    
+                { chave: 'data_evento', valor: document.getElementById('cfg-data').value },
+                { chave: 'local_evento', valor: document.getElementById('cfg-local').value },
+            ];
+    
+            const res = await fetch(`${API_BASE}/api/admin/config`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${adminToken}` 
+                },
+                body: JSON.stringify({ updates })
+            });
+    
+            if (res.ok) {
+                toast('✅ Configurações salvas com sucesso!');
+                await carregarAdmin();
+                await carregarDados();
+            } else {
+                const data = await res.json();
                 if (msg) {
-                    msg.textContent = '❌ Erro de conexão com o servidor.';
+                    msg.textContent = '❌ Erro ao salvar: ' + (data.error || 'Erro desconhecido');
                     msg.classList.remove('hidden');
                 }
             }
+        } catch (err) {
+            console.error("Erro ao salvar config:", err);
+            if (msg) {
+                msg.textContent = '❌ Erro de conexão com o servidor.';
+                msg.classList.remove('hidden');
+            }
         }
-        
-        
-        // ─── Init ─────────────────────────────────────────────────────────
-        setInterval(carregarDados, 60_000);
-        
-        // ─── DIAGNÓSTICO DE CONEXÃO ──────────────────────────────────────────────────
-        
-        var diagTimerInterval = null;
-        var diagAutoTimer     = null;
-        
-        var CHECKS = [
-          { id:'chk-worker', label:'Worker Cloudflare acessivel', sym:'[W]' },
-          { id:'chk-db',     label:'Banco de dados (Neon) online', sym:'[B]' },
-          { id:'chk-itens',  label:'Lista de itens carregando',    sym:'[I]' },
-          { id:'chk-admin',  label:'Endpoint de login disponivel', sym:'[A]' },
-        ];
-        carregarDados();
-        setInterval(carregarDados, 60000);
-    </script>
-
+    }
+    
+    // ─── Init ─────────────────────────────────────────────────────────
+    carregarDados();
+    setInterval(carregarDados, 60000);
+</script>
 </body>
-
 </html>
