@@ -862,30 +862,52 @@
         if(elSConfirmados) elSConfirmados.textContent = pagos;
         if(elSPendentes) elSPendentes.textContent = Math.max(0, totalI - pagos);
     
-        const custo = itens ? itens.reduce((s,i)=> s + (+i.preco_estimado * +i.quantidade), 0) : 0;
-        custoBalaioGlobal = custo;
+        // Custo de 1 balaio sozinho (multiplicando preço pela quantidade base de 1 unidade, ou usando a lógica anterior)
+        // Como você multiplicou a quantidade dos itens por 8 direto no banco, vamos calcular o custo unitário dividindo por 8
+        const totalItensBanco = itens && itens.length > 0 ? parseInt(itens[0].quantidade) || 1 : 1;
+        
+        // Custo total de TODOS os itens juntos no banco
+        const custoTotalTodosBalaios = itens ? itens.reduce((s,i)=> s + (+i.preco_estimado * +i.quantidade), 0) : 0;
+        
+        // Custo de apenas 1 balaio individual para o termômetro
+        const custoUmBalaio = custoTotalTodosBalaios / totalItensBanco;
+        
+        custoBalaioGlobal = custoUmBalaio;
         const arrec = +(stats.total_arrecadado || 0);
+        
+        // ─── LÓGICA 1: ESCONDER O TERMÔMETRO SE ESTIVER ENCERRADO ───
+        const cardTermometro = document.getElementById('progress-fill')?.closest('.card');
+        if (cardTermometro) {
+            if (config.inscricoes_abertas === 'false' || config.inscricoes_abertas === false) {
+                cardTermometro.classList.add('hidden'); // Some com o termômetro do morador
+            } else {
+                cardTermometro.classList.remove('hidden'); // Mostra se reabrir
+            }
+        }
     
-        if(custo > 0){
-          const balaios   = Math.floor(arrec / custo);
-          const acumulado = arrec - (balaios * custo);
-          const faltam    = custo - acumulado;
-          const p         = (acumulado / custo) * 100;
+        // ─── LÓGICA 2: EXIBIR 8 BALAIOS BASEADO NOS ITENS DO BANCO ───
+        // Em vez de calcular pela divisão do dinheiro, pegamos direto a quantidade que você setou!
+        const balaiosArrecadados = totalItensBanco; 
+
+        if(custoUmBalaio > 0){
+          const balaiosCompletosDoDinheiro = Math.floor(arrec / custoUmBalaio);
+          const acumulado = arrec - (balaiosCompletosDoDinheiro * custoUmBalaio);
+          const faltam    = custoUmBalaio - acumulado;
+          const p         = (acumulado / custoUmBalaio) * 100;
     
           const setTxt = (id, txt) => { const el = document.getElementById(id); if(el) el.textContent = txt; };
           
           setTxt('thermo-val', brl(acumulado));
-          setTxt('thermo-meta', brl(custo));
+          setTxt('thermo-meta', brl(custoUmBalaio));
           setTxt('faltam-lbl', `${brl(acumulado)} acumulados`);
           setTxt('faltam-val', brl(faltam));
           setTxt('sorteio-total', brl(arrec));
-          setTxt('custo-balaio', brl(custo));
+          setTxt('custo-balaio', brl(custoUmBalaio));
     
+          // Aqui exibimos o número 8 fixado pela quantidade de itens do banco!
           const elSorteioSub = document.getElementById('sorteio-sub');
           if(elSorteioSub) {
-             elSorteioSub.textContent = balaios > 0
-                ? `${balaios} balaio${balaios>1?'s':''} completo${balaios>1?'s':''}! 🎉`
-                : 'Nenhum balaio completo ainda. Continue arrecadando!';
+             elSorteioSub.textContent = `${balaiosArrecadados} balaio${balaiosArrecadados>1?'s':''} completo${balaiosArrecadados>1?'s':''}! 🎉`;
           }
     
           setTimeout(()=>{
