@@ -836,68 +836,58 @@
         { balaio: "8º Balaio", nome: "Ronaldo (BL 26)", fotoUrl: "https://raw.githubusercontent.com/soumaisalex/Alamedas-Balaio/refs/heads/main/vencedores/20307.webp" }
     ];
     
-    // 2. Função para abrir o Popup e renderizar a lista
+    // 2. Função para abrir o Popup e renderizar a lista    
     function abrirModalVencedores() {
         const lista = document.getElementById('lista-ganhadores');
+        if (!lista) return;
+        
         lista.innerHTML = ''; // Limpa antes de renderizar
         
-        // Esconde a área da foto se ela tiver ficado aberta antes
-        document.getElementById('container-foto').classList.add('hidden');
+        // Esconde a área da foto para não iniciar aberta
+        const containerFoto = document.getElementById('container-foto');
+        if (containerFoto) containerFoto.classList.add('hidden');
     
-        dadosVencedores.forEach((v, index) => {
+        dadosVencedores.forEach((v) => {
             const item = document.createElement('div');
-            item.className = "flex justify-between items-center p-3 bg-gray-50 hover:bg-amber-50 rounded-xl cursor-pointer transition border border-gray-100 active:scale-[0.99]";
+            
+            // Estilização nativa do card do vencedor usando seus design tokens
+            item.style.display = "flex";
+            item.style.justifyContent = "space-between";
+            item.style.alignItems = "center";
+            item.style.padding = "12px 14px";
+            item.style.background = "var(--bg)";
+            item.style.borderRadius = "var(--radius-sm)";
+            item.style.cursor = "pointer";
+            item.style.border = "1px solid var(--border)";
+            item.style.transition = "all 0.15s ease";
+            
+            // Efeito visual de clique/toque
+            item.onmousedown = () => item.style.transform = "scale(0.98)";
+            item.onmouseup = () => item.style.transform = "scale(1)";
+            
+            // Executa a função de mostrar a foto ao clicar no card
             item.onclick = () => mostrarFotoVencedor(v.fotoUrl);
             
+            // HTML interno higienizado e diagramado lado a lado
             item.innerHTML = `
-                <div>
-                    <span class="text-xs font-bold uppercase text-amber-600 block">${v.balaio}</span>
-                    <span class="text-sm font-semibold text-gray-700">${v.nome}</span>
+                <div style="display: flex; flex-direction: column; gap: 2px; text-align: left;">
+                    <span style="font-size: 0.68rem; font-weight: 900; color: var(--orange); text-transform: uppercase; letter-spacing: 0.05em;">
+                        ${v.balaio}
+                    </span>
+                    <span style="font-size: 0.92rem; font-weight: 700; color: var(--text);">
+                        ${v.nome}
+                    </span>
                 </div>
-                <span class="text-xs text-gray-400 font-medium flex items-center gap-1">Ver foto 📷</span>
+                <span style="font-size: 0.72rem; background: var(--orange-l); color: var(--orange); padding: 5px 10px; border-radius: 100px; font-weight: 800; display: flex; align-items: center; gap: 4px; flex-shrink: 0;">
+                    Ver foto 📷
+                </span>
             `;
+            
             lista.appendChild(item);
         });
     
         document.getElementById('modal-vencedores').classList.remove('hidden');
     }
-    
-    // 3. Função para fechar o Popup
-    function fecharModalVencedores() {
-        document.getElementById('modal-vencedores').classList.add('hidden');
-    }
-    
-    // 4. Função para exibir a foto com efeito de carregamento
-    function mostrarFotoVencedor(url) {
-        const container = document.getElementById('container-foto');
-        const img = document.getElementById('foto-vencedor');
-        const loader = document.getElementById('loader-foto');
-    
-        // Mostra o container e o loader, limpa a imagem antiga
-        container.classList.remove('hidden');
-        loader.classList.remove('hidden');
-        img.style.opacity = '0';
-        img.src = url;
-    
-        // Quando o navegador terminar de baixar a imagem do GitHub, esconde o loader e exibe a imagem de forma suave
-        img.onload = function() {
-            loader.classList.add('hidden');
-            img.style.transition = 'opacity 0.3s ease-in-out';
-            img.style.opacity = '1';
-        };
-        
-        // Fallback caso a imagem quebre ou não exista no link do GitHub
-        img.onerror = function() {
-            loader.classList.add('hidden');
-            alert("Não foi possível carregar a imagem deste vencedor ou ela ainda não foi enviada para o GitHub.");
-        };
-    }
-
-
-
-
-
-
     
     // ─── Gera os Blocos de 1 a 26 ─────────────────────────────────────
     function inicializarSeletores() {
