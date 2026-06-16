@@ -212,6 +212,14 @@
           <div>
             <div class="sec-title">Balaios para Sorteio</div>
             <div class="sec-sub" id="sorteio-sub">Nenhum balaio completo ainda. Continue arrecadando!</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--bg);">
+          <span style="font-size:0.85rem;color:var(--text3);font-weight:600;">Total arrecadado</span>
+          <span style="font-weight:900;font-size:1rem;color:var(--orange);" id="sorteio-total">R$ 0,00</span>
+        </div>
+      </div>
+    </div>
             <!-- MODAL DE VENCEDORES --> 
             <!-- Botão de Vencedores -->
             <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--bg);">
@@ -251,15 +259,6 @@
                     </div>
                 </div>
             </div>              
-          </div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--bg);">
-          <span style="font-size:0.85rem;color:var(--text3);font-weight:600;">Total arrecadado</span>
-          <span style="font-weight:900;font-size:1rem;color:var(--orange);" id="sorteio-total">R$ 0,00</span>
-        </div>
-      </div>
-    </div>
-
     <div class="card" style="margin-bottom:14px;">
       <div class="card-body">
         <div class="sec-header">
@@ -888,7 +887,36 @@
     
         document.getElementById('modal-vencedores').classList.remove('hidden');
     }
+    // 3. Função para fechar o Popup
+    function fecharModalVencedores() {
+        document.getElementById('modal-vencedores').classList.add('hidden');
+    }
     
+    // 4. Função para exibir a foto com efeito de carregamento
+    function mostrarFotoVencedor(url) {
+        const container = document.getElementById('container-foto');
+        const img = document.getElementById('foto-vencedor');
+        const loader = document.getElementById('loader-foto');
+    
+        // Mostra o container e o loader, limpa a imagem antiga
+        container.classList.remove('hidden');
+        loader.classList.remove('hidden');
+        img.style.opacity = '0';
+        img.src = url;
+    
+        // Quando o navegador terminar de baixar a imagem do GitHub, esconde o loader e exibe a imagem de forma suave
+        img.onload = function() {
+            loader.classList.add('hidden');
+            img.style.transition = 'opacity 0.3s ease-in-out';
+            img.style.opacity = '1';
+        };
+        
+        // Fallback caso a imagem quebre ou não exista no link do GitHub
+        img.onerror = function() {
+            loader.classList.add('hidden');
+            alert("Não foi possível carregar a imagem deste vencedor ou ela ainda não foi enviada para o GitHub.");
+        };
+    }
     // ─── Gera os Blocos de 1 a 26 ─────────────────────────────────────
     function inicializarSeletores() {
         const selBloco = document.getElementById('f-bloco');
