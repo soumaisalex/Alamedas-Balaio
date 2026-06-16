@@ -220,7 +220,37 @@
         </div>
       </div>
     </div>
- 
+      
+     <div class="mt-4 px-2">
+        <button onclick="abrirModalVencedores()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-md">
+            🏆 Ver Vencedores dos Balaios
+        </button>
+    </div>
+    
+    <div id="modal-vencedores" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl overflow-hidden relative border border-gray-100 flex flex-col max-h-[90vh]">
+            
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">🎉 Ganhadores do Balaio</h3>
+                <button onclick="fecharModalVencedores()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
+            </div>
+    
+            <div class="overflow-y-auto flex-1 space-y-4 pr-1">
+                
+                <div id="lista-ganhadores" class="space-y-2">
+                    </div>
+    
+                <div id="container-foto" class="hidden mt-4 pt-4 border-t border-dashed border-gray-200 text-center">
+                    <p class="text-xs text-gray-500 mb-2 font-medium">📸 Foto da Entrega:</p>
+                    <div class="relative bg-gray-50 rounded-xl p-2 border border-gray-200 flex justify-center items-center min-h-[200px]">
+                        <div id="loader-foto" class="absolute hidden animate-spin rounded-full h-8 w-8 border-4 border-amber-500 border-t-transparent"></div>
+                        <img id="foto-vencedor" src="" alt="Foto do Vencedor" class="rounded-lg max-h-64 object-contain mx-auto shadow-sm">
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </div>
     <div class="card" style="margin-bottom:14px;">
       <div class="card-body">
         <div class="sec-header">
@@ -784,6 +814,81 @@
             }
         });
     }
+
+    // ─── Vencedores ─────────────────────────────────────
+    const dadosVencedores = [
+        { balaio: "1º Balaio", nome: "Del (BL 4)", fotoUrl: "https://raw.githubusercontent.com/soumaisalex/Alamedas-Balaio/refs/heads/main/vencedores/4203.webp" },
+        { balaio: "2º Balaio", nome: "Alexsandro (BL 1)", fotoUrl: "https://raw.githubusercontent.com/soumaisalex/Alamedas-Balaio/refs/heads/main/vencedores/1307.webp" },
+        { balaio: "3º Balaio", nome: "Thayanne (BL 14)", fotoUrl: "https://raw.githubusercontent.com/soumaisalex/Alamedas-Balaio/refs/heads/main/vencedores/14303.webp" },
+        { balaio: "4º Balaio", nome: "Bete (BL 7)", fotoUrl: "https://raw.githubusercontent.com/soumaisalex/Alamedas-Balaio/refs/heads/main/vencedores/7305.webp" },
+        { balaio: "5º Balaio", nome: "Amanda (BL 10)", fotoUrl: "https://raw.githubusercontent.com/soumaisalex/Alamedas-Balaio/refs/heads/main/vencedores/10105.webp" },
+        { balaio: "6º Balaio", nome: "Taynak (BL 18)", fotoUrl: "https://raw.githubusercontent.com/soumaisalex/Alamedas-Balaio/refs/heads/main/vencedores/18304.webp" },
+        { balaio: "7º Balaio", nome: "Gal (BL 25)", fotoUrl: "https://raw.githubusercontent.com/soumaisalex/Alamedas-Balaio/refs/heads/main/vencedores/25106.webp" },
+        { balaio: "8º Balaio", nome: "Ronaldo (BL 26)", fotoUrl: "https://raw.githubusercontent.com/soumaisalex/Alamedas-Balaio/refs/heads/main/vencedores/20307.webp" }
+    ];
+    
+    // 2. Função para abrir o Popup e renderizar a lista
+    function abrirModalVencedores() {
+        const lista = document.getElementById('lista-ganhadores');
+        lista.innerHTML = ''; // Limpa antes de renderizar
+        
+        // Esconde a área da foto se ela tiver ficado aberta antes
+        document.getElementById('container-foto').classList.add('hidden');
+    
+        dadosVencedores.forEach((v, index) => {
+            const item = document.createElement('div');
+            item.className = "flex justify-between items-center p-3 bg-gray-50 hover:bg-amber-50 rounded-xl cursor-pointer transition border border-gray-100 active:scale-[0.99]";
+            item.onclick = () => mostrarFotoVencedor(v.fotoUrl);
+            
+            item.innerHTML = `
+                <div>
+                    <span class="text-xs font-bold uppercase text-amber-600 block">${v.balaio}</span>
+                    <span class="text-sm font-semibold text-gray-700">${v.nome}</span>
+                </div>
+                <span class="text-xs text-gray-400 font-medium flex items-center gap-1">Ver foto 📷</span>
+            `;
+            lista.appendChild(item);
+        });
+    
+        document.getElementById('modal-vencedores').classList.remove('hidden');
+    }
+    
+    // 3. Função para fechar o Popup
+    function fecharModalVencedores() {
+        document.getElementById('modal-vencedores').classList.add('hidden');
+    }
+    
+    // 4. Função para exibir a foto com efeito de carregamento
+    function mostrarFotoVencedor(url) {
+        const container = document.getElementById('container-foto');
+        const img = document.getElementById('foto-vencedor');
+        const loader = document.getElementById('loader-foto');
+    
+        // Mostra o container e o loader, limpa a imagem antiga
+        container.classList.remove('hidden');
+        loader.classList.remove('hidden');
+        img.style.opacity = '0';
+        img.src = url;
+    
+        // Quando o navegador terminar de baixar a imagem do GitHub, esconde o loader e exibe a imagem de forma suave
+        img.onload = function() {
+            loader.classList.add('hidden');
+            img.style.transition = 'opacity 0.3s ease-in-out';
+            img.style.opacity = '1';
+        };
+        
+        // Fallback caso a imagem quebre ou não exista no link do GitHub
+        img.onerror = function() {
+            loader.classList.add('hidden');
+            alert("Não foi possível carregar a imagem deste vencedor ou ela ainda não foi enviada para o GitHub.");
+        };
+    }
+
+
+
+
+
+
     
     // ─── Gera os Blocos de 1 a 26 ─────────────────────────────────────
     function inicializarSeletores() {
